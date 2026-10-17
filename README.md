@@ -44,6 +44,7 @@ tests. To advance: open a Claude Code session on this repo and write
 | [docs/MASTER_PROMPT.md](docs/MASTER_PROMPT.md) | Full project specification |
 | [docs/DESIGN_PROMPT.md](docs/DESIGN_PROMPT.md) | Visual design specification |
 | [docs/INSTALLER_PROMPT.md](docs/INSTALLER_PROMPT.md) | ISO, live USB and installer specification |
+| [docs/BRAND_PROMPT.md](docs/BRAND_PROMPT.md) | Brand identity "SMY Quantum Minimalism" specification |
 | [docs/PROMPTS.md](docs/PROMPTS.md) | Prompt applied to each phase |
 | [docs/PROMPT_REVIEW.md](docs/PROMPT_REVIEW.md) | Review of the original prompts (Uzbek) |
 

@@ -1,6 +1,6 @@
 # SMY-OS Status
 
-Last updated: 2026-10-18 — Phase 3.
+Last updated: 2026-10-18 — Phase 3 (VERIFIED).
 
 Status vocabulary (used exactly): **Implemented · Compiles · Unit-tested ·
 Emulator-tested · Hardware-tested · Production-ready.** A passing build is not
@@ -28,8 +28,8 @@ interface.
 | 0 — Foundation | VERIFIED | Docs, ADRs 0001–0006, environment report, link check; licence Apache-2.0 (ADR 0006) |
 | 1 — Build system, toolchain, CI | VERIFIED | `make check` green locally and in CI (run 39066632132) |
 | 2 — First boot | VERIFIED | 4/4 boot paths and reproducibility green in CI (runs 39068650073, 39069271282) |
-| 3 — CPU foundation | IN PROGRESS | see below; VERIFIED once CI `ci` is green on the pushed commit |
-| 4 … 38 | NOT STARTED | see `ROADMAP.md` |
+| 3 — CPU foundation | VERIFIED | ktest 10/10 on BIOS and UEFI, 3 panic reports, boot 4/4, reproducible — CI run 39075758514 |
+| 4 … 38, 5B, 12B | NOT STARTED | see `ROADMAP.md` |
 
 ## Components
 
@@ -71,7 +71,7 @@ interface.
 | Panic reports | `make ktest-panic-ud ktest-panic-pf ktest-panic-kernel` | PASS: exit status 35 and all expected report lines |
 | Reproducibility | `tools/check-reproducible.sh` | PASS (two paths, identical SHA-256) |
 | Negative checks | see `TESTING.md` §3 | 5 injected faults, each detected |
-| CI `ci` workflow | GitHub Actions | pending (recorded after push) |
+| CI `ci` workflow | GitHub Actions | PASS: run 39075758514 on commit ffe9759 — all steps green incl. ktest BIOS/UEFI and panic reports |
 
 Example panic report: [docs/kernel/exceptions.md](docs/kernel/exceptions.md).
 

@@ -9,6 +9,8 @@ The authoritative instructions are:
   desktop components).
 - `docs/INSTALLER_PROMPT.md` — ISO, live USB, installer and deployment
   specification.
+- `docs/BRAND_PROMPT.md` — brand identity "SMY Quantum Minimalism" (logo,
+  palette, icons, wallpapers, typography, motion, sound).
 - `ROADMAP.md` — the ordered list of phases, their status and acceptance criteria.
 - `docs/PROMPTS.md` — the prompt to execute for each phase.
 

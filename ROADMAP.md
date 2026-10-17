@@ -14,9 +14,10 @@ point, then continue in the next command.
 | 0 | Foundation: environment report, docs skeleton, ADRs | Project | VERIFIED |
 | 1 | Build system, toolchain, CI, host test framework | Build | VERIFIED |
 | 2 | First boot: Limine + minimal kernel + QEMU boot test | Kernel | VERIFIED |
-| 3 | CPU: GDT/TSS, IDT, exceptions, panic, kernel log | Kernel | IN PROGRESS |
+| 3 | CPU: GDT/TSS, IDT, exceptions, panic, kernel log | Kernel | VERIFIED |
 | 4 | Physical memory manager | Kernel | NOT STARTED |
 | 5 | Virtual memory + kernel heap | Kernel | NOT STARTED |
+| 5B | Brand identity: 3 logo concepts (OWNER DECISION), logo family, boot logo | Brand | NOT STARTED |
 | 6 | D1 — Design System specification + tokens | Design | NOT STARTED |
 | 7 | Interrupt controllers, timers, keyboard input | Kernel | NOT STARTED |
 | 8 | Threads, scheduler, synchronization | Kernel | NOT STARTED |
@@ -24,6 +25,7 @@ point, then continue in the next command.
 | 10 | User mode, syscalls, initramfs, first native program (C2) | Kernel | NOT STARTED |
 | 11 | Processes, ELF loader, IPC | Kernel | NOT STARTED |
 | 12 | D2 — SMY icon system | Design | NOT STARTED |
+| 12B | Wallpapers (SMY Quantum Minimalism) | Brand | NOT STARTED |
 | 13 | VFS, device model, framebuffer text console | Kernel | NOT STARTED |
 | 14 | PCI, virtio-blk, GPT, FAT32 (read) | Storage | NOT STARTED |
 | 15 | C3 — Linux personality: first static Linux binary | Compat | NOT STARTED |
@@ -145,6 +147,40 @@ stacks.
 Acceptance: host tests for heap logic; QEMU tests: map/unmap, write to RO page
 faults, heap stress test.
 
+## Phase 5B — Brand identity (SMY Quantum Minimalism)
+
+Spec: `docs/BRAND_PROMPT.md`. **OWNER DECISION** in the middle of the phase.
+
+Step 1 (until the decision):
+- Three original logo concepts as SVG in `design/brand/concepts/`, each
+  with symbol + wordmark draft; written evaluation table (16 px recognition,
+  simplicity, memorability, scalability, monochrome, OS fit,
+  distinctiveness, system fit); a generated preview sheet (dark, light,
+  monochrome, 16/32/256 px) sent to the owner; recommendation in one
+  sentence. Host SVG renderer chosen by licence (reason recorded).
+- Phase → `BLOCKED (owner decision: logo concept)`; ask the owner.
+
+Step 2 (after the owner picks):
+- Logo family from the chosen symbol (`docs/BRAND_PROMPT.md` §5): master,
+  symbol, wordmark (`SMY-OS`, drawn paths), app icon, light, dark, monochrome,
+  micro mark, boot logo, installer logo, developer mark; construction grid,
+  clear space, minimum sizes, misuse examples in
+  `design/brand/BRAND_GUIDELINES.md`; `BRAND_ASSET_MANIFEST.md`.
+- Brand palette (§4) entered into `design/tokens/` as the base colour layer,
+  including the contrast findings (owner approves any changed value).
+- `make brand`: PNG exports 16–1024 px + preview sheets into `build/brand/`
+  (CI artefact); `tools/design/validate_brand.py` (manifest, SVG parse,
+  viewBox, no external refs/filters/raster/`<text>`, naming).
+- The kernel boot screen shows the boot logo instead of the interim square
+  (build step turns the SVG into a compact image the kernel draws; no image
+  decoder in the kernel).
+
+Acceptance: all files in the manifest exist and validate in CI; preview
+sheet reviewed by the owner; boot test + a QEMU screendump check of the logo
+pixels pass on BIOS and UEFI; no claim of trademark clearance.
+Out of scope: icons (Phase 12), wallpapers (12B), motion and sound assets
+(specification only), installer UI (Phase 33).
+
 ## Phase 6 — D1 Design System specification
 
 Execute `docs/DESIGN_PROMPT.md` steps 1, 2, 3, 5, 9, 10, 13 (spec only):
@@ -152,6 +188,11 @@ concept + principles, colour system for 3 themes, foundations tokens in
 `design/tokens/*.json`, generator (`tools/design/gen_tokens.py` → C header +
 CSS), automated WCAG contrast test in CI, `DESIGN_SYSTEM.md` full rationale,
 font licence evaluation (OWNER is informed of the chosen OFL font).
+Built on the Phase 5B brand palette: light, dark **and high-contrast**
+themes; the missing light-theme semantic colours (success, warning, error,
+info) are defined; the light accent issue (`#087F83` = 4.48:1 on `#F5F7FB`)
+is resolved; glyph-coverage check for Uzbek Latin (U+02BB) and Cyrillic in
+the chosen UI and mono fonts (`docs/BRAND_PROMPT.md` §4, §10).
 
 Acceptance: CI runs generator + contrast tests; generated files not committed
 (or committed and verified identical — choose and document).
@@ -208,12 +249,24 @@ benchmark baseline.
 
 ## Phase 12 — D2 Icon system
 
-Execute `docs/DESIGN_PROMPT.md` step 4, 11, 12: grid/keylines spec, required
-icon set as original SVG in `design/icons/`, manifest with status, icon lint
-(viewBox, stroke width, no fills outside rules, no raster), host-rendered
-reference sheet PNG (via a licensed renderer, reason recorded).
+Execute `docs/DESIGN_PROMPT.md` step 4, 11, 12 together with
+`docs/BRAND_PROMPT.md` §8 (one icon system): grid/keylines spec, required
+icon set as original SVG in `design/icons/<category>/smy-icon-<name>.svg`
+(system, files, connectivity, security, development, media, applications),
+manifest with status, icon lint (viewBox, stroke width, no fills outside
+rules, no raster, naming), host-rendered reference sheet PNG at 16/24/32 px.
 
 Acceptance: all required icons present with `status: final`; lint passes in CI.
+
+## Phase 12B — Wallpapers
+
+`docs/BRAND_PROMPT.md` §9: primary dark, secondary dark, light, minimal and
+a high-resolution promotional wallpaper, generated procedurally from sources
+in `design/wallpapers/source/`; exports via `make brand`; readability check
+with a reference overlay of icons and window text against UI contrast rules.
+
+Acceptance: five wallpapers generated reproducibly in CI, readability check
+passes, owner has seen the preview sheet.
 
 ## Phase 13 — VFS and devices
 
@@ -273,7 +326,8 @@ Acceptance: screenshot tests per theme and scale factor.
 ## Phase 20 — SMY Desktop v0
 
 Scope: desktop shell, window manager (move, resize, focus, workspaces,
-keyboard control), application launcher, per D3 specs.
+keyboard control), application launcher, per D3 specs; the Phase 12B
+wallpapers and the logo family from Phase 5B.
 
 Acceptance: scripted keyboard tests via QEMU `sendkey` + screenshot checks.
 
@@ -361,7 +415,8 @@ documented and tested.
 
 Scope (§4, §14): GUI front-end on the Phase 19 toolkit following D3 specs
 (language, keyboard, disk selection, plan review, typed confirmation,
-progress, result); first-boot setup (account with Argon2id via established
+progress, result) with the installer logo (Phase 5B); first-boot setup
+(account with Argon2id via established
 library, language, keyboard, time zone, privacy/security defaults); login and
 lock screen.
 Requires: phases 20, 25, 31, 32.
@@ -402,5 +457,7 @@ enrolled test keys. No Secure Boot claim before this passes.
 
 ## Phase 38 — Planning
 
-Review everything, update STATUS, define phases 39+ (audio, virtio-gpu and
-real GPUs, IPv6/TLS, C5–C8, more apps, more hardware).
+Review everything, update STATUS, define phases 39+ (audio — including the
+sound identity of `docs/BRAND_PROMPT.md` §12 —, motion identity in the
+desktop, virtio-gpu and real GPUs, IPv6/TLS, C5–C8, more apps, more
+hardware).

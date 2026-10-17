@@ -5,6 +5,11 @@
 > desktop components are built only in later phases once display, input and IPC
 > exist.
 
+> Brand identity (logo, brand palette, wallpapers, motion and sound
+> identity) is specified in `docs/BRAND_PROMPT.md`. Both files describe one
+> system: one asset library (`design/`), one token source (`design/tokens/`),
+> one icon system.
+
 ## Role
 
 You are the principal visual design architect for SMY-OS. Create a completely

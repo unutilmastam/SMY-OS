@@ -46,7 +46,7 @@ tekshirilmagan kod yozib yuborishi mumkin edi. Quyidagilar tuzatildi.
 ## Haqiqatga to'g'ri baho
 
 Bu — yillar davom etadigan loyiha. Linux va Windows yadrolari ustida minglab
-odamlar o'nlab yil ishlagan. Roadmapdagi 39 faza (0–38) "tayyor OS" emas, balki
+odamlar o'nlab yil ishlagan. Roadmapdagi 41 faza (0–38, 5B va 12B) "tayyor OS" emas, balki
 **ishlaydigan poydevor**: o'z yadrosi, oddiy desktop, birinchi Linux va
 Windows dasturlari. "Har qanday Windows o'yini ishlaydi" kabi natija bu
 rejaga kirmaydi va hech kim bunga va'da bera olmaydi.
@@ -75,3 +75,27 @@ qo'shildi, "eng kichik bootable ISO" talabi Phase 2 ga birlashtirildi.
 | 13 | Avtomatik testlar real diskka tegishi mumkin | Ma'lumot yo'qolishi | Test runner haqiqiy qurilma yo'lini rad etadi; faqat image fayllar |
 | 14 | **Sizda kompyuter yo'q** | USB yozish va haqiqiy PCda sinash uchun kompyuter kerak | Phase 36 — OWNER DECISION: sinov kompyuteri (diski o'chirilsa bo'ladigan) va USB yozish uchun boshqa kompyuter kerak bo'ladi |
 | 15 | Reproducible build qanday tekshiriladi — aytilmagan | "Reproducible" deb aytish oson, isbotlash qiyin | CI ikki marta yig'adi va SHA-256 ni solishtiradi |
+
+---
+
+## Brend prompti ("SMY Quantum Minimalism") — tahlil
+
+Tuzatilgan versiya: `docs/BRAND_PROMPT.md`. Roadmapga **Phase 5B** (logotip)
+va **Phase 12B** (devor rasmlari) qo'shildi; ikonkalar Phase 12 ga
+birlashtirildi. Boshqa faza raqamlari o'zgarmadi.
+
+| # | Muammo | Nima uchun xavfli | Tuzatish |
+|---|---|---|---|
+| 1 | Alohida `branding/` papka va alohida token tizimi | Dizayn prompti allaqachon `design/` va `design/tokens/` ni belgilagan — ikki xil rang manbai bir-biriga zid bo'lib qoladi | Bitta kutubxona: `design/brand/`, `design/icons/`, `design/wallpapers/`; ranglar faqat `design/tokens/` da, qolganlari undan avtomatik yasaladi |
+| 2 | "Hamma bosqichni to'xtamasdan bajar" | Loyiha qoidasi — bir buyruqqa bitta faza | Brend ishlari 5B, 12, 12B fazalariga bo'lindi |
+| 3 | Logotipni Claude o'zi tanlaydi | Brend — sizning shaxsiy qaroringiz | 3 ta konsept + rasm-varaq tayyorlanadi, **tanlovni siz qilasiz** (OWNER DECISION) |
+| 4 | Kontrast o'lchangan | `#087F83` urg'u rangi `#F5F7FB` fonda 4.48:1 — me'yor 4.5:1 dan **past** | Taklif: `#077479` (5.2:1). Siz tasdiqlamaguncha rang o'zgartirilmaydi |
+| 5 | Yorug' tema uchun success/warning/info/error ranglari yo'q | Hozirgilar yorug' fonda 1.3–1.9:1 — o'qib bo'lmaydi | Phase 6 da yorug' tema uchun alohida semantik ranglar belgilanadi |
+| 6 | Kuchli kontrast (high-contrast) tema yo'q | Ko'zi zaif foydalanuvchilar uchun shart (dizayn prompti talabi) | Phase 6 ga qo'shildi (7:1) |
+| 7 | `#293247` va `#DCE3ED` chegaralar uchun | 1.5:1 va 1.3:1 — tugma chegarasi uchun kamida 3:1 kerak | Faqat bezak uchun; fokus va tugma chegaralari boshqa rangda |
+| 8 | Kiril tekshiriladi, o'zbek lotini emas | `Oʻ oʻ Gʻ gʻ` (U+02BB) belgisi shriftda bo'lmasligi mumkin | Inter va IBM Plex Mono uchun avtomatik glif tekshiruvi (o'zbek lotin + kiril) |
+| 9 | Wordmark shriftdan olinishi mumkin | Shrift litsenziyasi logoga o'tib qoladi | `SMY-OS` harflari o'zimiz chizgan geometriya |
+| 10 | PNG eksportlar repoga | Yasalgan fayllar gitda turmasligi kerak (loyiha qoidasi) | Faqat SVG manbalar gitda; PNG lar `make brand` bilan yasaladi va CI'dan yuklab olinadi |
+| 11 | Ovoz identifikatsiyasi | Audio drayver hali yo'q | Hozircha faqat spetsifikatsiya; ovoz fayllari audio fazasida (Phase 38 da rejalashtiriladi) |
+| 12 | "Glow", yorug'lik effektlari | GPU yo'q — effektlar dasturiy chiziladi va sekinlashtiradi | Logo effektsiz ishlashi shart; effektlar faqat marketing variantida |
+| 13 | Boot logotipi | Hozir yadro faqat kvadrat chizadi, rasm o'qiy olmaydi | Phase 5B da logo build vaqtida oddiy rasmga aylantirilib, yadro uni ekranga chizadi |
