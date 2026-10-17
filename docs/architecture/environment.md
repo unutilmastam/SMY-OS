@@ -53,6 +53,10 @@ Phase 0 with `apt-get install qemu-system-x86 xorriso cppcheck mtools ovmf`.
 Missing at session start: `qemu-system-x86_64`, `xorriso`, `cppcheck`,
 `mtools`, OVMF. All were installed successfully with `apt-get`.
 
+Phase 1 addition (measured 2026-10-17): host unit tests need the sanitizer
+runtime **`libclang-rt-18-dev`** (not pre-installed; the ASan link failed
+until it was installed with `apt-get`). `tools/check-env.sh` now checks for it.
+
 Not yet needed and not checked: `musl-gcc` (Phase 15), MinGW-w64 (Phase 24).
 
 ## 4. GitHub Actions runner

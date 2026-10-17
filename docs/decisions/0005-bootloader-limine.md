@@ -1,6 +1,6 @@
 # ADR 0005 — Bootloader: Limine (boot protocol: Limine)
 
-- **Status:** Accepted
+- **Status:** Accepted (download detail superseded by [ADR 0007](0007-limine-from-source.md): no binaries exist for 12.x)
 - **Date:** 2026-10-17
 - **Phase:** 0
 

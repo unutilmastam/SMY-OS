@@ -1,6 +1,6 @@
 # SMY-OS Status
 
-Last updated: 2026-10-17 — Phase 0 (VERIFIED).
+Last updated: 2026-10-17 — Phase 1.
 
 Status vocabulary (used exactly): **Implemented · Compiles · Unit-tested ·
 Emulator-tested · Hardware-tested · Production-ready.** A passing build is not
@@ -8,9 +8,10 @@ proof of correctness or security.
 
 ## Summary
 
-There is **no code yet**. The project has its specification, roadmap, root
-documentation, six ADRs (incl. the Apache-2.0 licence decision) and an environment report. The SMY Kernel does not
-exist yet; nothing boots.
+The build system, host unit-test harness, static analysis and CI exist. The
+only kernel code is the memory/string library (`kernel/core/string.c`),
+compiled with kernel flags into `build/kernel/libsmy-kernel.a`. **There is no
+bootable kernel yet; nothing boots** (Phase 2).
 
 - Installation: **not supported.**
 - USB boot: **not supported / not tested.**
@@ -22,24 +23,35 @@ exist yet; nothing boots.
 | Phase | Status | Notes |
 |---|---|---|
 | 0 — Foundation | VERIFIED | Docs, ADRs 0001–0006, environment report, link check; licence Apache-2.0 (ADR 0006) |
-| 1 … 38 | NOT STARTED | see `ROADMAP.md` |
+| 1 — Build system, toolchain, CI | IN PROGRESS | see below; VERIFIED once CI `ci` is green on the pushed commit |
+| 2 … 38 | NOT STARTED | see `ROADMAP.md` |
 
 ## Components
 
 | Component | Status |
 |---|---|
-| Documentation skeleton (root docs, ADRs) | Implemented (content), link-checked by `tools/check-links.py` |
-| Build system | not started (Phase 1, ADR 0004) |
-| SMY Kernel | not started (Phase 2) |
+| Documentation (root docs, ADRs 0001–0007) | Implemented, link-checked by `tools/check-links.py` |
+| Build system (GNU Make, `make check`) | Implemented |
+| Host unit-test harness (`tests/unit/harness`) | Implemented, used by 8 tests |
+| Kernel string library: `memcpy`, `memmove`, `memset`, `memcmp`, `strlen` | Compiles (kernel flags), Unit-tested (host, ASan/UBSan) |
+| Limine 12.9.3 source fetch (`tools/fetch-limine.sh`) | Implemented, SHA-256 verified; not built yet (Phase 2, ADR 0007) |
+| SMY Kernel (bootable) | not started (Phase 2) |
 | Design system | not started (Phase 6) |
 | Compatibility (C0–C8) | not started (see `COMPATIBILITY.md`) |
 
-## Last check results (Phase 0, cloud session 2026-10-17)
+## Last check results (Phase 1, cloud session 2026-10-17)
 
 | Check | Command | Result |
 |---|---|---|
-| Markdown link check | `python3 tools/check-links.py` | PASS locally: 27 files, 0 broken links; negative test (broken file + anchor) correctly fails with exit 1. CI `docs` workflow: PASS (run 39064214535, commit f811b52) |
-| Build / unit tests / QEMU | — | not applicable (no code in Phase 0) |
+| Environment | `tools/check-env.sh` | PASS, 0 warnings (clang/lld 18.1.3, cppcheck 2.13.0, QEMU 8.2.2; no KVM) |
+| Limine fetch | `tools/fetch-limine.sh` | PASS: download + SHA-256 match; second run uses verified cache |
+| Kernel objects | `make kernel` | PASS; `llvm-nm -u` on `string.o`: no undefined symbols; no `call` instructions (no self-calls from loop-to-memcpy conversion) |
+| Unit tests | `make test` | PASS: 8 run, 8 passed, 0 failed (ASan + UBSan) |
+| Format | `make format-check` | PASS (5 files) |
+| Static analysis | `make lint` | PASS (clang-tidy, cppcheck) |
+| Negative checks | see `TESTING.md` §3 | each injected fault made its check fail (exit ≠ 0) |
+| Docs links | `python3 tools/check-links.py` | PASS |
+| CI `ci` workflow | GitHub Actions | pending (recorded after push) |
 
 ## Known limitations
 

@@ -1,0 +1,24 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 The SMY-OS Authors
+# Static analysis for SMY-OS (TESTING.md). clang-tidy 18. Every finding fails
+# the build. Disabled checks are listed with the reason.
+#
+# - bugprone-easily-swappable-parameters: flags every (dst, src, n) signature.
+# - clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling:
+#   demands Annex K memcpy_s; not available freestanding and not used here.
+# - misc-include-cleaner: noisy with the freestanding header set.
+# - cert-err33-c: requires checking printf's return value in the test runner.
+Checks: >
+  -*,
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  cert-*,
+  -cert-err33-c,
+  clang-analyzer-*,
+  -clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,
+  misc-*,
+  -misc-include-cleaner,
+  performance-*,
+  portability-*
+WarningsAsErrors: '*'
+HeaderFilterRegex: '(kernel|tests)/.*'

@@ -28,9 +28,12 @@ added).
 
 | Component | Version | Licence | Status | Use | Redistributed? | Notes |
 |---|---|---|---|---|---|---|
-| Limine bootloader | 12.9.3 | BSD-2-Clause (+ bundled 0BSD, MIT, BSD-2/3, Apache-2.0, Apache-2.0 WITH LLVM-exception, CC0-1.0; see upstream `3RDPARTY.md`) | planned (Phase 1–2) | bootloader in the ISO | **yes** (binaries in the ISO) | Ship `COPYING` + `3RDPARTY.md` in the ISO. ADR 0005 |
+| Limine bootloader | 12.9.3 | BSD-2-Clause (+ bundled 0BSD, MIT, BSD-2/3, Apache-2.0, Apache-2.0 WITH LLVM-exception, CC0-1.0; see upstream `3RDPARTY.md`) | source downloaded (Phase 1), built in Phase 2 | bootloader in the ISO | **yes** (binaries built from source, in the ISO) | Source tarball `limine-12.9.3.tar.xz`, SHA-256 `95f456a2…3dd4e995` pinned in `tools/fetch-limine.sh`. Ship `COPYING` + `3RDPARTY.md` in the ISO. ADR 0005, ADR 0007 |
 | Limine protocol header `limine.h` | matching 12.9.3 | 0BSD | planned (Phase 2) | kernel ↔ bootloader interface | yes (compiled in) | Vendored, unmodified |
 | LLVM / Clang / lld | 18.1.3 (Ubuntu) | Apache-2.0 WITH LLVM-exception | tool | compiler, linker, format, tidy | no | Compiler runtime is not linked into the kernel |
+| compiler-rt sanitizers (`libclang-rt-18-dev`) | 18.1.3 (Ubuntu) | Apache-2.0 WITH LLVM-exception | tool | ASan/UBSan runtime for host unit tests | no | Linked only into host test binaries, never into the kernel |
+| NASM | 2.16.01 (Ubuntu) | BSD-2-Clause | tool | needed to build Limine from source (Phase 2) | no | Not used for SMY-OS sources (ADR 0002) |
+| curl, GNU tar, xz-utils | Ubuntu 24.04 | curl licence (MIT-style), GPL-3.0-or-later, 0BSD/public domain | tool | download and unpack pinned sources | no | |
 | GNU Make | 4.3 | GPL-3.0-or-later | tool | build | no | Using a GPL tool does not affect our licence |
 | QEMU | 8.2.2 (Ubuntu) | GPL-2.0 (parts other licences) | tool | emulator for tests | no | |
 | OVMF (EDK II) | 2024.02 (Ubuntu) | BSD-2-Clause-Patent | tool | UEFI firmware in tests | no | |
@@ -39,7 +42,7 @@ added).
 | cppcheck | 2.13.0 | GPL-3.0-or-later | tool | static analysis | no | |
 | GDB | 15.1 | GPL-3.0-or-later | tool | debugging | no | |
 | Python 3 | 3.x | PSF-2.0 | tool | host scripts | no | Standard library only |
-| `actions/checkout` (GitHub Action) | v7 | MIT | tool | CI checkout | no | Pinned by major tag; pin by commit SHA from Phase 1 |
+| `actions/checkout` (GitHub Action) | v7.0.1 | MIT | tool | CI checkout | no | Pinned by commit SHA `3d3c42e5aac5ba805825da76410c181273ba90b1` (Phase 1) |
 
 Every new dependency needs: a one-line reason, its licence, and for binaries a
 pinned version + SHA-256 (`CLAUDE.md`).

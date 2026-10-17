@@ -27,7 +27,8 @@ Status: — not applicable yet · ✗ not implemented · ✓ passing in CI.
 | Area | Docs | Unit | Static | QEMU BIOS | QEMU UEFI | Fuzz | HW |
 |---|---|---|---|---|---|---|---|
 | Documentation | ✓ | — | — | — | — | — | — |
-| Build system | — | ✗ | ✗ | — | — | — | — |
+| Build system (`make check`) | — | ✓ | ✓ | — | — | — | — |
+| Kernel string library (`kernel/core/string.c`) | — | ✓ | ✓ | ✗ | ✗ | — | ✗ |
 | Boot / kernel entry | — | — | ✗ | ✗ | ✗ | — | ✗ |
 | CPU / exceptions | — | — | ✗ | ✗ | ✗ | — | ✗ |
 | Physical memory | — | ✗ | ✗ | ✗ | ✗ | — | ✗ |
@@ -36,7 +37,28 @@ Status: — not applicable yet · ✗ not implemented · ✓ passing in CI.
 
 Rows are added as phases add components. Update this table in every phase.
 
-## 3. Rules
+## 3. Host unit tests (Phase 1)
+
+- Harness: `tests/unit/harness/smytest.{h,c}` — in-repo, about 150 lines, no
+  external dependency (reason: a framework would add a licence and a download
+  for a few macros). `SMY_TEST(name) { ... }` registers a test;
+  `SMY_EXPECT`, `SMY_EXPECT_EQ_U64`, `SMY_EXPECT_EQ_PTR` record failures and
+  continue. The runner exits non-zero if any test fails or if no test ran.
+  `build/host/tests/unit/smy-unit-tests <substring>` runs a subset.
+- Kernel sources are compiled for the host with `-DSMY_HOST_TEST`, which
+  renames their public symbols (`memcpy` → `smy_host_memcpy`, see
+  `kernel/core/string.h`), and with `-fno-builtin`, so the test exercises our
+  code and not the host C library.
+- Sanitizers: `-fsanitize=address,undefined -fno-sanitize-recover=all`.
+- New test file → add it to `UNIT_TEST_SOURCES` in `tests/unit/unit.mk`;
+  new kernel source under test → `UNIT_KERNEL_SOURCES`.
+
+Negative checks done once in Phase 1 (not committed): a wrong assertion, a
+heap overflow (ASan), a format violation, an uninitialised return
+(clang-tidy and cppcheck) and a wrong Limine SHA-256 each made the matching
+command exit non-zero.
+
+## 4. Rules
 
 - Never disable, delete or weaken a failing test. Find the root cause; "flaky"
   is not one.

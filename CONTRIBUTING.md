@@ -47,10 +47,21 @@ rules. `CLAUDE.md` and `docs/MASTER_PROMPT.md` are binding.
 -Wcast-align -Wnull-dereference -Wdouble-promotion -Wformat=2
 ```
 
-Kernel-only additions: `-ffreestanding -nostdlib -mno-red-zone -mcmodel=kernel
--mno-sse -mno-sse2 -mno-mmx -mno-80387 -fno-omit-frame-pointer
--fstack-protector-strong`. The authoritative list lives in the Makefile from
-Phase 1; this section is updated with it.
+Kernel-only additions: `--target=x86_64-unknown-none-elf -O2 -g
+-ffreestanding -nostdlib -fno-builtin -fno-pic -fno-pie -mcmodel=kernel
+-mno-red-zone -mno-sse -mno-sse2 -mno-mmx -mno-80387 -fno-omit-frame-pointer
+-fstack-protector-strong -fno-asynchronous-unwind-tables -fno-lto`.
+
+Host unit tests: `-O1 -g -fno-omit-frame-pointer
+-fsanitize=address,undefined -fno-sanitize-recover=all`.
+
+The authoritative list is `mk/toolchain.mk`; this section is updated with it.
+
+Static analysis: `.clang-tidy` (bugprone, cert, clang-analyzer, misc,
+performance, portability; disabled checks are listed with reasons in the
+file) and `cppcheck --enable=warning,style,performance,portability`. A
+deliberate exception is written as `// cppcheck-suppress <id>` or
+`// NOLINT(<check>)` on the line, with a comment saying why.
 
 ## 5. Tests are mandatory
 
