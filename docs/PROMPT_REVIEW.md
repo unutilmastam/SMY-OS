@@ -46,7 +46,7 @@ tekshirilmagan kod yozib yuborishi mumkin edi. Quyidagilar tuzatildi.
 ## Haqiqatga to'g'ri baho
 
 Bu — yillar davom etadigan loyiha. Linux va Windows yadrolari ustida minglab
-odamlar o'nlab yil ishlagan. Roadmapdagi 28 faza "tayyor OS" emas, balki
+odamlar o'nlab yil ishlagan. Roadmapdagi 39 faza (0–38) "tayyor OS" emas, balki
 **ishlaydigan poydevor**: o'z yadrosi, oddiy desktop, birinchi Linux va
 Windows dasturlari. "Har qanday Windows o'yini ishlaydi" kabi natija bu
 rejaga kirmaydi va hech kim bunga va'da bera olmaydi.

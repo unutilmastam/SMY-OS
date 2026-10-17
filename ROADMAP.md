@@ -251,7 +251,7 @@ Acceptance: QEMU `-smp 4` stress tests pass repeatedly (10 runs in CI).
 
 Execute `docs/DESIGN_PROMPT.md` steps 6, 7, 8, 13: every component specified
 (anatomy, states, keyboard model, tokens, accessibility roles) +
-implementation plan mapped to phases 18–27; token-literal lint.
+implementation plan mapped to phases 18–35 (desktop, apps, installer); token-literal lint.
 
 ## Phase 18 — SMY Graphics display server v0
 
