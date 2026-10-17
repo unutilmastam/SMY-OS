@@ -34,15 +34,22 @@ run: $(ISO)
 # report lines it must produce.
 KTEST_SH := tests/integration/ktest.sh
 
-.PHONY: ktest ktest-bios ktest-uefi ktest-panic-ud ktest-panic-pf ktest-panic-kernel
+.PHONY: ktest ktest-bios ktest-uefi ktest-big-memory ktest-panic-ud ktest-panic-pf \
+	ktest-panic-kernel
 
-ktest: ktest-bios ktest-uefi ktest-panic-ud ktest-panic-pf ktest-panic-kernel
+ktest: ktest-bios ktest-uefi ktest-big-memory ktest-panic-ud ktest-panic-pf ktest-panic-kernel
 
 ktest-bios: $(ISO)
 	$(Q)ISO=$(ISO) $(KTEST_SH) bios all pass "SMY-OS: ktest: .* 0 failed"
 
 ktest-uefi: $(ISO)
 	$(Q)ISO=$(ISO) $(KTEST_SH) uefi all pass "SMY-OS: ktest: .* 0 failed"
+
+# 4 GiB of RAM puts memory above the 4 GiB boundary and a PCI hole into the
+# map; the allocator test takes every page (about a million) and returns it.
+ktest-big-memory: $(ISO)
+	$(Q)ISO=$(ISO) KTEST_MEMORY=4G KTEST_TIMEOUT=240 $(KTEST_SH) uefi \
+		phys_allocates_all_memory_and_frees_without_leak pass "SMY-OS: memory: 40[0-9][0-9] MiB usable"
 
 ktest-panic-ud: $(ISO)
 	$(Q)ISO=$(ISO) $(KTEST_SH) bios panic_on_unhandled_invalid_opcode panic \

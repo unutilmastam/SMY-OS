@@ -68,6 +68,9 @@ jobs:
       - name: Kernel self-tests (ktest) — UEFI
         run: make ktest-uefi
 
+      - name: Physical memory with 4 GiB RAM (memory above 4 GiB)
+        run: make ktest-big-memory
+
       - name: Panic reports (unhandled #UD, #PF, kernel panic)
         run: make ktest-panic-ud ktest-panic-pf ktest-panic-kernel
 

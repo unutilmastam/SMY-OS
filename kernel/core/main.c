@@ -15,6 +15,7 @@
 #include "core/log.h"
 #include "core/panic.h"
 #include "drivers/bootfb/bootfb.h"
+#include "memory/phys.h"
 
 #include <limine.h>
 #include <stddef.h>
@@ -42,6 +43,12 @@ SMY_USED SMY_SECTION(".limine_requests") static volatile struct limine_framebuff
 
 SMY_USED SMY_SECTION(".limine_requests") static volatile struct limine_executable_cmdline_request
     cmdline_request = {.id = LIMINE_EXECUTABLE_CMDLINE_REQUEST_ID, .revision = 0};
+
+SMY_USED SMY_SECTION(".limine_requests") static volatile struct limine_memmap_request
+    memmap_request = {.id = LIMINE_MEMMAP_REQUEST_ID, .revision = 0};
+
+SMY_USED SMY_SECTION(".limine_requests") static volatile struct limine_hhdm_request hhdm_request = {
+    .id = LIMINE_HHDM_REQUEST_ID, .revision = 0};
 
 SMY_USED SMY_SECTION(".limine_requests_end") static volatile uint64_t limine_requests_end[] =
     LIMINE_REQUESTS_END_MARKER;
@@ -156,6 +163,12 @@ void kmain(void)
         log_set_level(LOG_DEBUG);
     }
     log_boot_environment();
+
+    if (hhdm_request.response == NULL) {
+        panic("no higher-half direct map from the bootloader");
+    }
+    phys_init(memmap_request.response, hhdm_request.response->offset);
+
     init_boot_screen();
 
     if (cmdline_find(cmdline, "smy.ktest", &ktest_selection, &ktest_selection_len)) {

@@ -120,7 +120,7 @@ real content. Generated output goes to `build/`.
 
 - Root filesystem format (existing documented format vs custom) — ADR in
   Phase 29.
-- Physical memory allocator: bitmap vs buddy — ADR in Phase 4.
+- Physical memory allocator: decided — two-bitmap allocator (ADR 0010).
 - Scheduler priority model — ADR in Phase 8.
 - Surface/buffer protocol for the display server — ADR in Phase 18.
 - Project licence — decided: Apache-2.0 (ADR 0006).

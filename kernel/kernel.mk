@@ -22,7 +22,10 @@ KERNEL_C_SOURCES := \
 	kernel/core/stacktrace.c \
 	kernel/core/string.c \
 	kernel/drivers/bootfb/bootfb.c \
-	kernel/drivers/serial/uart16550.c
+	kernel/drivers/serial/uart16550.c \
+	kernel/memory/ktest_phys.c \
+	kernel/memory/phys.c \
+	kernel/memory/pmm.c
 
 KERNEL_ASM_SOURCES := \
 	kernel/arch/x86_64/cpu_asm.S \

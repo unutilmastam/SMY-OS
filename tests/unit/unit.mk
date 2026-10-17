@@ -13,14 +13,16 @@ UNIT_TEST_SOURCES    := \
 	tests/unit/kernel/core/test_fmt.c \
 	tests/unit/kernel/core/test_stacktrace.c \
 	tests/unit/kernel/core/test_string.c \
-	tests/unit/kernel/drivers/test_bootfb.c
+	tests/unit/kernel/drivers/test_bootfb.c \
+	tests/unit/kernel/memory/test_pmm.c
 UNIT_KERNEL_SOURCES  := \
 	kernel/arch/x86_64/descriptors.c \
 	kernel/core/cmdline.c \
 	kernel/core/fmt.c \
 	kernel/core/stacktrace.c \
 	kernel/core/string.c \
-	kernel/drivers/bootfb/bootfb.c
+	kernel/drivers/bootfb/bootfb.c \
+	kernel/memory/pmm.c
 
 UNIT_C_SOURCES := $(UNIT_HARNESS_SOURCES) $(UNIT_TEST_SOURCES)
 

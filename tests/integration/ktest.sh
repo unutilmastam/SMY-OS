@@ -17,7 +17,8 @@
 # "Config via SMBIOS"), so no separate test image is built. The kernel path
 # uses fslabel(SMY-OS) because boot() is undefined for SMBIOS configs on BIOS.
 #
-# Environment: ISO (default build/smy-os.iso), KTEST_TIMEOUT (default 120 s).
+# Environment: ISO (default build/smy-os.iso), KTEST_TIMEOUT (default 120 s),
+# KTEST_MEMORY (QEMU -m value, default 256M).
 
 set -eu
 
@@ -27,6 +28,7 @@ expect=${3:-}
 [ $# -ge 3 ] && shift 3
 iso=${ISO:-build/smy-os.iso}
 timeout_s=${KTEST_TIMEOUT:-120}
+memory=${KTEST_MEMORY:-256M}
 ovmf_code=${OVMF_CODE:-/usr/share/OVMF/OVMF_CODE_4M.fd}
 ovmf_vars=${OVMF_VARS:-/usr/share/OVMF/OVMF_VARS_4M.fd}
 
@@ -59,7 +61,7 @@ fi
 # run_qemu [extra QEMU arguments...]
 run_qemu() {
     timeout "$timeout_s" qemu-system-x86_64 -accel "$accel" \
-        -machine q35 -m 256M -smp 1 -display none -no-reboot -monitor none \
+        -machine q35 -m "$memory" -smp 1 -display none -no-reboot -monitor none \
         -serial "file:$log" \
         -device isa-debug-exit,iobase=0xf4,iosize=0x04 \
         -smbios "type=11,value=$config" \
@@ -67,7 +69,7 @@ run_qemu() {
         "$@" 2>"$workdir/qemu.err"
 }
 
-echo "ktest: $firmware, smy.ktest=$selection, expect $expect, timeout ${timeout_s}s"
+echo "ktest: $firmware, smy.ktest=$selection, expect $expect, memory $memory, timeout ${timeout_s}s"
 start=$(date +%s)
 status=0
 if [ "$firmware" = uefi ]; then

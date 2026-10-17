@@ -36,7 +36,7 @@ Status: — not applicable yet · ✗ not implemented · ✓ passing in CI.
 | Reproducible ISO | — | — | — | ✓ | ✓ | — | — |
 | CPU / exceptions (GDT, TSS, IDT, `#UD #BP #PF #GP #DE`, panic report) | — | ✓ (descriptor encodings) | ✓ | ✓ (ktest) | ✓ (ktest) | — | ✗ |
 | Kernel log, formatter, command line, stack walker | — | ✓ | ✓ | ✓ (ktest) | ✓ (ktest) | — | ✗ |
-| Physical memory | — | ✗ | ✗ | ✗ | ✗ | — | ✗ |
+| Physical memory (`memory/pmm`, `memory/phys`) | — | ✓ (incl. 20 000-step model test) | ✓ | ✓ (ktest, 256 MiB) | ✓ (ktest, 256 MiB and 4 GiB) | — | ✗ |
 | Virtual memory / heap | — | ✗ | ✗ | ✗ | ✗ | — | ✗ |
 | Executable parsers (ELF/PE) | — | ✗ | ✗ | — | — | ✗ | — |
 
@@ -61,6 +61,11 @@ Rows are added as phases add components. Update this table in every phase.
 Manual check (owner, 2026-10-18): the Phase 2 ISO (commit 91d858f) booted in
 VirtualBox on the owner's Windows 11 laptop (BIOS mode) and showed the boot
 screen. This is an additional emulator, not hardware testing.
+
+Negative checks done once in Phase 4 (not committed): removing the
+double-free check → 2 host tests fail; not reserving frame 0 → 6 host tests
+fail; losing one frame of accounting per free → the kernel leak test fails
+(`free_frames == 0, expected 0xfe36`).
 
 Negative checks done once in Phase 3 (not committed): a failing ktest
 assertion → exit 35, runner FAIL; a `KTEST_PANIC` test that does not panic →

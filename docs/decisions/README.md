@@ -15,3 +15,4 @@ Consequences). Accepted ADRs are changed only by a new ADR that supersedes them.
 | [0007](0007-limine-from-source.md) | Limine: build from the verified release source tarball | Accepted (supersedes part of 0005) |
 | [0008](0008-boot-architecture.md) | Boot architecture: hybrid ISO, UEFI primary, BIOS secondary | Accepted |
 | [0009](0009-ktest-and-smbios-config.md) | In-kernel self-tests, selected through an SMBIOS-supplied boot config | Accepted |
+| [0010](0010-physical-memory-bitmap.md) | Physical memory manager: bitmap allocator | Accepted |
