@@ -26,7 +26,7 @@ Status: — not applicable yet · ✗ not implemented · ✓ passing in CI.
 
 | Area | Docs | Unit | Static | QEMU BIOS | QEMU UEFI | Fuzz | HW |
 |---|---|---|---|---|---|---|---|
-| Documentation | ✓ (local; CI after first push) | — | — | — | — | — | — |
+| Documentation | ✓ | — | — | — | — | — | — |
 | Build system | — | ✗ | ✗ | — | — | — | — |
 | Boot / kernel entry | — | — | ✗ | ✗ | ✗ | — | ✗ |
 | CPU / exceptions | — | — | ✗ | ✗ | ✗ | — | ✗ |

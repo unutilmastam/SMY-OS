@@ -38,7 +38,7 @@ exist yet; nothing boots.
 
 | Check | Command | Result |
 |---|---|---|
-| Markdown link check | `python3 tools/check-links.py` | PASS locally: 27 files, 0 broken links; negative test (broken file + anchor) correctly fails with exit 1. Also runs in CI (`.github/workflows/docs.yml`) |
+| Markdown link check | `python3 tools/check-links.py` | PASS locally: 27 files, 0 broken links; negative test (broken file + anchor) correctly fails with exit 1. CI `docs` workflow: PASS (run 39064214535, commit f811b52) |
 | Build / unit tests / QEMU | — | not applicable (no code in Phase 0) |
 
 ## Known limitations
