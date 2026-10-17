@@ -1,0 +1,36 @@
+#!/bin/sh
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 The SMY-OS Authors
+#
+# nasm wrapper used only while building Limine (boot/boot.mk puts this
+# directory first in PATH). Limine always passes "-g -F dwarf"; NASM's DWARF
+# records the absolute build directory, which would make Limine's embedded
+# build-id - and so the ISO - depend on where the repository is checked out.
+# The wrapper drops those debug flags and runs the real nasm from
+# $SMY_REAL_NASM. Language: POSIX sh (ADR 0002).
+
+set -eu
+
+if [ -z "${SMY_REAL_NASM:-}" ]; then
+    echo "limine-build/nasm: SMY_REAL_NASM is not set" >&2
+    exit 1
+fi
+
+skip_next=0
+for arg in "$@"; do
+    shift
+    if [ "$skip_next" -eq 1 ]; then
+        skip_next=0
+        continue
+    fi
+    case "$arg" in
+    -g) continue ;;
+    -F)
+        skip_next=1
+        continue
+        ;;
+    esac
+    set -- "$@" "$arg"
+done
+
+exec "$SMY_REAL_NASM" "$@"

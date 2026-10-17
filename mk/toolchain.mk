@@ -29,7 +29,7 @@ WARN_FLAGS := -Wall -Wextra -Werror -Wpedantic -Wshadow -Wconversion \
 
 # -ffile-prefix-map keeps absolute build paths out of debug info, so the
 # kernel ELF (and the ISO) do not depend on where the tree is checked out.
-COMMON_CFLAGS := -std=c17 $(WARN_FLAGS) -MMD -MP -ffile-prefix-map=$(CURDIR)/=
+COMMON_CFLAGS := -std=c17 $(WARN_FLAGS) -MMD -MP -ffile-prefix-map=$(CURDIR)=.
 
 # Kernel code: bare-metal x86-64, higher-half (-mcmodel=kernel), no red zone
 # (interrupts would clobber it), no FPU/SIMD state, frame pointers kept for

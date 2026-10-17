@@ -74,16 +74,23 @@ Any line `SMY-OS: PANIC: ...` means failure.
 - `SOURCE_DATE_EPOCH` = time of the last commit (`mk/toolchain.mk`); exported
   to Limine's build and to `xorriso` (volume dates, volume UUID).
 - Every file in the staging tree gets that timestamp before `xorriso` runs.
-- Kernel and Limine are compiled with `-ffile-prefix-map`, so absolute paths
-  (checkout and build directory) do not enter debug info or Limine's embedded
-  build-id.
+- Kernel and Limine are compiled with `-ffile-prefix-map` (without a trailing
+  slash, so `DW_AT_comp_dir` is mapped too), so absolute paths (checkout and
+  build directory) do not enter debug info or Limine's embedded build-id.
+- Limine always assembles its BIOS stages with `nasm -g -F dwarf`, and NASM's
+  DWARF records the absolute directory. `tools/limine-build/nasm`, a wrapper
+  placed first in `PATH` only during the Limine build, drops those two flags.
 - Tools are pinned: Ubuntu 24.04 packages (clang/lld 18.1.3, xorriso 1.5.6,
   mtools 4.0.43, nasm 2.16.01) and Limine 12.9.3 by SHA-256.
-- Check: `tools/check-reproducible.sh` builds the ISO twice from scratch in two
-  different build directories and requires identical SHA-256. Runs in CI.
+- Check: `tools/check-reproducible.sh` builds the ISO twice from scratch —
+  once in this checkout, once in a copy of the source tree at another absolute
+  path — and requires identical SHA-256. Runs in CI.
 
-Found while implementing (Phase 2): without the prefix maps, Limine's BIOS
-stages differed between build directories in 20-byte build-id fields.
+Found while implementing (Phase 2): (1) without prefix maps, Limine's BIOS
+stages differed between build directories in 20-byte build-id fields;
+(2) with trailing-slash maps and NASM debug info, the same commit still gave a
+different ISO in CI (`/home/runner/work/...`) than in the cloud session
+(`/home/user/...`). Both are fixed and the check now builds at two paths.
 
 ## 6. Release artefacts
 

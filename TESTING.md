@@ -13,7 +13,7 @@ test has a timeout.
 | Static analysis | All C sources | `clang-tidy`, `cppcheck`, `-Werror` | Phase 1 |
 | Format | All C sources | `clang-format --dry-run --Werror` | Phase 1 |
 | Boot test | ISO boots, `SMY-OS: boot OK` and the right firmware type on serial | `tests/integration/boot_test.sh`: QEMU q35 headless, BIOS (SeaBIOS) + UEFI (OVMF), CD + raw disk, 60 s timeout (TCG) | Phase 2 |
-| Reproducible ISO | Two clean builds in different directories give the same SHA-256 | `tools/check-reproducible.sh` | Phase 2 |
+| Reproducible ISO | Two clean builds at different absolute paths give the same SHA-256 | `tools/check-reproducible.sh` | Phase 2 |
 | In-kernel self-tests (`ktest`) | Kernel behaviour (exceptions, memory, scheduler…) | boot flag runs tests, results on serial, exit code via `isa-debug-exit` | Phase 3 |
 | Fuzz tests | Untrusted-input parsers | mutation fuzzing on host under ASan | Phase 9 |
 | Screenshot tests | Graphics, toolkit, desktop | QEMU `screendump` compared with reference images | Phase 18 |

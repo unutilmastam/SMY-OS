@@ -14,10 +14,16 @@ LIMINE_TOOL    := $(LIMINE_BUILD)/bin/limine
 
 # Map absolute source/build paths out of debug info: Limine embeds a
 # build-id hash of its BIOS stages, so path-dependent objects would make the
-# ISO depend on the build directory (docs/install/iso-spec.md §5).
+# ISO depend on the checkout and build directories (docs/install/iso-spec.md
+# §5). The maps have no trailing slash so DW_AT_comp_dir is mapped too. NASM
+# cannot remap paths and Limine always passes it "-g -F dwarf", so a wrapper
+# (tools/limine-build/nasm) drops those flags during the Limine build.
 LIMINE_CFLAGS := -g -O2 -pipe \
-	-ffile-prefix-map=$(abspath $(LIMINE_BUILD))/=limine-build/ \
-	-ffile-prefix-map=$(abspath $(LIMINE_SRC))/=limine-src/
+	-ffile-prefix-map=$(abspath $(LIMINE_BUILD))=limine-build \
+	-ffile-prefix-map=$(abspath $(LIMINE_SRC))=limine-src
+
+LIMINE_ENV := PATH="$(CURDIR)/tools/limine-build:$$PATH" \
+	SMY_REAL_NASM="$(shell command -v nasm)"
 
 LIMINE_CONFIGURE_FLAGS := \
 	CC=$(CC) CC_FOR_TARGET=$(CC) LD_FOR_TARGET=$(LD) \
@@ -35,13 +41,14 @@ ISO_SUMS := $(BUILD)/SHA256SUMS
 limine: $(LIMINE_STAMP)
 
 # fetch-limine.sh verifies the tarball hash and unpacks a fresh tree.
-$(LIMINE_STAMP): tools/fetch-limine.sh boot/boot.mk
+$(LIMINE_STAMP): tools/fetch-limine.sh tools/limine-build/nasm boot/boot.mk
 	$(Q)tools/fetch-limine.sh
 	@echo "  LIMINE  configure + build $(LIMINE_VERSION)"
 	$(Q)rm -rf $(LIMINE_BUILD) && mkdir -p $(LIMINE_BUILD)
-	$(Q)cd $(LIMINE_BUILD) && $(CURDIR)/$(LIMINE_SRC)/configure $(LIMINE_CONFIGURE_FLAGS) \
+	$(Q)cd $(LIMINE_BUILD) && $(LIMINE_ENV) $(CURDIR)/$(LIMINE_SRC)/configure \
+		$(LIMINE_CONFIGURE_FLAGS) \
 		> configure.log 2>&1 || { cat configure.log; exit 1; }
-	$(Q)$(MAKE) -C $(LIMINE_BUILD) > $(LIMINE_BUILD)/build.log 2>&1 \
+	$(Q)$(LIMINE_ENV) $(MAKE) -C $(LIMINE_BUILD) > $(LIMINE_BUILD)/build.log 2>&1 \
 		|| { tail -n 50 $(LIMINE_BUILD)/build.log; exit 1; }
 	$(Q)touch $@
 

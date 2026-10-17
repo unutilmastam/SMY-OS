@@ -46,7 +46,7 @@ management, no processes.
 | Stack protector | Compiles (fixed canary; no test that triggers it yet — Phase 3) |
 | Limine 12.9.3 (built from SHA-256-verified source) | Emulator-tested |
 | Hybrid ISO: BIOS CD, BIOS disk, UEFI CD, UEFI disk | Emulator-tested (QEMU 8.2.2, SeaBIOS, OVMF 2024.02) |
-| Reproducible ISO | Verified locally (two build directories, identical SHA-256) |
+| Reproducible ISO | Verified: two builds at different checkout paths give identical SHA-256 (locally and in CI) |
 | Real hardware, real USB stick | not tested (Phase 36) |
 | Design system | not started (Phase 6) |
 | Compatibility (C0–C8) | not started (see `COMPATIBILITY.md`) |
@@ -64,7 +64,7 @@ management, no processes.
 | Boot BIOS / raw disk | `make boot-test-bios-disk` | PASS in ≈1 s |
 | Boot UEFI / CD | `make boot-test-uefi-cd` | PASS in ≈4 s |
 | Boot UEFI / raw disk | `make boot-test-uefi-disk` | PASS in ≈4 s |
-| Reproducibility | `tools/check-reproducible.sh` | PASS: identical SHA-256 from two build directories |
+| Reproducibility | `tools/check-reproducible.sh` | PASS: identical SHA-256 from two builds at different absolute paths |
 | Negative checks | see `TESTING.md` §3 | injected panic, hang and device path each rejected |
 | CI `ci` workflow | GitHub Actions | pending (recorded after push) |
 
