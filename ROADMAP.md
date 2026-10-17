@@ -11,7 +11,7 @@ point, then continue in the next command.
 
 | # | Phase | Track | Status |
 |---|---|---|---|
-| 0 | Foundation: environment report, docs skeleton, ADRs | Project | NOT STARTED |
+| 0 | Foundation: environment report, docs skeleton, ADRs | Project | BLOCKED (owner decision: licence) |
 | 1 | Build system, toolchain, CI, host test framework | Build | NOT STARTED |
 | 2 | First boot: Limine + minimal kernel + QEMU boot test | Kernel | NOT STARTED |
 | 3 | CPU: GDT/TSS, IDT, exceptions, panic, kernel log | Kernel | NOT STARTED |
