@@ -47,6 +47,7 @@ management, no processes.
 | Limine 12.9.3 (built from SHA-256-verified source) | Emulator-tested |
 | Hybrid ISO: BIOS CD, BIOS disk, UEFI CD, UEFI disk | Emulator-tested (QEMU 8.2.2, SeaBIOS, OVMF 2024.02) |
 | Reproducible ISO | Verified: two builds at different checkout paths give identical SHA-256 (locally and in CI) |
+| Owner check in VirtualBox (Windows 11 laptop, BIOS mode, VM type "Other/Unknown 64-bit", 512 MB, ISO as optical drive) | Emulator-tested by the owner on 2026-10-18: boot screen (dark background, blue frame) shown; reported with a photo. VirtualBox version not recorded; serial log not captured |
 | Real hardware, real USB stick | not tested (Phase 36) |
 | Design system | not started (Phase 6) |
 | Compatibility (C0–C8) | not started (see `COMPATIBILITY.md`) |

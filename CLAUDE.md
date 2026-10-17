@@ -29,6 +29,9 @@ distribution, a desktop theme or a web app.
   `xorriso`) with `apt-get` inside the session when possible. If a tool cannot be
   installed, say exactly which checks only ran in CI. Never fake results.
 - The owner cannot test on real hardware. Everything is emulator-first.
+- The owner does have a Windows 11 laptop with VirtualBox and can run an ISO
+  there by hand when asked (confirmed 2026-10-18). Development itself still
+  happens in cloud sessions; never ask the owner to build or debug locally.
 
 ## Autopilot (owner does not copy prompts)
 

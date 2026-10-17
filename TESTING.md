@@ -57,6 +57,10 @@ Rows are added as phases add components. Update this table in every phase.
 - New test file → add it to `UNIT_TEST_SOURCES` in `tests/unit/unit.mk`;
   new kernel source under test → `UNIT_KERNEL_SOURCES`.
 
+Manual check (owner, 2026-10-18): the Phase 2 ISO (commit 91d858f) booted in
+VirtualBox on the owner's Windows 11 laptop (BIOS mode) and showed the boot
+screen. This is an additional emulator, not hardware testing.
+
 Negative checks done once in Phase 2 (not committed): a kernel that panics
 before "boot OK" → `boot_test` FAIL "panic"; a kernel that halts before
 "boot OK" → FAIL "timeout"; a device node (`/dev/null`) as image → refused
