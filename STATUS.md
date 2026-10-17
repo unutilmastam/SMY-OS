@@ -1,6 +1,6 @@
 # SMY-OS Status
 
-Last updated: 2026-10-17 — Phase 0.
+Last updated: 2026-10-17 — Phase 0 (VERIFIED).
 
 Status vocabulary (used exactly): **Implemented · Compiles · Unit-tested ·
 Emulator-tested · Hardware-tested · Production-ready.** A passing build is not
@@ -9,7 +9,7 @@ proof of correctness or security.
 ## Summary
 
 There is **no code yet**. The project has its specification, roadmap, root
-documentation, five ADRs and an environment report. The SMY Kernel does not
+documentation, six ADRs (incl. the Apache-2.0 licence decision) and an environment report. The SMY Kernel does not
 exist yet; nothing boots.
 
 - Installation: **not supported.**
@@ -21,7 +21,7 @@ exist yet; nothing boots.
 
 | Phase | Status | Notes |
 |---|---|---|
-| 0 — Foundation | BLOCKED (owner decision: project licence) | Docs, ADRs 0001–0005, environment report and link check done; licence choice pending |
+| 0 — Foundation | VERIFIED | Docs, ADRs 0001–0006, environment report, link check; licence Apache-2.0 (ADR 0006) |
 | 1 … 38 | NOT STARTED | see `ROADMAP.md` |
 
 ## Components

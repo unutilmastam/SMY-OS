@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 The SMY-OS Authors
 # Documentation checks. Phase 1 adds the full build/test workflow (ci.yml).
 name: docs
 

@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 The SMY-OS Authors
 """Check relative links in all Markdown files of the repository.
 
 Language: Python 3, standard library only (see ADR 0002).

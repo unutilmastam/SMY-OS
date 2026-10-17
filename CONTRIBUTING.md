@@ -18,8 +18,10 @@ rules. `CLAUDE.md` and `docs/MASTER_PROMPT.md` are binding.
 - Compatibility work uses public documentation only.
 - New dependency → one-line reason, licence, and (binaries) pinned version +
   SHA-256, recorded in `LICENSES.md`.
-- The project licence is pending (owner decision); do not add licence headers
-  until it is chosen.
+- The project licence is Apache-2.0 (ADR 0006). Contributions are accepted
+  under the same licence. Every source file starts with
+  `SPDX-License-Identifier: Apache-2.0` and
+  `Copyright 2026 The SMY-OS Authors`.
 
 ## 3. Code style
 

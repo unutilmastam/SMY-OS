@@ -2,11 +2,12 @@
 
 ## 1. SMY-OS project licence
 
-**License pending — owner decision (Phase 0).** Until the owner chooses, all
-files in this repository are: *Copyright © 2026 the SMY-OS owner. All rights
-reserved.*
+**Apache License 2.0** (SPDX `Apache-2.0`) — chosen by the owner on
+2026-10-17, recorded in [ADR 0006](docs/decisions/0006-project-licence.md).
+Full text: [`LICENSE`](LICENSE); notice: [`NOTICE`](NOTICE).
+Copyright line: `Copyright 2026 The SMY-OS Authors`.
 
-Options presented to the owner (summary; full comparison in §4):
+Options that were presented to the owner (summary; full comparison in §4):
 
 | Option | Short description |
 |---|---|
@@ -15,9 +16,9 @@ Options presented to the owner (summary; full comparison in §4):
 | GPL-3.0-only | Copyleft: modified versions that are distributed must stay open source |
 | MPL-2.0 | File-level copyleft: changed SMY-OS files stay open, other code may be closed |
 
-When decided: record it in ADR 0006, add `LICENSE` at the repository root,
-add SPDX headers (`SPDX-License-Identifier: …`) to every source file, and
-update `README.md`.
+Every source file carries `SPDX-License-Identifier: Apache-2.0` and the
+copyright line. Note: GPL-2.0-only code is incompatible with Apache-2.0 and
+can never be included.
 
 ## 2. Third-party inventory
 

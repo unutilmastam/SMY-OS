@@ -44,5 +44,5 @@ tests. To advance: open a Claude Code session on this repo and write
 
 ## License
 
-All rights reserved — license pending (owner decision in Phase 0, see
-[LICENSES.md](LICENSES.md)).
+Apache License 2.0 — see [LICENSE](LICENSE), [NOTICE](NOTICE) and
+[LICENSES.md](LICENSES.md) for third-party components.

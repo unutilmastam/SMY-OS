@@ -120,4 +120,4 @@ real content. Generated output goes to `build/`.
 - Physical memory allocator: bitmap vs buddy — ADR in Phase 4.
 - Scheduler priority model — ADR in Phase 8.
 - Surface/buffer protocol for the display server — ADR in Phase 18.
-- Project licence — **owner decision** pending (`LICENSES.md`).
+- Project licence — decided: Apache-2.0 (ADR 0006).

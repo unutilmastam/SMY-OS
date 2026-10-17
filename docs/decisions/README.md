@@ -11,4 +11,4 @@ Consequences). Accepted ADRs are changed only by a new ADR that supersedes them.
 | [0003](0003-toolchain.md) | Toolchain: Clang + ld.lld | Accepted |
 | [0004](0004-build-system.md) | Build system: GNU Make | Accepted |
 | [0005](0005-bootloader-limine.md) | Bootloader: Limine v12.9.3 | Accepted |
-| 0006 | Project licence | **Pending owner decision** |
+| [0006](0006-project-licence.md) | Project licence: Apache-2.0 | Accepted |
