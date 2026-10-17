@@ -1,6 +1,6 @@
 # SMY-OS Status
 
-Last updated: 2026-10-17 — Phase 2.
+Last updated: 2026-10-17 — Phase 2 (VERIFIED).
 
 Status vocabulary (used exactly): **Implemented · Compiles · Unit-tested ·
 Emulator-tested · Hardware-tested · Production-ready.** A passing build is not
@@ -27,7 +27,7 @@ management, no processes.
 |---|---|---|
 | 0 — Foundation | VERIFIED | Docs, ADRs 0001–0006, environment report, link check; licence Apache-2.0 (ADR 0006) |
 | 1 — Build system, toolchain, CI | VERIFIED | `make check` green locally and in CI (run 39066632132) |
-| 2 — First boot | IN PROGRESS | see below; VERIFIED once CI `ci` is green on the pushed commit |
+| 2 — First boot | VERIFIED | 4/4 boot paths and reproducibility green in CI (runs 39068650073, 39069271282) |
 | 3 … 38 | NOT STARTED | see `ROADMAP.md` |
 
 ## Components
@@ -66,7 +66,8 @@ management, no processes.
 | Boot UEFI / raw disk | `make boot-test-uefi-disk` | PASS in ≈4 s |
 | Reproducibility | `tools/check-reproducible.sh` | PASS: identical SHA-256 from two builds at different absolute paths |
 | Negative checks | see `TESTING.md` §3 | injected panic, hang and device path each rejected |
-| CI `ci` workflow | GitHub Actions | pending (recorded after push) |
+| CI `ci` workflow | GitHub Actions | PASS: run 39069271282 on commit b00fa55 — all steps green, 4/4 boot tests, ISO uploaded as artefact |
+| Cross-machine reproducibility | ISO SHA-256 of commit b00fa55 | **identical** in the cloud session and in CI: `7eaf7d15377e497391021ec199b265660cc10f75c45790ead8229bf47b7f1529` |
 
 Boot log (UEFI, CD):
 
