@@ -15,9 +15,9 @@ point, then continue in the next command.
 | 1 | Build system, toolchain, CI, host test framework | Build | VERIFIED |
 | 2 | First boot: Limine + minimal kernel + QEMU boot test | Kernel | VERIFIED |
 | 3 | CPU: GDT/TSS, IDT, exceptions, panic, kernel log | Kernel | VERIFIED |
-| 4 | Physical memory manager | Kernel | IN PROGRESS |
+| 4 | Physical memory manager | Kernel | VERIFIED |
 | 5 | Virtual memory + kernel heap | Kernel | NOT STARTED |
-| 5B | Brand identity: 3 logo concepts (OWNER DECISION), logo family, boot logo | Brand | NOT STARTED |
+| 5B | Brand identity: 3 logo concepts (OWNER DECISION), logo family, boot logo | Brand | IN PROGRESS |
 | 6 | D1 — Design System specification + tokens | Design | NOT STARTED |
 | 7 | Interrupt controllers, timers, keyboard input | Kernel | NOT STARTED |
 | 8 | Threads, scheduler, synchronization | Kernel | NOT STARTED |

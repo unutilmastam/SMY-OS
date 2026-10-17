@@ -1,6 +1,6 @@
 # SMY-OS Status
 
-Last updated: 2026-10-18 — Phase 4.
+Last updated: 2026-10-18 — Phase 4 (VERIFIED).
 
 Status vocabulary (used exactly): **Implemented · Compiles · Unit-tested ·
 Emulator-tested · Hardware-tested · Production-ready.** A passing build is not
@@ -30,7 +30,7 @@ interrupts, processes, any user interface.
 | 1 — Build system, toolchain, CI | VERIFIED | `make check` green locally and in CI (run 39066632132) |
 | 2 — First boot | VERIFIED | 4/4 boot paths and reproducibility green in CI (runs 39068650073, 39069271282) |
 | 3 — CPU foundation | VERIFIED | ktest 10/10 on BIOS and UEFI, 3 panic reports, boot 4/4, reproducible — CI run 39075758514 |
-| 4 — Physical memory manager | IN PROGRESS | see below; VERIFIED once CI `ci` is green on the pushed commit |
+| 4 — Physical memory manager | VERIFIED | CI run 39076695215 green (incl. 4 GiB test) |
 | 5 … 38, 5B, 12B | NOT STARTED | see `ROADMAP.md` |
 
 ## Components
@@ -74,7 +74,7 @@ interrupts, processes, any user interface.
 | Big memory | `make ktest-big-memory` | PASS: 4 047 MiB usable, 1 036 060 pages allocated and freed (≈29 s under TCG) |
 | Panic reports | `make ktest-panic-*` | PASS |
 | Negative checks | see `TESTING.md` §3 | 3 injected allocator bugs, each detected |
-| CI `ci` workflow | GitHub Actions | pending (recorded after push) |
+| CI `ci` workflow | GitHub Actions | PASS: run 39076695215 on commit 7eac9e8 |
 
 Memory map details: [docs/kernel/memory.md](docs/kernel/memory.md).
 Example panic report: [docs/kernel/exceptions.md](docs/kernel/exceptions.md).
