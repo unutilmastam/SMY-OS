@@ -53,6 +53,12 @@ Phase 0 with `apt-get install qemu-system-x86 xorriso cppcheck mtools ovmf`.
 Missing at session start: `qemu-system-x86_64`, `xorriso`, `cppcheck`,
 `mtools`, OVMF. All were installed successfully with `apt-get`.
 
+Phase 1, GitHub Actions runner (CI run 39066632132): Ubuntu 24.04.5,
+Linux 6.17 (Azure), 4 CPUs, Python 3.12.3, clang/lld 18.1.3 and cppcheck 2.13.0
+after `apt-get`; **KVM not available** to the job (check-env reports it), so
+QEMU tests in CI run under TCG. QEMU, xorriso, mtools, nasm and OVMF are not
+pre-installed; Phase 2 adds them to the workflow.
+
 Phase 1 addition (measured 2026-10-17): host unit tests need the sanitizer
 runtime **`libclang-rt-18-dev`** (not pre-installed; the ASan link failed
 until it was installed with `apt-get`). `tools/check-env.sh` now checks for it.

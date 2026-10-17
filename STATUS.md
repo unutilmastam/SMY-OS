@@ -1,6 +1,6 @@
 # SMY-OS Status
 
-Last updated: 2026-10-17 — Phase 1.
+Last updated: 2026-10-17 — Phase 1 (VERIFIED).
 
 Status vocabulary (used exactly): **Implemented · Compiles · Unit-tested ·
 Emulator-tested · Hardware-tested · Production-ready.** A passing build is not
@@ -23,7 +23,7 @@ bootable kernel yet; nothing boots** (Phase 2).
 | Phase | Status | Notes |
 |---|---|---|
 | 0 — Foundation | VERIFIED | Docs, ADRs 0001–0006, environment report, link check; licence Apache-2.0 (ADR 0006) |
-| 1 — Build system, toolchain, CI | IN PROGRESS | see below; VERIFIED once CI `ci` is green on the pushed commit |
+| 1 — Build system, toolchain, CI | VERIFIED | `make check` green locally and in CI (run 39066632132) |
 | 2 … 38 | NOT STARTED | see `ROADMAP.md` |
 
 ## Components
@@ -51,7 +51,7 @@ bootable kernel yet; nothing boots** (Phase 2).
 | Static analysis | `make lint` | PASS (clang-tidy, cppcheck) |
 | Negative checks | see `TESTING.md` §3 | each injected fault made its check fail (exit ≠ 0) |
 | Docs links | `python3 tools/check-links.py` | PASS |
-| CI `ci` workflow | GitHub Actions | pending (recorded after push) |
+| CI `ci` workflow | GitHub Actions | PASS: run 39066632132 on commit d8885d1 — check-env, fetch-limine, kernel, 8/8 unit tests, format, lint all green (~25 s) |
 
 ## Known limitations
 
