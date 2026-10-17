@@ -57,6 +57,22 @@ When the owner writes a short command such as **"davom et"**, **"boshla"**,
 If the owner writes **"xato"** / **"tuzat"** with a description or CI error, use
 the "Error fix" prompt from `docs/PROMPTS.md`.
 
+## Design quality bar (owner directive, 2026-10-18)
+
+Design is a top priority, equal to correctness. Everything visual — logo,
+boot screen, installer, desktop, icons, wallpapers — must be **modern,
+minimalist and SMY-OS's own brand** ("SMY Quantum Minimalism",
+`docs/BRAND_PROMPT.md`). In practice:
+
+- No visual asset is "done" until the owner has seen a rendered preview
+  (send the image) and approved it; brand choices are OWNER DECISIONs.
+- Every screen uses only design tokens and the approved logo family — no
+  ad-hoc colours, fonts or placeholder graphics in anything shown to users.
+- Prefer fewer, better elements: generous spacing, precise geometry, one
+  accent colour, no decoration without a purpose.
+- Refine weak results instead of shipping them; list remaining weaknesses
+  honestly in the report.
+
 ## Hard rules
 
 - Original kernel written in this repo. Never use Linux/BSD/Windows/other kernel

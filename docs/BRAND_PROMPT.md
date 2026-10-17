@@ -6,6 +6,10 @@
 > parts of 30, 33). Where this file and the original disagree, this file wins;
 > where it and `docs/DESIGN_PROMPT.md` overlap, they are one system (see §0).
 
+> **Owner directive (2026-10-18):** design gets very strict attention. The
+> result must be modern, minimalist and recognisably SMY-OS's own brand.
+> See "Design quality bar" in `CLAUDE.md`.
+
 ## 0. How this fits the existing design work (added)
 
 - **One asset library.** All visual assets live under `design/`
