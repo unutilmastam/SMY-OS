@@ -239,6 +239,8 @@ The full visual specification is `docs/DESIGN_PROMPT.md`. Summary:
   later, with a full on-disk specification (format, metadata, allocation,
   directories, crash consistency, integrity, permissions, versioning).
 - Never touch a real disk during development. Use virtual disk images only.
+- ISO images, the live USB environment, the installer and deployment are
+  specified in `docs/INSTALLER_PROMPT.md`.
 
 **SMY Package System**: metadata, dependency resolution, version constraints,
 cryptographic signatures (established library, e.g. Ed25519 via a reviewed

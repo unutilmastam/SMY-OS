@@ -7,6 +7,8 @@ The authoritative instructions are:
   security, graphics, workflow). Read it before any change.
 - `docs/DESIGN_PROMPT.md` — the visual design specification (design system, icons,
   desktop components).
+- `docs/INSTALLER_PROMPT.md` — ISO, live USB, installer and deployment
+  specification.
 - `ROADMAP.md` — the ordered list of phases, their status and acceptance criteria.
 - `docs/PROMPTS.md` — the prompt to execute for each phase.
 
@@ -68,5 +70,9 @@ the "Error fix" prompt from `docs/PROMPTS.md`.
   and (for binaries) a pinned version + SHA-256.
 - Use the **current stable versions** of tools; check them, do not rely on memory.
 - No real secrets or signing keys in git.
+- Never write to a real disk or block device in tests or scripts — only
+  disposable image files. Never claim "installation supported", "USB boot
+  works" or "Secure Boot compatible" before the matching ROADMAP phase is
+  VERIFIED.
 - Code, comments, docs and commit messages are in English. Reports to the owner
   are in Uzbek (Latin).

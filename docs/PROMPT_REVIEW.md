@@ -50,3 +50,28 @@ odamlar o'nlab yil ishlagan. Roadmapdagi 28 faza "tayyor OS" emas, balki
 **ishlaydigan poydevor**: o'z yadrosi, oddiy desktop, birinchi Linux va
 Windows dasturlari. "Har qanday Windows o'yini ishlaydi" kabi natija bu
 rejaga kirmaydi va hech kim bunga va'da bera olmaydi.
+
+---
+
+## Installer prompt (o'rnatish tizimi) — tahlil
+
+Tuzatilgan versiya: `docs/INSTALLER_PROMPT.md`. Roadmapga 27–37 fazalar
+qo'shildi, "eng kichik bootable ISO" talabi Phase 2 ga birlashtirildi.
+
+| # | Muammo | Nima uchun xavfli | Tuzatish |
+|---|---|---|---|
+| 1 | "ISO ichida grafik muhit, drayverlar..." — hali yo'q narsalar | Claude soxta bo'laklar qo'shishi mumkin | ISO faqat mavjud narsadan yig'iladi va har fazada o'sadi |
+| 2 | USB ga yozilganda ham yuklanishi aytilmagan | Oddiy ISO USB'dan yuklanmasligi mumkin | "Hybrid" ISO talabi; CI da CD va disk sifatida ikkalasi test qilinadi |
+| 3 | Real kompyuter drayverlari yo'q (QEMU'da virtio bor, haqiqiy PC'da yo'q) | Haqiqiy kompyuterda disk ham, klaviatura ham ko'rinmaydi | Yangi fazalar: AHCI (SATA), NVMe, USB (xHCI) klaviatura/sichqoncha |
+| 4 | Diskka yozish (GPT, FAT32) rejada yo'q edi — faqat o'qish bor edi | O'rnatib bo'lmaydi | Phase 29: GPT yozish, FAT32 yozish (EFI bo'limi uchun), asosiy fayl tizimi |
+| 5 | Live rejimda ichki diskni o'zgartirmaslik faqat "va'da" | UI xatosi diskni buzishi mumkin | Saqlash qatlamida majburiy read-only; test disk xeshi o'zgarmaganini tekshiradi |
+| 6 | Dual-boot uchun Windows bo'limini kichraytirish nazarda tutilgan | NTFS ni kichraytirish — ma'lumot yo'qotishning eng katta sababi | SMY-OS begona bo'limlarni o'zgartirmaydi. Faqat foydalanuvchi oldindan bo'shatgan joyga o'rnatadi. BitLocker va Fast Startup ogohlantirishi |
+| 7 | UEFI boot yozuvi — umumiy EFI bo'limida | `\EFI\BOOT\BOOTX64.EFI` ni almashtirish Windowsni yuklanmaydigan qilib qo'yadi | Bu fayl faqat SMY-OS uchun ajratilgan diskda yoziladi. Boot yozuvi eng oxirida yoziladi |
+| 8 | Uzilgan o'rnatish | Tok o'chsa yarim o'rnatilgan tizim yuklanadi | Qadamlar jurnali; boot yozuvi oxirgi qadam; keyingi yuklanishda aniqlanadi |
+| 9 | Tasdiqlash shunchaki "Next" tugmasi bo'lishi mumkin | Noto'g'ri disk o'chib ketadi | Tasdiq aniq rejaga va disk identifikatoriga (model+serial+hajm) bog'langan; disk nomini kiritish |
+| 10 | Grafik installer darhol | UI toolkit hali yo'q, test qilib bo'lmaydi | Avval installer "dvigateli" + matnli interfeys (avtomatik test uchun), GUI keyin xuddi shu dvigatel ustida |
+| 11 | Secure Boot | Limine Microsoft imzosiga ega emas; ko'p kompyuterlarda yuklanmaydi | Hujjatda ochiq aytiladi: Secure Boot o'chirilishi kerak. Imzolash — alohida faza (37) |
+| 12 | Akkaunt paroli | Noto'g'ri saqlash — xavfsizlik teshigi | Argon2id, tayyor kutubxona orqali |
+| 13 | Avtomatik testlar real diskka tegishi mumkin | Ma'lumot yo'qolishi | Test runner haqiqiy qurilma yo'lini rad etadi; faqat image fayllar |
+| 14 | **Sizda kompyuter yo'q** | USB yozish va haqiqiy PCda sinash uchun kompyuter kerak | Phase 36 — OWNER DECISION: sinov kompyuteri (diski o'chirilsa bo'ladigan) va USB yozish uchun boshqa kompyuter kerak bo'ladi |
+| 15 | Reproducible build qanday tekshiriladi — aytilmagan | "Reproducible" deb aytish oson, isbotlash qiyin | CI ikki marta yig'adi va SHA-256 ni solishtiradi |

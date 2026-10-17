@@ -38,9 +38,18 @@ point, then continue in the next command.
 | 24 | C4 — First Windows PE console program | Compat | NOT STARTED |
 | 25 | Security: users, auth, permissions, sandbox, audit | Security | NOT STARTED |
 | 26 | SMY Package System v0 | Packages | NOT STARTED |
-| 27 | Writable storage, installer, login + lock screen | System | NOT STARTED |
-| 28 | Planning phase: define phases 29+ | Project | NOT STARTED |
-
+| 27 | Real-PC storage drivers: AHCI, NVMe | Storage | NOT STARTED |
+| 28 | xHCI + USB HID keyboard/mouse | Drivers | NOT STARTED |
+| 29 | Writable storage: GPT write, FAT32 write, root FS | Storage | NOT STARTED |
+| 30 | Live environment + hardware check | Install | NOT STARTED |
+| 31 | Installer engine + text front-end + QEMU scenarios | Install | NOT STARTED |
+| 32 | Boot configuration: ESP, UEFI runtime, boot entries, recovery | Install | NOT STARTED |
+| 33 | Graphical installer + first-boot setup, login, lock screen | Install | NOT STARTED |
+| 34 | Free-space and dual-boot installation | Install | NOT STARTED |
+| 35 | Release pipeline: artifacts, checksums, USB guide | Install | NOT STARTED |
+| 36 | First physical-hardware test (OWNER DECISION) | Install | NOT STARTED |
+| 37 | Secure Boot research and signing | Security | NOT STARTED |
+| 38 | Planning phase: define phases 39+ | Project | NOT STARTED |
 ---
 
 ## Phase 0 — Foundation
@@ -94,8 +103,18 @@ via the Limine framebuffer; bootable ISO creation (xorriso + Limine);
 `tests/integration/boot_test.sh`: boots, waits for `SMY-OS: boot OK` on serial,
 timeout 30 s; CI job running it for **BIOS and UEFI (OVMF)**.
 
-Acceptance: boot test passes in CI for both firmware modes; build result and
-boot log excerpt recorded in `STATUS.md`.
+Also (initial milestone of `docs/INSTALLER_PROMPT.md`):
+`docs/install/iso-spec.md` (ISO layout, file paths, Limine config, hybrid
+USB image, reproducibility rules) and ADR "boot architecture" (UEFI primary,
+BIOS secondary); `make iso` produces a **hybrid** ISO; build is reproducible
+(`SOURCE_DATE_EPOCH`; CI builds twice and compares SHA-256); `SHA256SUMS`
+next to the ISO; ISO uploaded as a CI artifact.
+
+Acceptance: boot test passes in CI for both UEFI (OVMF) and BIOS, booting the
+ISO both as CD-ROM and as a raw disk (USB simulation); two builds have the same
+SHA-256; build result and boot log excerpt recorded in `STATUS.md`.
+
+From now on every phase keeps `make iso` and the boot test green.
 
 ## Phase 3 — CPU foundation
 
@@ -285,12 +304,103 @@ checks on VFS, capability-based sandbox for apps, audit log, threat-model update
 Manifest format, dependency resolver (host-tested), Ed25519 signatures via an
 established library, local repository, install/remove/rollback.
 
-## Phase 27 — Writable storage, installer, login
+## Phase 27 — Real-PC storage drivers
 
-Writable FS (ADR: FAT32 write vs ext2 vs custom), installer to a virtual disk,
-login and lock screen.
+Scope: AHCI (SATA) and NVMe drivers on the Phase 14 block layer; error
+handling and timeouts.
+Acceptance: QEMU tests with `-device ahci` + `ide-hd` and `-device nvme` read
+known data; host tests for command building where possible.
 
-## Phase 28 — Planning
+## Phase 28 — USB input
 
-Review everything, update STATUS, define phases 29+ (USB, audio, virtio-gpu,
-IPv6/TLS, C5–C8, real-hardware bring-up, more apps).
+Scope: xHCI host controller driver, USB enumeration, HID boot-protocol
+keyboard and mouse into the existing input event path.
+Acceptance: QEMU `-device qemu-xhci -device usb-kbd -device usb-mouse`,
+injected keys received; PS/2 can be disabled and input still works.
+
+## Phase 29 — Writable storage
+
+Scope: GPT writing (primary + backup, CRCs, 1 MiB alignment), FAT32 write
+(for the ESP), ADR choosing the SMY root filesystem (existing documented
+format vs custom with full on-disk spec), its write support and a check tool;
+crash-consistency strategy.
+Acceptance: host tests on image files incl. corrupted images; QEMU test
+writes, reboots, re-reads, check tool reports clean; power-cut test (QEMU
+killed mid-write) leaves a repairable filesystem.
+
+## Phase 30 — Live environment
+
+Scope (`docs/INSTALLER_PROMPT.md` §3, §5): root in initramfs, live session
+services, storage-layer read-only policy for internal disks, `hwcheck`
+(CPU features, RAM, firmware mode, controllers, disks), storage discovery
+listing model/serial/size/partitions.
+Acceptance: QEMU test boots live ISO with an attached disk image; disk image
+SHA-256 unchanged after boot and after running `hwcheck`.
+
+## Phase 31 — Installer engine
+
+Scope (§1 architecture, §7–§11, §13, §16–§17, §20): plan data structure,
+confirmation bound to plan + disk identity, executor with journal and
+structured log, verification manifest, text front-end, scripted mode;
+whole-disk install only. Test runner refuses real block devices.
+Acceptance: QEMU scenarios pass: fresh install, injected write error (clean
+failure + log), interrupted install (QEMU killed) detected on next boot,
+installed files verified by manifest.
+
+## Phase 32 — Boot configuration
+
+Scope (§12): kernel support for UEFI runtime services (`GetVariable`,
+`SetVariable`, time), Limine installed to `\EFI\SMY-OS\`, boot entry written
+last, removable fallback path only on dedicated disks, recovery entry, manual
+recovery guide.
+Acceptance: QEMU+OVMF with persistent NVRAM vars: installed disk boots
+without the ISO; boot entry present and read back; recovery from live ISO
+documented and tested.
+
+## Phase 33 — Graphical installer + first boot
+
+Scope (§4, §14): GUI front-end on the Phase 19 toolkit following D3 specs
+(language, keyboard, disk selection, plan review, typed confirmation,
+progress, result); first-boot setup (account with Argon2id via established
+library, language, keyboard, time zone, privacy/security defaults); login and
+lock screen.
+Requires: phases 20, 25, 31, 32.
+Acceptance: scripted QEMU run through the GUI with `sendkey` + screenshot
+checks; installed system boots to first-boot setup, then to login.
+
+## Phase 34 — Free-space and dual-boot
+
+Scope (§6, §12): install into existing unallocated space; foreign OS
+detection (Windows ESP entries, BitLocker, hibernation/Fast Startup warnings);
+shared ESP rules (never overwrite foreign files or the fallback path);
+boot-order handling. No resizing of foreign filesystems.
+Acceptance: QEMU test with a pre-made disk containing an ESP with a dummy
+foreign bootloader and a data partition: their SHA-256 unchanged after
+install; both boot entries present.
+
+## Phase 35 — Release pipeline
+
+Scope (§19): `tools/release/` producing ISO, `SHA256SUMS`, signature (with the
+Phase 26 signing system; private key never in git — CI secret, documented),
+release notes template, USB-writing guide (Windows, macOS, Linux, Android
+where possible), troubleshooting guide. Publishing a GitHub release is an
+**OWNER DECISION**.
+Acceptance: CI produces reproducible release artifacts; signature verifies.
+
+## Phase 36 — First physical-hardware test (OWNER DECISION)
+
+Needs a test PC whose disk may be erased, and a computer to write the USB.
+Claude writes the test checklist; the owner (or helper) runs it and reports.
+Results recorded in `docs/install/hardware-tested.md`. Only now may
+"Hardware-tested" be used.
+
+## Phase 37 — Secure Boot
+
+Scope (§15): research report (disable / own keys / shim), implement image
+signing and verification chain, test in OVMF with Secure Boot enabled and
+enrolled test keys. No Secure Boot claim before this passes.
+
+## Phase 38 — Planning
+
+Review everything, update STATUS, define phases 39+ (audio, virtio-gpu and
+real GPUs, IPv6/TLS, C5–C8, more apps, more hardware).

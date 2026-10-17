@@ -18,6 +18,7 @@ tests.
 | `CLAUDE.md` | Rules loaded automatically in every Claude Code session |
 | `docs/MASTER_PROMPT.md` | Full project specification (revised) |
 | `docs/DESIGN_PROMPT.md` | Visual design specification (revised) |
+| `docs/INSTALLER_PROMPT.md` | ISO, live USB and installer specification (revised) |
 | `ROADMAP.md` | Ordered phases, status, acceptance criteria |
 | `docs/PROMPTS.md` | Prompt applied to each phase |
 | `docs/PROMPT_REVIEW.md` | Review of the original prompts (Uzbek) |
