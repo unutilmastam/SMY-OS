@@ -1,6 +1,7 @@
 # Hardware assumptions
 
-Status: planning (Phase 0). Nothing is hardware-tested.
+Status: Phase 2 — emulator-tested in QEMU (q35, SeaBIOS and OVMF). Nothing is
+hardware-tested.
 
 ## Initial target
 
@@ -19,7 +20,10 @@ Status: planning (Phase 0). Nothing is hardware-tested.
 
 Architecture-specific code only in `kernel/arch/x86_64/`. Architecture-
 independent code never includes x86 headers, so an AArch64 or RISC-V port stays
-possible.
+possible. Generic code uses the interfaces in `kernel/arch/*.h` (e.g.
+`arch/cpu.h`), which each architecture implements. Exception: drivers for
+hardware that only exists on x86 (legacy port I/O devices such as the 16550
+UART on COM1) may include `arch/x86_64/io.h` (ADR 0008).
 
 ## Real hardware
 

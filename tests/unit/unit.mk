@@ -7,8 +7,14 @@
 # under test with calls into the host C library.
 
 UNIT_HARNESS_SOURCES := tests/unit/harness/smytest.c
-UNIT_TEST_SOURCES    := tests/unit/kernel/core/test_string.c
-UNIT_KERNEL_SOURCES  := kernel/core/string.c
+UNIT_TEST_SOURCES    := \
+	tests/unit/kernel/core/test_fmt.c \
+	tests/unit/kernel/core/test_string.c \
+	tests/unit/kernel/drivers/test_bootfb.c
+UNIT_KERNEL_SOURCES  := \
+	kernel/core/fmt.c \
+	kernel/core/string.c \
+	kernel/drivers/bootfb/bootfb.c
 
 UNIT_C_SOURCES := $(UNIT_HARNESS_SOURCES) $(UNIT_TEST_SOURCES)
 

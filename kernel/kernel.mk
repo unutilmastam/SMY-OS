@@ -1,27 +1,51 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 The SMY-OS Authors
 #
-# SMY Kernel. Phase 1 compiles the kernel library objects with kernel flags
-# into an archive; linking a bootable kernel ELF starts in Phase 2.
+# SMY Kernel: compile C and assembly with kernel flags, link the higher-half
+# ELF that Limine loads (kernel/arch/x86_64/linker.ld).
 
-KERNEL_C_SOURCES := kernel/core/string.c
+KERNEL_C_SOURCES := \
+	kernel/arch/x86_64/cpu.c \
+	kernel/core/fmt.c \
+	kernel/core/log.c \
+	kernel/core/main.c \
+	kernel/core/panic.c \
+	kernel/core/stack_protector.c \
+	kernel/core/string.c \
+	kernel/drivers/bootfb/bootfb.c \
+	kernel/drivers/serial/uart16550.c
 
-KERNEL_OBJS := $(KERNEL_C_SOURCES:%.c=$(BUILD)/%.o)
-KERNEL_LIB  := $(BUILD)/kernel/libsmy-kernel.a
+KERNEL_ASM_SOURCES := kernel/arch/x86_64/entry.S
 
-KERNEL_TIDY_FLAGS := $(filter-out -MMD -MP -Werror,$(KERNEL_CFLAGS)) -Ikernel
+KERNEL_LINKER_SCRIPT := kernel/arch/x86_64/linker.ld
 
-kernel: $(KERNEL_LIB)
+KERNEL_INCLUDES := -Ikernel -Ithird_party/limine-protocol/include
 
-$(KERNEL_LIB): $(KERNEL_OBJS)
+KERNEL_OBJS := $(KERNEL_C_SOURCES:%.c=$(BUILD)/%.o) $(KERNEL_ASM_SOURCES:%.S=$(BUILD)/%.o)
+KERNEL_ELF  := $(BUILD)/kernel/smy-kernel.elf
+
+KERNEL_LDFLAGS := -nostdlib -static -z max-page-size=0x1000 -z noexecstack \
+	--no-dynamic-linker --build-id=none -T $(KERNEL_LINKER_SCRIPT)
+
+KERNEL_TIDY_FLAGS := $(filter-out -MMD -MP -Werror,$(KERNEL_CFLAGS)) $(KERNEL_INCLUDES)
+
+.PHONY: kernel
+
+kernel: $(KERNEL_ELF)
+
+$(KERNEL_ELF): $(KERNEL_OBJS) $(KERNEL_LINKER_SCRIPT)
 	@mkdir -p $(@D)
-	@echo "  AR      $@"
-	$(Q)rm -f $@
-	$(Q)$(AR) rcsD $@ $^
+	@echo "  LD      $@"
+	$(Q)$(LD) $(KERNEL_LDFLAGS) $(KERNEL_OBJS) -o $@
 
 $(BUILD)/kernel/%.o: kernel/%.c
 	@mkdir -p $(@D)
 	@echo "  CC      $<"
-	$(Q)$(CC) $(KERNEL_CFLAGS) -Ikernel -c $< -o $@
+	$(Q)$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCLUDES) -c $< -o $@
+
+$(BUILD)/kernel/%.o: kernel/%.S
+	@mkdir -p $(@D)
+	@echo "  AS      $<"
+	$(Q)$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCLUDES) -c $< -o $@
 
 -include $(KERNEL_OBJS:.o=.d)

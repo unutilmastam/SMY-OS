@@ -28,8 +28,8 @@ added).
 
 | Component | Version | Licence | Status | Use | Redistributed? | Notes |
 |---|---|---|---|---|---|---|
-| Limine bootloader | 12.9.3 | BSD-2-Clause (+ bundled 0BSD, MIT, BSD-2/3, Apache-2.0, Apache-2.0 WITH LLVM-exception, CC0-1.0; see upstream `3RDPARTY.md`) | source downloaded (Phase 1), built in Phase 2 | bootloader in the ISO | **yes** (binaries built from source, in the ISO) | Source tarball `limine-12.9.3.tar.xz`, SHA-256 `95f456a2…3dd4e995` pinned in `tools/fetch-limine.sh`. Ship `COPYING` + `3RDPARTY.md` in the ISO. ADR 0005, ADR 0007 |
-| Limine protocol header `limine.h` | matching 12.9.3 | 0BSD | planned (Phase 2) | kernel ↔ bootloader interface | yes (compiled in) | Vendored, unmodified |
+| Limine bootloader | 12.9.3 | BSD-2-Clause (+ bundled 0BSD, MIT, BSD-2/3, Apache-2.0, Apache-2.0 WITH LLVM-exception, CC0-1.0; see upstream `3RDPARTY.md`) | in use (Phase 2): built from source | bootloader in the ISO | **yes** (binaries built from source, in the ISO) | Source tarball `limine-12.9.3.tar.xz`, SHA-256 `95f456a2…3dd4e995` pinned in `tools/fetch-limine.sh`. Ship `COPYING` + `3RDPARTY.md` in the ISO. ADR 0005, ADR 0007 |
+| Limine protocol header `limine.h` | from the 12.9.3 tarball | 0BSD | in use (Phase 2) | kernel ↔ bootloader interface | yes (compiled in) | Vendored unmodified in `third_party/limine-protocol/` with its LICENSE and SHA-256 |
 | LLVM / Clang / lld | 18.1.3 (Ubuntu) | Apache-2.0 WITH LLVM-exception | tool | compiler, linker, format, tidy | no | Compiler runtime is not linked into the kernel |
 | compiler-rt sanitizers (`libclang-rt-18-dev`) | 18.1.3 (Ubuntu) | Apache-2.0 WITH LLVM-exception | tool | ASan/UBSan runtime for host unit tests | no | Linked only into host test binaries, never into the kernel |
 | NASM | 2.16.01 (Ubuntu) | BSD-2-Clause | tool | needed to build Limine from source (Phase 2) | no | Not used for SMY-OS sources (ADR 0002) |
@@ -42,6 +42,8 @@ added).
 | cppcheck | 2.13.0 | GPL-3.0-or-later | tool | static analysis | no | |
 | GDB | 15.1 | GPL-3.0-or-later | tool | debugging | no | |
 | Python 3 | 3.x | PSF-2.0 | tool | host scripts | no | Standard library only |
+| `actions/upload-artifact` (GitHub Action) | v7.0.2 | MIT | tool | CI uploads the test ISO | no | Pinned by commit SHA `cf430e030ddbb5b0abf93d22962f4752f3646cd9` (Phase 2) |
+| SeaBIOS (inside QEMU) | Ubuntu 24.04 QEMU package | LGPL-3.0 | tool | BIOS firmware in boot tests | no | |
 | `actions/checkout` (GitHub Action) | v7.0.1 | MIT | tool | CI checkout | no | Pinned by commit SHA `3d3c42e5aac5ba805825da76410c181273ba90b1` (Phase 1) |
 
 Every new dependency needs: a one-line reason, its licence, and for binaries a

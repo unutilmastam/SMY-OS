@@ -18,13 +18,15 @@ endif
 
 include mk/toolchain.mk
 include kernel/kernel.mk
+include boot/boot.mk
 include tests/unit/unit.mk
+include tests/integration/integration.mk
 
 # Every C source that format-check and lint look at.
 ALL_C_SOURCES := $(KERNEL_C_SOURCES) $(UNIT_C_SOURCES)
 ALL_C_HEADERS := $(shell find kernel tests -name '*.h' | LC_ALL=C sort)
 
-.PHONY: all kernel test check format format-check lint lint-tidy lint-cppcheck clean
+.PHONY: all test check format format-check lint lint-tidy lint-cppcheck clean
 
 all: kernel
 
@@ -49,11 +51,12 @@ lint-cppcheck:
 	$(Q)$(CPPCHECK) --quiet --error-exitcode=1 --std=c11 --inline-suppr \
 		--enable=warning,style,performance,portability \
 		--suppress=missingIncludeSystem \
-		-I kernel -I tests/unit $(ALL_C_SOURCES)
+		-I kernel -I tests/unit -I third_party/limine-protocol/include \
+		$(ALL_C_SOURCES)
 	@echo "lint-cppcheck: OK"
 
 # The full sequence CI runs (CONTRIBUTING.md §5).
-check: all test format-check lint
+check: all test format-check lint iso boot-test
 
 clean:
 	rm -rf $(BUILD)

@@ -6,9 +6,10 @@
 # Language: POSIX sh (ADR 0002).
 #
 # Usage: tools/check-env.sh [--all]
-#   default  fail if a tool needed by the current build (Phase 1) is missing;
-#            report later-phase tools (QEMU, OVMF, xorriso, mtools) as WARN.
-#   --all    also fail if a later-phase tool is missing.
+#   default  fail if a tool needed for kernel build, unit tests and lint is
+#            missing; report ISO/boot-test tools (QEMU, OVMF, xorriso,
+#            mtools, nasm) as WARN.
+#   --all    also fail if an ISO/boot-test tool is missing (CI uses this).
 #
 # Install everything on Ubuntu 24.04: see BUILDING.md §2.
 
@@ -38,7 +39,7 @@ need() {
     fi
 }
 
-# later <name> <command> <version-command...>: needed from Phase 2 on.
+# later <name> <command> <version-command...>: needed for make iso / boot-test.
 later() {
     name=$1
     cmd=$2
@@ -49,7 +50,7 @@ later() {
         printf '  MISS  %-20s (command "%s" not found)\n' "$name" "$cmd"
         errors=$((errors + 1))
     else
-        printf '  WARN  %-20s (not found; needed from Phase 2)\n' "$name"
+        printf '  WARN  %-20s (not found; needed for make iso / boot-test)\n' "$name"
         warnings=$((warnings + 1))
     fi
 }
@@ -69,12 +70,14 @@ else
 fi
 echo
 
-echo "Build tools (Phase 1):"
+echo "Build, unit-test and lint tools:"
 need "clang" clang clang --version
 need "ld.lld" ld.lld ld.lld --version
 need "llvm-ar" llvm-ar llvm-ar --version
 need "llvm-nm" llvm-nm llvm-nm --version
 need "llvm-objdump" llvm-objdump llvm-objdump --version
+need "llvm-objcopy" llvm-objcopy llvm-objcopy --version
+need "llvm-readelf" llvm-readelf llvm-readelf --version
 need "clang-format" clang-format clang-format --version
 need "clang-tidy" clang-tidy clang-tidy --version
 need "cppcheck" cppcheck cppcheck --version
@@ -102,7 +105,7 @@ if command -v clang >/dev/null 2>&1; then
 fi
 echo
 
-echo "Later-phase tools:"
+echo "ISO and boot-test tools:"
 later "qemu-system-x86_64" qemu-system-x86_64 qemu-system-x86_64 --version
 later "xorriso" xorriso xorriso -version
 later "mtools" mformat mformat --version
@@ -113,7 +116,7 @@ elif [ "$strict_all" -eq 1 ]; then
     printf '  MISS  %-20s (/usr/share/OVMF/OVMF_CODE_4M.fd)\n' "OVMF"
     errors=$((errors + 1))
 else
-    printf '  WARN  %-20s (not found; needed from Phase 2)\n' "OVMF"
+    printf '  WARN  %-20s (not found; needed for make iso / boot-test)\n' "OVMF"
     warnings=$((warnings + 1))
 fi
 echo

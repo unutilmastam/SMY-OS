@@ -13,3 +13,4 @@ Consequences). Accepted ADRs are changed only by a new ADR that supersedes them.
 | [0005](0005-bootloader-limine.md) | Bootloader: Limine v12.9.3 | Accepted |
 | [0006](0006-project-licence.md) | Project licence: Apache-2.0 | Accepted |
 | [0007](0007-limine-from-source.md) | Limine: build from the verified release source tarball | Accepted (supersedes part of 0005) |
+| [0008](0008-boot-architecture.md) | Boot architecture: hybrid ISO, UEFI primary, BIOS secondary | Accepted |

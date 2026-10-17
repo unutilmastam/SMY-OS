@@ -13,7 +13,7 @@ point, then continue in the next command.
 |---|---|---|---|
 | 0 | Foundation: environment report, docs skeleton, ADRs | Project | VERIFIED |
 | 1 | Build system, toolchain, CI, host test framework | Build | VERIFIED |
-| 2 | First boot: Limine + minimal kernel + QEMU boot test | Kernel | NOT STARTED |
+| 2 | First boot: Limine + minimal kernel + QEMU boot test | Kernel | IN PROGRESS |
 | 3 | CPU: GDT/TSS, IDT, exceptions, panic, kernel log | Kernel | NOT STARTED |
 | 4 | Physical memory manager | Kernel | NOT STARTED |
 | 5 | Virtual memory + kernel heap | Kernel | NOT STARTED |

@@ -7,9 +7,16 @@
 
 CC           ?= clang
 AR           := llvm-ar
+LD           := ld.lld
+OBJCOPY      := llvm-objcopy
 CLANG_FORMAT ?= clang-format
 CLANG_TIDY   ?= clang-tidy
 CPPCHECK     ?= cppcheck
+
+# Reproducible builds: one timestamp for every generated artefact (ISO
+# volume dates, file dates). Defaults to the last commit time.
+SOURCE_DATE_EPOCH ?= $(shell git log -1 --format=%ct 2>/dev/null || echo 0)
+export SOURCE_DATE_EPOCH
 
 # `make` sets CC=cc by default; the project requires clang.
 ifeq ($(origin CC),default)
@@ -20,7 +27,9 @@ WARN_FLAGS := -Wall -Wextra -Werror -Wpedantic -Wshadow -Wconversion \
 	-Wsign-conversion -Wstrict-prototypes -Wmissing-prototypes -Wvla \
 	-Wcast-align -Wnull-dereference -Wdouble-promotion -Wformat=2
 
-COMMON_CFLAGS := -std=c17 $(WARN_FLAGS) -MMD -MP
+# -ffile-prefix-map keeps absolute build paths out of debug info, so the
+# kernel ELF (and the ISO) do not depend on where the tree is checked out.
+COMMON_CFLAGS := -std=c17 $(WARN_FLAGS) -MMD -MP -ffile-prefix-map=$(CURDIR)/=
 
 # Kernel code: bare-metal x86-64, higher-half (-mcmodel=kernel), no red zone
 # (interrupts would clobber it), no FPU/SIMD state, frame pointers kept for

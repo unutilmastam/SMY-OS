@@ -48,7 +48,7 @@ malicious firmware, DMA attacks before an IOMMU driver exists.
 |---|---|---|---|---|
 | T1 | User program reads/writes kernel memory | Separate address spaces, U/S page bits, SMAP/SMEP, validated user pointers | 5, 10 | QEMU test: program touching kernel memory is killed, kernel survives |
 | T2 | Kernel executes injected data | W^X, NX for data, read-only text | 5 | QEMU test: write to RO page faults |
-| T3 | Kernel stack overflow / smashing | Guard pages, stack protector | 3, 5 | QEMU test overflowing a guarded stack |
+| T3 | Kernel stack overflow / smashing | Guard pages, stack protector (`-fstack-protector-strong` since Phase 2; canary is a **fixed constant** until an entropy source exists, Phase 7 — it catches accidents, not an attacker who knows it) | 2, 3, 5, 7 | QEMU test overflowing a guarded stack |
 | T4 | Malformed ELF/PE crashes or exploits the loader | Bounds-checked parsers, host fuzzing under ASan | 9 | 10 000-input mutation fuzz, no crash |
 | T5 | Malformed filesystem/GPT image | Defensive parsers, host tests with corrupted images | 14, 29 | host tests |
 | T6 | Kernel address leak defeats randomisation | No kernel pointers in user-visible output; KASLR considered later | 10+ | review + test |

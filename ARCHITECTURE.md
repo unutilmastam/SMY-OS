@@ -43,8 +43,11 @@ Firmware (UEFI primary, BIOS secondary) → Limine (ADR 0005) → SMY Kernel ELF
 entered in 64-bit long mode, higher half, with memory map, HHDM, framebuffer,
 RSDP, modules (initramfs) and kernel command line → `kmain`.
 
-The ISO is a hybrid image (CD and raw USB). Details in `docs/install/iso-spec.md`
-(Phase 2) and `docs/INSTALLER_PROMPT.md`.
+The ISO is a hybrid image (CD and raw USB). Details in
+[docs/install/iso-spec.md](docs/install/iso-spec.md), ADR 0008 and
+`docs/INSTALLER_PROMPT.md`. Implemented in Phase 2: Limine base revision 6;
+the kernel uses the bootloader-info, firmware-type and framebuffer requests
+(memory map, HHDM, RSDP and modules from Phase 4 on).
 
 ## 3. Kernel subsystems
 

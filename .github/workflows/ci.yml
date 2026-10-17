@@ -1,8 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 The SMY-OS Authors
 #
-# Build, unit tests, format check and static analysis (TESTING.md).
-# This is the source of truth for SMY-OS: the owner has no local machine.
+# Build, unit tests, format check, static analysis, bootable ISO and QEMU boot
+# tests (TESTING.md). This is the source of truth for SMY-OS: the owner has no
+# local machine.
 name: ci
 
 on:
@@ -15,7 +16,7 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -25,15 +26,16 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             clang-18 lld-18 llvm-18 clang-format-18 clang-tidy-18 \
             libclang-rt-18-dev clang lld llvm clang-format clang-tidy \
-            cppcheck make python3 curl xz-utils
+            cppcheck make python3 curl xz-utils \
+            qemu-system-x86 ovmf xorriso mtools nasm
 
       - name: Check environment
-        run: tools/check-env.sh
+        run: tools/check-env.sh --all
 
       - name: Fetch pinned Limine (SHA-256 verified)
         run: tools/fetch-limine.sh
 
-      - name: Build kernel objects
+      - name: Build kernel
         run: make kernel
 
       - name: Host unit tests (ASan + UBSan)
@@ -44,3 +46,31 @@ jobs:
 
       - name: Static analysis (clang-tidy, cppcheck)
         run: make lint
+
+      - name: Build hybrid ISO
+        run: make iso
+
+      - name: Boot test — BIOS, CD
+        run: make boot-test-bios-cd
+
+      - name: Boot test — BIOS, raw disk (USB stick)
+        run: make boot-test-bios-disk
+
+      - name: Boot test — UEFI, CD
+        run: make boot-test-uefi-cd
+
+      - name: Boot test — UEFI, raw disk (USB stick)
+        run: make boot-test-uefi-disk
+
+      - name: Reproducible ISO (two clean builds, same SHA-256)
+        run: tools/check-reproducible.sh
+
+      - name: Upload ISO
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: smy-os-iso-${{ github.sha }}
+          path: |
+            build/smy-os.iso
+            build/SHA256SUMS
+          if-no-files-found: error
+          retention-days: 14
