@@ -4,16 +4,25 @@
 /*
  * Kernel entry point. Limine enters here in 64-bit long mode, interrupts
  * disabled, on a bootloader-provided stack (Limine protocol, x86-64 machine
- * state). We only make the stack 16-byte aligned as the System V ABI expects
- * at a call, end the frame-pointer chain for stack traces, and call kmain.
+ * state). We switch to the kernel's own boot stack (known bounds, so stack
+ * traces can be checked against it; a guard page follows in Phase 5), end
+ * the frame-pointer chain and call kmain.
  */
 
     .intel_syntax noprefix
+
+    .section .bss
+    .balign 16
+    .global kernel_boot_stack_bottom, kernel_boot_stack_top
+kernel_boot_stack_bottom:
+    .skip 65536
+kernel_boot_stack_top:
+
     .section .text
     .global _start
     .type _start, @function
 _start:
-    and rsp, -16
+    lea rsp, [rip + kernel_boot_stack_top]
     xor ebp, ebp
     call kmain
     /* kmain does not return; if it ever does, stop this CPU for good. */

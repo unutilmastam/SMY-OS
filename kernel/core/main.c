@@ -2,12 +2,16 @@
 /* Copyright 2026 The SMY-OS Authors */
 
 /*
- * SMY Kernel entry (Phase 2): bring up the serial log, check the boot
- * protocol, paint the boot framebuffer, report "boot OK" and halt.
+ * SMY Kernel entry: bring up the serial log, check the boot protocol, install
+ * the CPU's descriptor tables and exception handlers, paint the boot
+ * framebuffer, then either run the self-tests (smy.ktest=...) or report
+ * "boot OK" and halt.
  */
 
 #include "arch/cpu.h"
+#include "core/cmdline.h"
 #include "core/compiler.h"
+#include "core/ktest.h"
 #include "core/log.h"
 #include "core/panic.h"
 #include "drivers/bootfb/bootfb.h"
@@ -36,6 +40,9 @@ SMY_USED SMY_SECTION(".limine_requests") static volatile struct limine_firmware_
 SMY_USED SMY_SECTION(".limine_requests") static volatile struct limine_framebuffer_request
     framebuffer_request = {.id = LIMINE_FRAMEBUFFER_REQUEST_ID, .revision = 0};
 
+SMY_USED SMY_SECTION(".limine_requests") static volatile struct limine_executable_cmdline_request
+    cmdline_request = {.id = LIMINE_EXECUTABLE_CMDLINE_REQUEST_ID, .revision = 0};
+
 SMY_USED SMY_SECTION(".limine_requests_end") static volatile uint64_t limine_requests_end[] =
     LIMINE_REQUESTS_END_MARKER;
 
@@ -61,15 +68,9 @@ static void log_boot_environment(void)
     const struct limine_firmware_type_response *fw = firmware_type_request.response;
 
     if (info != NULL) {
-        log_write("SMY-OS: bootloader: ");
-        log_write(info->name);
-        log_write(" ");
-        log_write(info->version);
-        log_write("\n");
+        klog(LOG_INFO, "bootloader: %s %s", info->name, info->version);
     }
-    log_write("SMY-OS: firmware: ");
-    log_write(fw != NULL ? firmware_name(fw->firmware_type) : "unknown");
-    log_write("\n");
+    klog(LOG_INFO, "firmware: %s", fw != NULL ? firmware_name(fw->firmware_type) : "unknown");
 }
 
 /*
@@ -100,7 +101,7 @@ static void init_boot_screen(void)
     struct bootfb fb;
 
     if (resp == NULL || resp->framebuffer_count == 0) {
-        log_write("SMY-OS: framebuffer: none\n");
+        klog(LOG_INFO, "framebuffer: none");
         return;
     }
     lfb = resp->framebuffers[0];
@@ -114,28 +115,54 @@ static void init_boot_screen(void)
     };
     if (lfb->memory_model != LIMINE_FRAMEBUFFER_RGB ||
         !bootfb_init(&fb, lfb->address, lfb->width, lfb->height, lfb->pitch, lfb->bpp, &format)) {
-        log_write("SMY-OS: framebuffer: unsupported format\n");
+        klog(LOG_WARN, "framebuffer: unsupported format");
         return;
     }
     draw_boot_screen(&fb);
-    log_write("SMY-OS: framebuffer: ");
-    log_write_dec(fb.width);
-    log_write("x");
-    log_write_dec(fb.height);
-    log_write(" 32bpp\n");
+    klog(LOG_INFO, "framebuffer: %ux%u 32bpp", fb.width, fb.height);
+}
+
+static const char *kernel_cmdline(void)
+{
+    const struct limine_executable_cmdline_response *resp = cmdline_request.response;
+
+    return resp != NULL && resp->cmdline != NULL ? resp->cmdline : "";
 }
 
 void kmain(void)
 {
+    const char *cmdline;
+    const char *ktest_selection;
+    size_t ktest_selection_len;
+    const char *loglevel;
+    size_t loglevel_len;
+
     log_init();
-    log_write("\nSMY-OS: SMY Kernel starting\n");
+    log_write("\n");
+    klog(LOG_INFO, "SMY Kernel starting");
 
     if (!LIMINE_BASE_REVISION_SUPPORTED(limine_base_revision)) {
         panic("bootloader does not support Limine base revision 6");
     }
+    arch_cpu_init();
+    klog(LOG_INFO, "cpu: GDT, TSS and IDT loaded; exception handlers active");
+
+    cmdline = kernel_cmdline();
+    if (cmdline[0] != '\0') {
+        klog(LOG_INFO, "command line: %s", cmdline);
+    }
+    if (cmdline_find(cmdline, "smy.loglevel", &loglevel, &loglevel_len) &&
+        cmdline_value_is(loglevel, loglevel_len, "debug")) {
+        log_set_level(LOG_DEBUG);
+    }
     log_boot_environment();
     init_boot_screen();
 
-    log_write("SMY-OS: boot OK\n");
+    if (cmdline_find(cmdline, "smy.ktest", &ktest_selection, &ktest_selection_len)) {
+        panic_set_test_mode(true);
+        ktest_run(ktest_selection, ktest_selection_len);
+    }
+
+    klog(LOG_INFO, "boot OK");
     arch_halt_forever();
 }

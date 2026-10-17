@@ -1,8 +1,9 @@
 # Building SMY-OS
 
-**Current state (Phase 2):** `make` links the SMY Kernel ELF, `make iso`
-builds a bootable hybrid ISO, `make boot-test` boots it in QEMU four ways, and
-`make check` runs everything CI runs.
+**Current state (Phase 3):** `make` links the SMY Kernel ELF, `make iso`
+builds a bootable hybrid ISO, `make boot-test` boots it in QEMU four ways,
+`make ktest` runs the in-kernel self-tests, and `make check` runs everything
+CI runs.
 
 ## 1. Where builds run
 
@@ -54,6 +55,7 @@ make clean                # remove build/
 make V=1 ...              # show full command lines
 make iso                  # build/smy-os.iso + build/SHA256SUMS (hybrid, reproducible)
 make boot-test            # boot the ISO in QEMU: BIOS/UEFI x CD/raw disk
+make ktest                # in-kernel self-tests + panic reports (docs/kernel/ktest.md)
 make run                  # boot the ISO in QEMU, serial on the terminal
 tools/check-reproducible.sh   # build the ISO twice, require identical SHA-256
 ```

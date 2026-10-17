@@ -60,6 +60,8 @@ malicious firmware, DMA attacks before an IOMMU driver exists.
 | T12 | App abuses ambient authority | Capability-based sandbox, manifests | 25 | QEMU tests |
 | T13 | Network packet parsing bugs | Bounds-checked parsers, fuzzing | 22, 23 | host tests + fuzz |
 | T14 | Secrets committed to git | Keys only in CI secrets; never in repository | always | review; secret scanning |
+| T15 | Boot configuration replaced through SMBIOS OEM strings (Limine "config via SMBIOS", used by ktest, ADR 0009) | Only a firmware/hypervisor-level attacker can set SMBIOS tables — such a party already controls the boot. Secure Boot work must enrol a config hash that covers this path | 37 | Secure Boot tests in OVMF |
+| T16 | Self-tests triggered on a production system (`smy.ktest=`) | Needs control of the kernel command line (already full control); effect is limited to running tests, panicking or halting — no persistent change | 3 | review |
 
 ## 5. Failure modes (design rule)
 

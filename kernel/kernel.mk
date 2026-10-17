@@ -6,16 +6,29 @@
 
 KERNEL_C_SOURCES := \
 	kernel/arch/x86_64/cpu.c \
+	kernel/arch/x86_64/descriptors.c \
+	kernel/arch/x86_64/exceptions.c \
+	kernel/arch/x86_64/gdt.c \
+	kernel/arch/x86_64/idt.c \
+	kernel/arch/x86_64/ktest_cpu.c \
+	kernel/core/cmdline.c \
 	kernel/core/fmt.c \
+	kernel/core/ktest.c \
+	kernel/core/ktest_core.c \
 	kernel/core/log.c \
 	kernel/core/main.c \
 	kernel/core/panic.c \
 	kernel/core/stack_protector.c \
+	kernel/core/stacktrace.c \
 	kernel/core/string.c \
 	kernel/drivers/bootfb/bootfb.c \
 	kernel/drivers/serial/uart16550.c
 
-KERNEL_ASM_SOURCES := kernel/arch/x86_64/entry.S
+KERNEL_ASM_SOURCES := \
+	kernel/arch/x86_64/cpu_asm.S \
+	kernel/arch/x86_64/entry.S \
+	kernel/arch/x86_64/isr.S \
+	kernel/arch/x86_64/ktest_triggers.S
 
 KERNEL_LINKER_SCRIPT := kernel/arch/x86_64/linker.ld
 
@@ -38,12 +51,12 @@ $(KERNEL_ELF): $(KERNEL_OBJS) $(KERNEL_LINKER_SCRIPT)
 	@echo "  LD      $@"
 	$(Q)$(LD) $(KERNEL_LDFLAGS) $(KERNEL_OBJS) -o $@
 
-$(BUILD)/kernel/%.o: kernel/%.c
+$(BUILD)/kernel/%.o: kernel/%.c mk/toolchain.mk kernel/kernel.mk
 	@mkdir -p $(@D)
 	@echo "  CC      $<"
 	$(Q)$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCLUDES) -c $< -o $@
 
-$(BUILD)/kernel/%.o: kernel/%.S
+$(BUILD)/kernel/%.o: kernel/%.S mk/toolchain.mk kernel/kernel.mk
 	@mkdir -p $(@D)
 	@echo "  AS      $<"
 	$(Q)$(CC) $(KERNEL_CFLAGS) $(KERNEL_INCLUDES) -c $< -o $@

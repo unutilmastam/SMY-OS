@@ -8,6 +8,8 @@
 #   demands Annex K memcpy_s; not available freestanding and not used here.
 # - misc-include-cleaner: noisy with the freestanding header set.
 # - cert-err33-c: requires checking printf's return value in the test runner.
+# - performance-no-int-to-ptr: a kernel turns addresses into pointers by
+#   design (stack walking, page tables, MMIO).
 Checks: >
   -*,
   bugprone-*,
@@ -19,6 +21,7 @@ Checks: >
   misc-*,
   -misc-include-cleaner,
   performance-*,
+  -performance-no-int-to-ptr,
   portability-*
 WarningsAsErrors: '*'
 HeaderFilterRegex: '(kernel|tests)/.*'

@@ -1,9 +1,9 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 The SMY-OS Authors
 #
-# Build, unit tests, format check, static analysis, bootable ISO and QEMU boot
-# tests (TESTING.md). This is the source of truth for SMY-OS: the owner has no
-# local machine.
+# Build, unit tests, format check, static analysis, bootable ISO, QEMU boot
+# tests and in-kernel self-tests (TESTING.md). This is the source of truth for
+# SMY-OS: the owner does not build locally.
 name: ci
 
 on:
@@ -61,6 +61,15 @@ jobs:
 
       - name: Boot test — UEFI, raw disk (USB stick)
         run: make boot-test-uefi-disk
+
+      - name: Kernel self-tests (ktest) — BIOS
+        run: make ktest-bios
+
+      - name: Kernel self-tests (ktest) — UEFI
+        run: make ktest-uefi
+
+      - name: Panic reports (unhandled #UD, #PF, kernel panic)
+        run: make ktest-panic-ud ktest-panic-pf ktest-panic-kernel
 
       - name: Reproducible ISO (two clean builds, same SHA-256)
         run: tools/check-reproducible.sh

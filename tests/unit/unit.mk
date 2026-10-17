@@ -8,11 +8,17 @@
 
 UNIT_HARNESS_SOURCES := tests/unit/harness/smytest.c
 UNIT_TEST_SOURCES    := \
+	tests/unit/kernel/arch/test_descriptors.c \
+	tests/unit/kernel/core/test_cmdline.c \
 	tests/unit/kernel/core/test_fmt.c \
+	tests/unit/kernel/core/test_stacktrace.c \
 	tests/unit/kernel/core/test_string.c \
 	tests/unit/kernel/drivers/test_bootfb.c
 UNIT_KERNEL_SOURCES  := \
+	kernel/arch/x86_64/descriptors.c \
+	kernel/core/cmdline.c \
 	kernel/core/fmt.c \
+	kernel/core/stacktrace.c \
 	kernel/core/string.c \
 	kernel/drivers/bootfb/bootfb.c
 
@@ -39,12 +45,12 @@ $(UNIT_BIN): $(UNIT_OBJS)
 	@echo "  LD      $@"
 	$(Q)$(CC) $(HOST_LDFLAGS) $^ -o $@
 
-$(BUILD)/host/kernel/%.o: kernel/%.c
+$(BUILD)/host/kernel/%.o: kernel/%.c mk/toolchain.mk tests/unit/unit.mk
 	@mkdir -p $(@D)
 	@echo "  HOSTCC  $<"
 	$(Q)$(CC) $(HOST_CFLAGS) -fno-builtin $(UNIT_INCLUDES) $(UNIT_DEFINES) -c $< -o $@
 
-$(BUILD)/host/tests/%.o: tests/%.c
+$(BUILD)/host/tests/%.o: tests/%.c mk/toolchain.mk tests/unit/unit.mk
 	@mkdir -p $(@D)
 	@echo "  HOSTCC  $<"
 	$(Q)$(CC) $(HOST_CFLAGS) $(UNIT_INCLUDES) $(UNIT_DEFINES) -c $< -o $@

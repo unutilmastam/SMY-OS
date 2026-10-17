@@ -30,15 +30,20 @@ SECTIONS
     } :limine_requests
 
     . = ALIGN(CONSTANT(MAXPAGESIZE));
-    __kernel_text_start = .;
+    kernel_text_start = .;
     .text : {
         *(.text .text.*)
     } :text
-    __kernel_text_end = .;
+    kernel_text_end = .;
 
     . = ALIGN(CONSTANT(MAXPAGESIZE));
     .rodata : {
         *(.rodata .rodata.*)
+        /* ktest registry (core/ktest.h), read-only */
+        . = ALIGN(8);
+        ktest_section_start = .;
+        KEEP(*(.ktest))
+        ktest_section_end = .;
     } :rodata
 
     . = ALIGN(CONSTANT(MAXPAGESIZE));

@@ -28,3 +28,32 @@ boot-test-uefi-disk: $(ISO)
 run: $(ISO)
 	qemu-system-x86_64 -machine q35 -m 256M -serial stdio -display none \
 		-drive file=$(ISO),media=cdrom,format=raw,readonly=on $(QEMU_EXTRA)
+
+# In-kernel self-tests (tests/integration/ktest.sh, docs/kernel/ktest.md):
+# the full suite on both firmwares, and each panic path with the exact
+# report lines it must produce.
+KTEST_SH := tests/integration/ktest.sh
+
+.PHONY: ktest ktest-bios ktest-uefi ktest-panic-ud ktest-panic-pf ktest-panic-kernel
+
+ktest: ktest-bios ktest-uefi ktest-panic-ud ktest-panic-pf ktest-panic-kernel
+
+ktest-bios: $(ISO)
+	$(Q)ISO=$(ISO) $(KTEST_SH) bios all pass "SMY-OS: ktest: .* 0 failed"
+
+ktest-uefi: $(ISO)
+	$(Q)ISO=$(ISO) $(KTEST_SH) uefi all pass "SMY-OS: ktest: .* 0 failed"
+
+ktest-panic-ud: $(ISO)
+	$(Q)ISO=$(ISO) $(KTEST_SH) bios panic_on_unhandled_invalid_opcode panic \
+		"SMY-OS: PANIC: unhandled CPU exception #UD (invalid opcode), vector 6" \
+		"SMY-OS:   RIP=ffffffff8" "SMY-OS:   CR0=" "SMY-OS: stack trace:" "SMY-OS:   #1  0x"
+
+ktest-panic-pf: $(ISO)
+	$(Q)ISO=$(ISO) $(KTEST_SH) uefi panic_on_unhandled_page_fault panic \
+		"SMY-OS: PANIC: unhandled CPU exception #PF (page fault), vector 14" \
+		"fault address (CR2) 0xffffffff90000000: page not present, read, kernel mode"
+
+ktest-panic-kernel: $(ISO)
+	$(Q)ISO=$(ISO) $(KTEST_SH) bios panic_from_kernel_code panic \
+		"SMY-OS: PANIC: ktest: deliberate panic with value 42" "SMY-OS:   #0  0x"

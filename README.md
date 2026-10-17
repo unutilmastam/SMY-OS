@@ -6,10 +6,11 @@ Windows application compatibility (**SMY Compatibility**).
 
 SMY-OS is **not** a Linux distribution, a desktop theme or a web app.
 
-**Status:** Phase 2 — the first SMY Kernel boots in QEMU from a hybrid ISO
-(BIOS and UEFI, CD and raw disk), prints to the serial log and paints the
-screen. It does nothing else yet. Not tested on real hardware; installation
-is not supported. See [STATUS.md](STATUS.md) and
+**Status:** Phase 3 — the SMY Kernel boots in QEMU from a hybrid ISO (BIOS
+and UEFI, CD and raw disk), sets up its own GDT/TSS/IDT, catches CPU
+exceptions with a full panic report, and runs in-kernel self-tests. No memory
+management, processes or user interface yet. Not tested on real hardware;
+installation is not supported. See [STATUS.md](STATUS.md) and
 [ROADMAP.md](ROADMAP.md).
 
 ## How this project is built
@@ -39,6 +40,7 @@ tests. To advance: open a Claude Code session on this repo and write
 | [docs/architecture/environment.md](docs/architecture/environment.md) | Build environment report |
 | [docs/architecture/hardware.md](docs/architecture/hardware.md) | Hardware assumptions |
 | [docs/install/iso-spec.md](docs/install/iso-spec.md) | ISO build specification and boot path |
+| [docs/kernel/](docs/kernel/cpu.md) | Kernel internals: [CPU setup](docs/kernel/cpu.md), [exceptions and panics](docs/kernel/exceptions.md), [ktest](docs/kernel/ktest.md), [logging](docs/kernel/logging.md), [command line](docs/kernel/command-line.md) |
 | [docs/MASTER_PROMPT.md](docs/MASTER_PROMPT.md) | Full project specification |
 | [docs/DESIGN_PROMPT.md](docs/DESIGN_PROMPT.md) | Visual design specification |
 | [docs/INSTALLER_PROMPT.md](docs/INSTALLER_PROMPT.md) | ISO, live USB and installer specification |

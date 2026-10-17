@@ -33,14 +33,15 @@ COMMON_CFLAGS := -std=c17 $(WARN_FLAGS) -MMD -MP -ffile-prefix-map=$(CURDIR)=.
 
 # Kernel code: bare-metal x86-64, higher-half (-mcmodel=kernel), no red zone
 # (interrupts would clobber it), no FPU/SIMD state, frame pointers kept for
-# stack traces. -ffreestanding also stops clang from turning loops in the
-# kernel's own memcpy/memset into calls to themselves.
+# stack traces (-fno-optimize-sibling-calls keeps tail calls from dropping
+# frames). -ffreestanding also stops clang from turning loops in the kernel's
+# own memcpy/memset into calls to themselves.
 KERNEL_TARGET := x86_64-unknown-none-elf
 KERNEL_CFLAGS := --target=$(KERNEL_TARGET) $(COMMON_CFLAGS) -O2 -g \
 	-ffreestanding -nostdlib -fno-builtin -fno-pic -fno-pie \
 	-mcmodel=kernel -mno-red-zone \
 	-mno-sse -mno-sse2 -mno-mmx -mno-80387 \
-	-fno-omit-frame-pointer -fstack-protector-strong \
+	-fno-omit-frame-pointer -fno-optimize-sibling-calls -fstack-protector-strong \
 	-fno-asynchronous-unwind-tables -fno-lto
 
 # Host unit tests: same warnings, sanitizers on, debug-friendly.

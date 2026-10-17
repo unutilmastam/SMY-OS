@@ -50,7 +50,9 @@ rules. `CLAUDE.md` and `docs/MASTER_PROMPT.md` are binding.
 Kernel-only additions: `--target=x86_64-unknown-none-elf -O2 -g
 -ffreestanding -nostdlib -fno-builtin -fno-pic -fno-pie -mcmodel=kernel
 -mno-red-zone -mno-sse -mno-sse2 -mno-mmx -mno-80387 -fno-omit-frame-pointer
--fstack-protector-strong -fno-asynchronous-unwind-tables -fno-lto`.
+-fno-optimize-sibling-calls -fstack-protector-strong
+-fno-asynchronous-unwind-tables -fno-lto`. All C flags also get
+`-ffile-prefix-map=<checkout>=.` (reproducible builds).
 
 Host unit tests: `-O1 -g -fno-omit-frame-pointer
 -fsanitize=address,undefined -fno-sanitize-recover=all`.

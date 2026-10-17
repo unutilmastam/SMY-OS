@@ -14,7 +14,7 @@ point, then continue in the next command.
 | 0 | Foundation: environment report, docs skeleton, ADRs | Project | VERIFIED |
 | 1 | Build system, toolchain, CI, host test framework | Build | VERIFIED |
 | 2 | First boot: Limine + minimal kernel + QEMU boot test | Kernel | VERIFIED |
-| 3 | CPU: GDT/TSS, IDT, exceptions, panic, kernel log | Kernel | NOT STARTED |
+| 3 | CPU: GDT/TSS, IDT, exceptions, panic, kernel log | Kernel | IN PROGRESS |
 | 4 | Physical memory manager | Kernel | NOT STARTED |
 | 5 | Virtual memory + kernel heap | Kernel | NOT STARTED |
 | 6 | D1 — Design System specification + tokens | Design | NOT STARTED |

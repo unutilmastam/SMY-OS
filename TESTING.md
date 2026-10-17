@@ -14,7 +14,7 @@ test has a timeout.
 | Format | All C sources | `clang-format --dry-run --Werror` | Phase 1 |
 | Boot test | ISO boots, `SMY-OS: boot OK` and the right firmware type on serial | `tests/integration/boot_test.sh`: QEMU q35 headless, BIOS (SeaBIOS) + UEFI (OVMF), CD + raw disk, 60 s timeout (TCG) | Phase 2 |
 | Reproducible ISO | Two clean builds at different absolute paths give the same SHA-256 | `tools/check-reproducible.sh` | Phase 2 |
-| In-kernel self-tests (`ktest`) | Kernel behaviour (exceptions, memory, scheduler…) | boot flag runs tests, results on serial, exit code via `isa-debug-exit` | Phase 3 |
+| In-kernel self-tests (`ktest`) | Kernel behaviour (exceptions, memory, scheduler…) | `make ktest`: `smy.ktest=` via an SMBIOS-supplied Limine config, results on serial, exit status 33/35 via `isa-debug-exit`, timeout = failure ([docs/kernel/ktest.md](docs/kernel/ktest.md)) | Phase 3 |
 | Fuzz tests | Untrusted-input parsers | mutation fuzzing on host under ASan | Phase 9 |
 | Screenshot tests | Graphics, toolkit, desktop | QEMU `screendump` compared with reference images | Phase 18 |
 | Install scenarios | Installer on disposable disk images | QEMU + OVMF, scripted | Phase 31 |
@@ -34,7 +34,8 @@ Status: — not applicable yet · ✗ not implemented · ✓ passing in CI.
 | Boot framebuffer (`kernel/drivers/bootfb`) | — | ✓ | ✓ | ✓ (screenshot checked once by hand) | ✓ | — | ✗ |
 | Boot / kernel entry, serial log, ISO (CD + raw disk) | — | — | ✓ | ✓ | ✓ | — | ✗ |
 | Reproducible ISO | — | — | — | ✓ | ✓ | — | — |
-| CPU / exceptions | — | — | ✗ | ✗ | ✗ | — | ✗ |
+| CPU / exceptions (GDT, TSS, IDT, `#UD #BP #PF #GP #DE`, panic report) | — | ✓ (descriptor encodings) | ✓ | ✓ (ktest) | ✓ (ktest) | — | ✗ |
+| Kernel log, formatter, command line, stack walker | — | ✓ | ✓ | ✓ (ktest) | ✓ (ktest) | — | ✗ |
 | Physical memory | — | ✗ | ✗ | ✗ | ✗ | — | ✗ |
 | Virtual memory / heap | — | ✗ | ✗ | ✗ | ✗ | — | ✗ |
 | Executable parsers (ELF/PE) | — | ✗ | ✗ | — | — | ✗ | — |
@@ -60,6 +61,12 @@ Rows are added as phases add components. Update this table in every phase.
 Manual check (owner, 2026-10-18): the Phase 2 ISO (commit 91d858f) booted in
 VirtualBox on the owner's Windows 11 laptop (BIOS mode) and showed the boot
 screen. This is an additional emulator, not hardware testing.
+
+Negative checks done once in Phase 3 (not committed): a failing ktest
+assertion → exit 35, runner FAIL; a `KTEST_PANIC` test that does not panic →
+FAIL "expected a panic"; an endless loop in a test → FAIL "timeout"; an
+unknown selection → "no test matches", FAIL; `isr.S` restoring RAX/RBX in the
+wrong order → the suite panics with `#GP`, FAIL.
 
 Negative checks done once in Phase 2 (not committed): a kernel that panics
 before "boot OK" → `boot_test` FAIL "panic"; a kernel that halts before
