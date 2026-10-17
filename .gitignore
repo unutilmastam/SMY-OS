@@ -1,0 +1,18 @@
+# Build outputs (generated files stay out of source control)
+/build/
+/out/
+*.o
+*.elf
+*.iso
+*.img
+*.bin
+*.d
+
+# Downloaded third-party binaries (fetched by scripts, pinned by hash)
+/third_party/downloads/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+*.swp

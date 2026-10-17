@@ -1,0 +1,52 @@
+# Promptlar tahlili — topilgan xato va kamchiliklar
+
+> Egasi uchun (o'zbekcha). Asl ikki prompt (Master prompt va Dizayn prompt)
+> sinchiklab ko'rib chiqildi. Tuzatilgan versiyalar:
+> `docs/MASTER_PROMPT.md` va `docs/DESIGN_PROMPT.md`.
+
+## Umumiy xulosa
+
+Promptlar juda yaxshi yozilgan: halollik, xavfsizlik, original yadro,
+bosqichma-bosqich ish — hammasi to'g'ri. Lekin ular **kompyuteri bor
+dasturchi** uchun yozilgan va bir nechta qarama-qarshilik bor. Claude Code
+ularni bir martada "hammasini qil" deb tushunib, keragidan katta va
+tekshirilmagan kod yozib yuborishi mumkin edi. Quyidagilar tuzatildi.
+
+## Topilgan muammolar va tuzatishlar
+
+| # | Muammo | Nima uchun xavfli | Tuzatish |
+|---|---|---|---|
+| 1 | Sizda kompyuter yo'q, prompt esa "host kompyuter, real hardware" deb faraz qiladi | Claude test qila olmaydigan narsani "ishlaydi" deyishi mumkin | GitHub Actions CI — asosiy haqiqat manbai. Hammasi QEMU emulatorida avtomatik test qilinadi |
+| 2 | Dizayn prompt "avval Dizayn tizimini boshla" deydi, Master prompt "avval yadro" deydi | Claude qaysi biridan boshlashni bilmaydi | Tartib aniq: avval yadro yuklanadi (Phase 2), keyin Dizayn spec (Phase 6). Desktop faqat displey+klaviatura+IPC tayyor bo'lgach (Phase 18+) |
+| 3 | 17-bo'limdagi 10 qadam bitta buyruqda bajarilishi kerakdek | Juda katta, tekshirilmagan ish | 3 fazaga bo'lindi (Phase 0, 1, 2). Bir buyruq = bir faza |
+| 4 | "Git commit faqat ruxsat bo'lsa" — ruxsat qachon berilishi aytilmagan | Claude har safar ruxsat so'rab to'xtab qoladi | Har faza oxirida `main`ga commit + push ruxsat etilgan. Force-push taqiqlangan |
+| 5 | Litsenziya tanlash "egasidan so'ra" — lekin qachon? | Loyiha noaniq qoladi | Phase 0 da taqqoslash jadvali bilan so'raladi. Javobgacha "license pending" |
+| 6 | Linux/Windows moslik maqsadi noaniq ("Linux ilovalari ishlasin") | Hech qachon "tugadi" deb bo'lmaydi | Aniq birinchi maqsadlar: musl bilan statik Linux dasturi (6 ta syscall) va MinGW Windows konsol dasturi (3 ta funksiya) |
+| 7 | Wine/ReactOS haqida "o'rganish mumkin" deyilgan | Ularning kodi GPL/LGPL — nusxa olsangiz loyiha litsenziyasi majburan o'zgaradi | Ulardan kod nusxalash qat'iyan taqiqlangan; faqat ochiq hujjatlar |
+| 8 | Shrift litsenziyasi umuman aytilmagan | Segoe UI / San Francisco ishlatilsa — qonun buzilishi | Faqat SIL OFL shriftlar yoki o'zimizniki; `LICENSES.md`da qayd |
+| 9 | Grafika qayerda ishlashi aniq emas | Desktop yadro ichiga tushib qolsa — xavfsizlik va barqarorlik yomon | Grafika user-space'da (oddiy dastur sifatida). Yadro faqat xotira, kirish hodisalari, IPC beradi |
+| 10 | "Placeholder ikonka bo'lmasin" va "bosqichma-bosqich" qarama-qarshi | Dastlab hamma ikonka tayyor bo'lmaydi | Ikonka manifesti: `draft` / `final`. Relizda `draft` bo'lsa test yiqiladi |
+| 11 | Kontrast "accessible" deyilgan, lekin raqam yo'q | Tekshirib bo'lmaydi | WCAG 2.2 AA (4.5:1), yuqori kontrast rejimi 7:1 — avtomatik test |
+| 12 | Blur/animatsiya — GPU yo'q paytda | Dastlab GPU drayver yo'q, hammasi dasturiy chiziladi | Har bir effekt dasturiy renderda 60 Hz da ishlashi shart; blur standart o'chiq |
+| 13 | Benchmark CI emulatorida | Emulator vaqtlari aniq emas | Faqat bir xil muhitdagi natijalar solishtiriladi |
+| 14 | Klaviatura tartiblari | O'zbek foydalanuvchi uchun muhim | O'zbek lotin va kirill tartiblari, interfeys tillari: ingliz + o'zbek |
+| 15 | "SMY-OS" nomi | Savdo belgisi to'qnashuvi bo'lishi mumkin | Ochiq savol sifatida `LICENSES.md`da; ishni to'xtatmaydi |
+| 16 | Hujjatlar ro'yxati ROADMAP.md ni ildizda va docs/ ichida ham nazarda tutadi | Ikki nusxa chalkashlik | `ROADMAP.md` — ildizda, bitta |
+| 17 | Rust "ko'rib chiq" deyilgan | Boshida ikki tilni aralashtirish ishni sekinlashtiradi | Avval faqat C17 + assembler; Rust faqat ADR bilan, aniq komponent uchun |
+| 18 | Xavfsizlik "keyinroq" bo'lib qolishi mumkin | Yadro boshidanoq himoyasiz qurilsa, keyin tuzatish qiyin | Birinchi fazalardanoq W^X, NX, SMEP/SMAP, stack protector |
+
+## Qanday ishlatiladi
+
+1. Shu repoda yangi Claude Code sessiyasini oching.
+2. Faqat **"davom et"** deb yozing.
+3. Claude `ROADMAP.md`dagi birinchi tugallanmagan fazani bajaradi, CI ni
+   tekshiradi, o'zbekcha qisqa hisobot beradi va to'xtaydi.
+4. Xato bo'lsa: **"xato: ..."** deb yozing. Holatni bilish uchun: **"holat"**.
+
+## Haqiqatga to'g'ri baho
+
+Bu — yillar davom etadigan loyiha. Linux va Windows yadrolari ustida minglab
+odamlar o'nlab yil ishlagan. Roadmapdagi 28 faza "tayyor OS" emas, balki
+**ishlaydigan poydevor**: o'z yadrosi, oddiy desktop, birinchi Linux va
+Windows dasturlari. "Har qanday Windows o'yini ishlaydi" kabi natija bu
+rejaga kirmaydi va hech kim bunga va'da bera olmaydi.
