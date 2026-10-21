@@ -20,7 +20,8 @@ Install on Ubuntu 24.04:
 sudo apt-get update
 sudo apt-get install -y clang lld llvm clang-format clang-tidy cppcheck \
     libclang-rt-18-dev make python3 git curl xz-utils \
-    qemu-system-x86 ovmf xorriso mtools nasm gdb librsvg2-bin imagemagick
+    qemu-system-x86 ovmf xorriso mtools nasm gdb librsvg2-bin imagemagick \
+    fonts-dejavu-core
 ```
 
 | Tool | Why |
@@ -36,6 +37,7 @@ sudo apt-get install -y clang lld llvm clang-format clang-tidy cppcheck \
 | xorriso, mtools | build the hybrid ISO and FAT images *(Phase 2)* |
 | gdb | debugging through QEMU's gdbstub |
 | librsvg2-bin, imagemagick | render the boot logo into the kernel (required for `make kernel`), PNG exports and preview sheets (`make brand`) |
+| fonts-dejavu-core | font for the labels on preview sheets (ImageMagick `montage -label`); not used in any logo |
 
 `tools/check-env.sh` verifies them and prints versions: it fails if a
 Phase 1 tool is missing and warns about later-phase tools (`--all` makes

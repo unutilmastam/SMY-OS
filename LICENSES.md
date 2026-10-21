@@ -42,6 +42,7 @@ added).
 | cppcheck | 2.13.0 | GPL-3.0-or-later | tool | static analysis | no | |
 | librsvg (`rsvg-convert`) | 2.58.0 (Ubuntu) | LGPL-2.1-or-later | tool | renders SVG design assets to PNG (previews, exports, kernel boot logo pixels) | no | Output images are our own artwork |
 | ImageMagick (`montage`, `convert`) | 6.9.12 (Ubuntu) | ImageMagick License | tool | composes preview sheets; converts the boot logo and QEMU screendumps to raw RGB/PNG | no | |
+| DejaVu fonts (`fonts-dejavu-core`) | 2.37 (Ubuntu) | Bitstream Vera licence + public domain changes | tool | label text on generated preview sheets only | no | Never part of a logo, the ISO or any committed asset |
 | GDB | 15.1 | GPL-3.0-or-later | tool | debugging | no | |
 | Python 3 | 3.x | PSF-2.0 | tool | host scripts | no | Standard library only |
 | `actions/upload-artifact` (GitHub Action) | v7.0.2 | MIT | tool | CI uploads the test ISO | no | Pinned by commit SHA `cf430e030ddbb5b0abf93d22962f4752f3646cd9` (Phase 2) |

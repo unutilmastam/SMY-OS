@@ -28,7 +28,7 @@ jobs:
             libclang-rt-18-dev clang lld llvm clang-format clang-tidy \
             cppcheck make python3 curl xz-utils \
             qemu-system-x86 ovmf xorriso mtools nasm \
-            librsvg2-bin imagemagick
+            librsvg2-bin imagemagick fonts-dejavu-core
 
       - name: Check environment
         run: tools/check-env.sh --all
