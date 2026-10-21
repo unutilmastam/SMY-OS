@@ -34,6 +34,7 @@ Status: — not applicable yet · ✗ not implemented · ✓ passing in CI.
 | Boot framebuffer (`kernel/drivers/bootfb`) | — | ✓ | ✓ | ✓ (screenshot checked once by hand) | ✓ | — | ✗ |
 | Boot / kernel entry, serial log, ISO (CD + raw disk) | — | — | ✓ | ✓ | ✓ | — | ✗ |
 | Reproducible ISO | — | — | — | ✓ | ✓ | — | — |
+| Design assets (`design/`: SVG rules, generated logos up to date) | — | ✓ (`make brand-check`) | — | — | — | — | — |
 | CPU / exceptions (GDT, TSS, IDT, `#UD #BP #PF #GP #DE`, panic report) | — | ✓ (descriptor encodings) | ✓ | ✓ (ktest) | ✓ (ktest) | — | ✗ |
 | Kernel log, formatter, command line, stack walker | — | ✓ | ✓ | ✓ (ktest) | ✓ (ktest) | — | ✗ |
 | Physical memory (`memory/pmm`, `memory/phys`) | — | ✓ (incl. 20 000-step model test) | ✓ | ✓ (ktest, 256 MiB) | ✓ (ktest, 256 MiB and 4 GiB) | — | ✗ |

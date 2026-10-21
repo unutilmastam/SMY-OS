@@ -21,6 +21,7 @@ include kernel/kernel.mk
 include boot/boot.mk
 include tests/unit/unit.mk
 include tests/integration/integration.mk
+include tools/design/design.mk
 
 # Every C source that format-check and lint look at.
 ALL_C_SOURCES := $(KERNEL_C_SOURCES) $(UNIT_C_SOURCES)
@@ -56,7 +57,7 @@ lint-cppcheck:
 	@echo "lint-cppcheck: OK"
 
 # The full sequence CI runs (CONTRIBUTING.md §5).
-check: all test format-check lint iso boot-test ktest
+check: all test format-check lint brand-check iso boot-test ktest
 
 clean:
 	rm -rf $(BUILD)

@@ -27,7 +27,8 @@ jobs:
             clang-18 lld-18 llvm-18 clang-format-18 clang-tidy-18 \
             libclang-rt-18-dev clang lld llvm clang-format clang-tidy \
             cppcheck make python3 curl xz-utils \
-            qemu-system-x86 ovmf xorriso mtools nasm
+            qemu-system-x86 ovmf xorriso mtools nasm \
+            librsvg2-bin imagemagick
 
       - name: Check environment
         run: tools/check-env.sh --all
@@ -46,6 +47,12 @@ jobs:
 
       - name: Static analysis (clang-tidy, cppcheck)
         run: make lint
+
+      - name: Design assets (generator up to date, SVG rules)
+        run: make brand-check
+
+      - name: Logo preview sheet
+        run: make brand-preview
 
       - name: Build hybrid ISO
         run: make iso
@@ -84,5 +91,6 @@ jobs:
           path: |
             build/smy-os.iso
             build/SHA256SUMS
+            build/brand/concepts-preview.png
           if-no-files-found: error
           retention-days: 14

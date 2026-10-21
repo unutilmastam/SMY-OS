@@ -1,6 +1,6 @@
 # SMY-OS Status
 
-Last updated: 2026-10-18 — Phase 4 (VERIFIED).
+Last updated: 2026-10-21 — Phase 5B (step 1, waiting for the owner).
 
 Status vocabulary (used exactly): **Implemented · Compiles · Unit-tested ·
 Emulator-tested · Hardware-tested · Production-ready.** A passing build is not
@@ -31,7 +31,8 @@ interrupts, processes, any user interface.
 | 2 — First boot | VERIFIED | 4/4 boot paths and reproducibility green in CI (runs 39068650073, 39069271282) |
 | 3 — CPU foundation | VERIFIED | ktest 10/10 on BIOS and UEFI, 3 panic reports, boot 4/4, reproducible — CI run 39075758514 |
 | 4 — Physical memory manager | VERIFIED | CI run 39076695215 green (incl. 4 GiB test) |
-| 5 … 38, 5B, 12B | NOT STARTED | see `ROADMAP.md` |
+| 5B — Brand identity | BLOCKED (owner decision: logo concept) | 3 concepts, evaluation and preview sheet done (`design/brand/concepts/`); the owner chooses |
+| 5 … 38, 12B | NOT STARTED | see `ROADMAP.md` (the owner asked for 5B before 5) |
 
 ## Components
 
@@ -60,6 +61,7 @@ interrupts, processes, any user interface.
 | Reproducible ISO | Verified: two builds at different checkout paths give identical SHA-256 (locally and in CI) |
 | Owner check in VirtualBox (Windows 11 laptop, BIOS mode, VM type "Other/Unknown 64-bit", 512 MB, ISO as optical drive) | Emulator-tested by the owner on 2026-10-18: boot screen (dark background, blue frame) shown; reported with a photo. VirtualBox version not recorded; serial log not captured |
 | Real hardware, real USB stick | not tested (Phase 36) |
+| Logo concepts A Module, B Signal, C Prism (`design/brand/concepts/`) | Implemented (SVG, validated in CI); awaiting owner decision — not yet a final asset |
 | Design system | not started (Phase 6) |
 | Compatibility (C0–C8) | not started (see `COMPATIBILITY.md`) |
 
