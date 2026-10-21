@@ -44,4 +44,22 @@ ktest_trigger_de:
 ktest_trigger_de_resume:
     ret
 
+/* void ktest_trigger_store(uint64_t address, uint64_t value): writes 8
+ * bytes. Read-only page -> #PF (protection violation, write). */
+    .global ktest_trigger_store, ktest_trigger_store_resume
+ktest_trigger_store:
+    mov [rdi], rsi
+ktest_trigger_store_resume:
+    ret
+
+/* void ktest_trigger_call(uint64_t address): calls code at `address`.
+ * No-execute page -> #PF (instruction fetch) with RIP = address and the
+ * return address already pushed; resuming at the label runs `ret` twice
+ * (first to the label itself, then to the caller), which unwinds both. */
+    .global ktest_trigger_call, ktest_trigger_call_resume
+ktest_trigger_call:
+    call rdi
+ktest_trigger_call_resume:
+    ret
+
     .section .note.GNU-stack, "", @progbits

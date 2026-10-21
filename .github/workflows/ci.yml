@@ -81,8 +81,13 @@ jobs:
       - name: Physical memory with 4 GiB RAM (memory above 4 GiB)
         run: make ktest-big-memory
 
-      - name: Panic reports (unhandled #UD, #PF, kernel panic)
-        run: make ktest-panic-ud ktest-panic-pf ktest-panic-kernel
+      - name: Kernel self-tests with SMEP and SMAP (QEMU -cpu max)
+        run: make ktest-cpu-max
+
+      - name: Panic reports (#UD, #PF, kernel panic, stack overflow, double kfree)
+        run: >-
+          make ktest-panic-ud ktest-panic-pf ktest-panic-kernel
+          ktest-panic-stack-overflow ktest-panic-double-kfree
 
       - name: Reproducible ISO (two clean builds, same SHA-256)
         run: tools/check-reproducible.sh

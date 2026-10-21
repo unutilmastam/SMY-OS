@@ -1,7 +1,8 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /* Copyright 2026 The SMY-OS Authors */
 
-/* Loading descriptor tables (System V ABI: first argument in rdi). */
+/* Loading descriptor tables, switching stacks (System V ABI: arguments in
+ * rdi, rsi). */
 
     .intel_syntax noprefix
     .section .text
@@ -41,5 +42,21 @@ idt_load:
     lidt [rdi]
     ret
     .size idt_load, . - idt_load
+
+/* _Noreturn void arch_switch_stack(uintptr_t stack_top, void (*fn)(void))
+ * Continue on a new stack: the frame-pointer chain starts fresh (rbp = 0)
+ * and the stack is 16-byte aligned at the call, as the ABI requires. */
+    .global arch_switch_stack
+    .type arch_switch_stack, @function
+arch_switch_stack:
+    mov rsp, rdi
+    and rsp, -16
+    xor ebp, ebp
+    call rsi
+1:
+    cli
+    hlt
+    jmp 1b
+    .size arch_switch_stack, . - arch_switch_stack
 
     .section .note.GNU-stack, "", @progbits

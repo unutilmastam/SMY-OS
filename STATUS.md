@@ -1,6 +1,6 @@
 # SMY-OS Status
 
-Last updated: 2026-10-21 — Phase 5B (step 2).
+Last updated: 2026-10-21 — Phase 5.
 
 Status vocabulary (used exactly): **Implemented · Compiles · Unit-tested ·
 Emulator-tested · Hardware-tested · Production-ready.** A passing build is not
@@ -14,8 +14,11 @@ stacks) and IDT, catches every CPU exception (vectors 0–31) and reports
 unhandled ones as a panic with registers and a stack trace, logs with levels,
 reads its command line, and runs in-kernel self-tests (`make ktest`). Since
 Phase 4 it manages physical memory (page-frame allocator over the Limine
-memory map). Still missing: its own page tables and heap, timers and
-interrupts, processes, any user interface.
+memory map); since Phase 5 it runs on its own page tables (W^X kernel
+sections, NX, write-protect, SMEP/SMAP when available), on guard-paged
+stacks, and has a kernel heap (`kmalloc`/`kfree`). It shows the brand boot
+logo. Still missing: timers and interrupts, threads, processes, any user
+interface.
 
 - Installation: **not supported.**
 - USB boot: **not tested on a real USB stick or PC.** The ISO boots in QEMU when attached as a raw disk (USB simulation) — Emulator-tested only.
@@ -32,7 +35,7 @@ interrupts, processes, any user interface.
 | 3 — CPU foundation | VERIFIED | ktest 10/10 on BIOS and UEFI, 3 panic reports, boot 4/4, reproducible — CI run 39075758514 |
 | 4 — Physical memory manager | VERIFIED | CI run 39076695215 green (incl. 4 GiB test) |
 | 5B — Brand identity | VERIFIED | concept A "Module" (ADR 0011); logo family approved by the owner 2026-10-21; CI run 39575540426 green (incl. boot-screen pixel test) |
-| 5 — Virtual memory + heap | IN PROGRESS | |
+| 5 — Virtual memory + heap | IN PROGRESS | implemented and checked locally; VERIFIED once CI is green |
 | 6 … 38, 12B | NOT STARTED | see `ROADMAP.md` |
 
 ## Components
@@ -50,7 +53,12 @@ interrupts, processes, any user interface.
 | Kernel boot screen: brand boot logo on `#080B12` (rendered from SVG at build time, 96–256 px) | Emulator-tested (QEMU BIOS + UEFI); not yet seen by the owner in VirtualBox |
 | GDT, TSS with IST stacks (#DF, NMI, #MC), IDT (vectors 0–31) | Unit-tested (encodings), Emulator-tested (ktest reads back GDTR/IDTR/TR) |
 | Exception handling: `#UD #BP #PF #GP #DE` caught and resumed (ktest), 1000 in a row | Emulator-tested (BIOS + UEFI) |
-| `#DF`, NMI, `#MC` on IST stacks | Implemented, **not tested** (no safe trigger before Phase 5) |
+| `#DF` on its IST stack (kernel stack overflow) | Emulator-tested (`make ktest-panic-stack-overflow`) |
+| NMI, `#MC` on IST stacks | Implemented, **not tested** (no safe trigger) |
+| Own page tables: direct map (2 MiB pages), kernel sections W^X, NX, CR0.WP, PAT write-combining framebuffer | Unit-tested (table logic), Emulator-tested (BIOS, UEFI, 4 GiB) |
+| SMEP / SMAP | Emulator-tested with QEMU `-cpu max` (`make ktest-cpu-max`); off on CPUs without them |
+| Guard-paged kernel stacks (main + IST) | Emulator-tested (guard read faults; overflow → #DF report) |
+| Kernel heap (`kmalloc`/`kfree`, size-class slabs + page runs) | Unit-tested (incl. 30 000-step random test), Emulator-tested (20 000-step stress, no leak; double free → panic) |
 | `panic()` and exception panic report (registers, CR2 decode, stack trace) | Emulator-tested (3 panic ktests match the report lines) |
 | Kernel log with levels, printf-subset formatter | Unit-tested (formatter), Emulator-tested |
 | Kernel command line (`smy.ktest`, `smy.loglevel`) | Unit-tested, Emulator-tested |
@@ -69,7 +77,23 @@ interrupts, processes, any user interface.
 | Design system | not started (Phase 6) |
 | Compatibility (C0–C8) | not started (see `COMPATIBILITY.md`) |
 
-## Last check results (Phase 5B step 2, cloud session 2026-10-21)
+## Last check results (Phase 5, cloud session 2026-10-21)
+
+| Check | Command | Result |
+|---|---|---|
+| Full local check | `make check` | PASS (exit 0) |
+| Unit tests | `make test` | PASS: 61 run, 61 passed (9 paging + 7 heap new) |
+| Format / lint | `make format-check`, `make lint` | PASS |
+| Boot tests, boot screen | `make boot-test`, `make boot-screen` | PASS 4/4, logo pixels PASS on BIOS and UEFI |
+| ktest suite | `make ktest-bios`, `make ktest-uefi` | PASS: 24 run, 24 passed on each firmware |
+| SMEP/SMAP | `make ktest-cpu-max` | PASS: 24/24 with "SMEP on, SMAP on" |
+| Big memory | `make ktest-big-memory` | PASS (direct map 4 099 MiB, 88 KiB of tables) |
+| Panic reports | `make ktest-panic-*` (5) | PASS incl. stack overflow → #DF and double `kfree` |
+| Negative checks | see `TESTING.md` §3 | 2 injected bugs, each detected |
+| Reproducible ISO | `tools/check-reproducible.sh` | PASS |
+| CI `ci` workflow | GitHub Actions | see the run for this commit |
+
+## Earlier check results (Phase 5B step 2, cloud session 2026-10-21)
 
 | Check | Command | Result |
 |---|---|---|

@@ -6,6 +6,7 @@
 #include "arch/x86_64/gdt.h"
 #include "arch/x86_64/idt.h"
 #include "arch/x86_64/io.h"
+#include "memory/vmm.h"
 
 /* Boot stack, defined in entry.S. */
 extern uint8_t kernel_boot_stack_bottom[];
@@ -23,6 +24,11 @@ void arch_cpu_init(void)
 {
     gdt_init();
     idt_init();
+}
+
+void arch_cpu_init_late(void)
+{
+    gdt_use_guarded_ist_stacks();
 }
 
 void arch_halt_forever(void)
@@ -46,5 +52,5 @@ bool arch_stack_bounds(uintptr_t addr, uintptr_t *lo, uintptr_t *hi)
         *hi = boot_hi;
         return true;
     }
-    return gdt_ist_stack_bounds(addr, lo, hi);
+    return vmm_stack_bounds(addr, lo, hi) || gdt_ist_stack_bounds(addr, lo, hi);
 }

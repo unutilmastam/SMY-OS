@@ -4,6 +4,7 @@
 #include "arch/x86_64/gdt.h"
 
 #include "arch/x86_64/descriptors.h"
+#include "memory/vmm.h"
 
 #include <stddef.h>
 
@@ -19,7 +20,8 @@ static const uint8_t ist_slots[IST_STACK_COUNT] = {IST_DOUBLE_FAULT, IST_NMI, IS
 
 /* Separate stacks for exceptions that must work even when the current stack
  * is unusable (double fault after a stack overflow, NMI, machine check).
- * Guard pages below them come with the kernel's own page tables (Phase 5). */
+ * These static ones serve early boot; gdt_use_guarded_ist_stacks() replaces
+ * them with guard-paged stacks once the kernel's page tables are active. */
 SMY_ALIGNED(16) static uint8_t ist_stacks[IST_STACK_COUNT][IST_STACK_SIZE];
 
 SMY_ALIGNED(16) static uint64_t gdt[GDT_ENTRIES];
@@ -55,6 +57,19 @@ void gdt_init(void)
     gdtr.base = (uint64_t)(uintptr_t)gdt;
     gdt_load(&gdtr);
     tss_load(GDT_TSS);
+}
+
+void gdt_use_guarded_ist_stacks(void)
+{
+    for (size_t i = 0; i < IST_STACK_COUNT; i++) {
+        /* The CPU reads tss.ist[] on every exception: no reload needed. */
+        tss.ist[ist_slots[i] - 1] = (uint64_t)vmm_alloc_stack(IST_STACK_SIZE / 4096);
+    }
+}
+
+uint64_t gdt_ist_top(unsigned slot)
+{
+    return slot >= 1 && slot <= 7 ? tss.ist[slot - 1] : 0;
 }
 
 bool gdt_ist_stack_bounds(uintptr_t addr, uintptr_t *lo, uintptr_t *hi)

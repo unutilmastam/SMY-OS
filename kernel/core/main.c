@@ -16,7 +16,9 @@
 #include "core/panic.h"
 #include "drivers/bootfb/boot_logo.h"
 #include "drivers/bootfb/bootfb.h"
+#include "memory/kmalloc.h"
 #include "memory/phys.h"
+#include "memory/vmm.h"
 
 #include <limine.h>
 #include <stddef.h>
@@ -50,6 +52,9 @@ SMY_USED SMY_SECTION(".limine_requests") static volatile struct limine_memmap_re
 
 SMY_USED SMY_SECTION(".limine_requests") static volatile struct limine_hhdm_request hhdm_request = {
     .id = LIMINE_HHDM_REQUEST_ID, .revision = 0};
+
+SMY_USED SMY_SECTION(".limine_requests") static volatile struct limine_executable_address_request
+    executable_address_request = {.id = LIMINE_EXECUTABLE_ADDRESS_REQUEST_ID, .revision = 0};
 
 SMY_USED SMY_SECTION(".limine_requests_end") static volatile uint64_t limine_requests_end[] =
     LIMINE_REQUESTS_END_MARKER;
@@ -143,13 +148,50 @@ static const char *kernel_cmdline(void)
     return resp != NULL && resp->cmdline != NULL ? resp->cmdline : "";
 }
 
+static struct vmm_kernel_image kernel_image(void)
+{
+    const struct limine_executable_address_response *exe = executable_address_request.response;
+
+    if (exe == NULL) {
+        panic("bootloader did not report where the kernel is loaded");
+        return (struct vmm_kernel_image){0}; /* not reached; for cppcheck */
+    }
+    return (struct vmm_kernel_image){.phys_base = exe->physical_base,
+                                     .virt_base = exe->virtual_base};
+}
+
+/* Boot stack for everything after the switch to the kernel's own page
+ * tables: 64 KiB with a guard page below (memory/vmm.h). */
+#define KERNEL_MAIN_STACK_PAGES 16
+
+static const char *boot_cmdline = "";
+
+SMY_NORETURN static void kmain_late(void)
+{
+    const char *ktest_selection;
+    size_t ktest_selection_len;
+
+    arch_cpu_init_late();
+    kmalloc_init();
+    klog(LOG_INFO, "cpu: exception stacks moved to guard-paged stacks; kernel heap ready");
+
+    init_boot_screen();
+
+    if (cmdline_find(boot_cmdline, "smy.ktest", &ktest_selection, &ktest_selection_len)) {
+        panic_set_test_mode(true);
+        ktest_run(ktest_selection, ktest_selection_len);
+    }
+
+    klog(LOG_INFO, "boot OK");
+    arch_halt_forever();
+}
+
 void kmain(void)
 {
     const char *cmdline;
-    const char *ktest_selection;
-    size_t ktest_selection_len;
     const char *loglevel;
     size_t loglevel_len;
+    struct vmm_kernel_image image;
 
     log_init();
     log_write("\n");
@@ -176,13 +218,11 @@ void kmain(void)
     }
     phys_init(memmap_request.response, hhdm_request.response->offset);
 
-    init_boot_screen();
+    image = kernel_image();
+    vmm_init(memmap_request.response, hhdm_request.response->offset, &image);
 
-    if (cmdline_find(cmdline, "smy.ktest", &ktest_selection, &ktest_selection_len)) {
-        panic_set_test_mode(true);
-        ktest_run(ktest_selection, ktest_selection_len);
-    }
-
-    klog(LOG_INFO, "boot OK");
-    arch_halt_forever();
+    /* The command line string lives in bootloader-reclaimable memory, which
+     * the direct map keeps mapped. */
+    boot_cmdline = cmdline;
+    arch_switch_stack(vmm_alloc_stack(KERNEL_MAIN_STACK_PAGES), kmain_late);
 }

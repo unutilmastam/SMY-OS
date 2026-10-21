@@ -38,7 +38,8 @@ Status: — not applicable yet · ✗ not implemented · ✓ passing in CI.
 | CPU / exceptions (GDT, TSS, IDT, `#UD #BP #PF #GP #DE`, panic report) | — | ✓ (descriptor encodings) | ✓ | ✓ (ktest) | ✓ (ktest) | — | ✗ |
 | Kernel log, formatter, command line, stack walker | — | ✓ | ✓ | ✓ (ktest) | ✓ (ktest) | — | ✗ |
 | Physical memory (`memory/pmm`, `memory/phys`) | — | ✓ (incl. 20 000-step model test) | ✓ | ✓ (ktest, 256 MiB) | ✓ (ktest, 256 MiB and 4 GiB) | — | ✗ |
-| Virtual memory / heap | — | ✗ | ✗ | ✗ | ✗ | — | ✗ |
+| Virtual memory (`arch/x86_64/paging`, `mmu`, `memory/vmm`) | — | ✓ (9 tests) | ✓ | ✓ (ktest, panic) | ✓ (ktest, `-cpu max`, 4 GiB) | — | ✗ |
+| Kernel heap (`memory/heap`, `kmalloc`) | — | ✓ (7 tests, random model) | ✓ | ✓ (ktest) | ✓ (ktest, double-free panic) | — | ✗ |
 | Executable parsers (ELF/PE) | — | ✗ | ✗ | — | — | ✗ | — |
 
 Rows are added as phases add components. Update this table in every phase.
@@ -62,6 +63,10 @@ Rows are added as phases add components. Update this table in every phase.
 Manual check (owner, 2026-10-18): the Phase 2 ISO (commit 91d858f) booted in
 VirtualBox on the owner's Windows 11 laptop (BIOS mode) and showed the boot
 screen. This is an additional emulator, not hardware testing.
+
+Negative checks done once in Phase 5 (not committed): page tables without
+the NX bit → 3 ktests fail (exact rights, W^X sweep, NX fetch); the guard
+page below each stack mapped → `mmu_kernel_stacks_have_guard_pages` fails.
 
 Negative checks done once in Phase 5B (not committed): a kernel that draws
 no logo → `make boot-screen-bios` FAIL ("logo stroke missing", "logo core

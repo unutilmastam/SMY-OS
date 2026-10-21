@@ -19,6 +19,10 @@
 /* Install this CPU's descriptor tables and exception handlers. */
 void arch_cpu_init(void);
 
+/* Second step, once the kernel's own page tables are active (memory/vmm.h):
+ * move the exception stacks to guard-paged stacks. */
+void arch_cpu_init_late(void);
+
 /* Disable interrupts and stop this CPU permanently. */
 SMY_NORETURN void arch_halt_forever(void);
 

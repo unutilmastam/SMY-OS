@@ -64,6 +64,8 @@ Serial lines (stable; the boot test matches them):
 SMY-OS: SMY Kernel starting
 SMY-OS: bootloader: Limine 12.9.3
 SMY-OS: firmware: BIOS | UEFI
+SMY-OS: memory: ...
+SMY-OS: vmm: own page tables active; ...
 SMY-OS: framebuffer: <W>x<H> 32bpp | none | unsupported format
 SMY-OS: boot OK
 ```

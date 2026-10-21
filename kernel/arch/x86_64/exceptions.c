@@ -6,6 +6,7 @@
 #include "arch/x86_64/regs.h"
 #include "core/log.h"
 #include "core/panic.h"
+#include "memory/vmm.h"
 
 #include <stddef.h>
 
@@ -102,7 +103,10 @@ static void dump_registers(const struct interrupt_frame *f)
 
 void exception_dispatch(struct interrupt_frame *frame)
 {
-    const uint64_t cr2 = frame->vector == EXC_PAGE_FAULT ? read_cr2() : 0;
+    /* For #DF, CR2 still holds the address of a page fault that could not be
+     * delivered, e.g. a push into a stack's guard page. */
+    const uint64_t cr2 =
+        frame->vector == EXC_PAGE_FAULT || frame->vector == EXC_DOUBLE_FAULT ? read_cr2() : 0;
 
     if (armed != NULL && armed->vector == frame->vector) {
         struct exception_expectation *e = armed;
@@ -124,6 +128,15 @@ void exception_dispatch(struct interrupt_frame *frame)
     dump_registers(frame);
     if (frame->vector == EXC_PAGE_FAULT) {
         dump_page_fault_details(frame->error_code, cr2);
+        vmm_describe_fault(cr2);
+    } else if (frame->vector == EXC_DOUBLE_FAULT) {
+        uintptr_t lo;
+        uintptr_t hi;
+
+        log_printf("SMY-OS:   CR2=%016llx (last page-fault address)\n", (unsigned long long)cr2);
+        if (vmm_stack_guard_hit(cr2, &lo, &hi) || vmm_stack_guard_hit(frame->rsp, &lo, &hi)) {
+            vmm_describe_fault(vmm_stack_guard_hit(cr2, &lo, &hi) ? cr2 : frame->rsp);
+        }
     }
     panic_print_stacktrace(frame->rip, frame->rbp);
     panic_end();

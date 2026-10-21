@@ -5,8 +5,8 @@
  * The kernel's physical memory: boot-time setup and the global page-frame
  * allocator (docs/kernel/memory.md). Physical memory is reached through the
  * higher-half direct map (HHDM) that Limine sets up: virtual = physical +
- * offset. The kernel replaces Limine's page tables in Phase 5 and keeps an
- * equivalent direct map.
+ * offset. The kernel's own page tables (memory/vmm.c) keep the direct map at
+ * the same offset.
  */
 
 #ifndef SMY_KERNEL_MEMORY_PHYS_H
@@ -24,8 +24,9 @@
  */
 void phys_init(const struct limine_memmap_response *memmap, uint64_t hhdm_offset);
 
-/* Direct-map access to a physical address. */
+/* Direct-map access to a physical address, and back. */
 void *phys_to_virt(uint64_t phys);
+uint64_t phys_from_virt(const void *virt);
 
 /* Global page-frame allocator (wrappers around memory/pmm.h). */
 enum pmm_status phys_alloc_page(uint64_t *phys_out);

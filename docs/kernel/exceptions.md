@@ -1,6 +1,7 @@
 # CPU exceptions and panics
 
-Status: **Implemented, Emulator-tested** (Phase 3, BIOS and UEFI).
+Status: **Implemented, Emulator-tested** (Phase 3, BIOS and UEFI; page-fault
+and double-fault diagnostics Phase 5).
 Code: `kernel/arch/x86_64/isr.S`, `exceptions.c`, `kernel/core/panic.c`,
 `kernel/core/stacktrace.c`.
 
@@ -16,9 +17,9 @@ Code: `kernel/arch/x86_64/isr.S`, `exceptions.c`, `kernel/core/panic.c`,
 4. On return the stub restores the registers, drops vector and error code,
    and `iretq`s.
 
-No exception is handled and continued in normal operation yet: page faults
-become recoverable with virtual memory (Phase 5) and user-mode faults
-terminate the process (Phase 10).
+No exception is handled and continued in normal operation yet: every kernel
+page fault is a bug (the kernel maps everything it uses up front), and
+user-mode faults will terminate the process (Phase 10).
 
 ## Panic report format
 
@@ -64,13 +65,41 @@ SMY-OS:   #0  0xffffffff80003dc7
 ...
 ```
 
+## Page faults and double faults (Phase 5)
+
+A `#PF` report adds the decoded error code, the page-table walk of CR2 in
+the kernel's own tables, and — if CR2 is in a kernel stack's guard page — a
+stack-overflow line:
+
+```
+SMY-OS:   fault address (CR2) 0xffffffff90000000: page not present, read, kernel mode
+SMY-OS:   page walk: PML4E=0000000000082023 PDPTE=0000000000083023 PDE=0000000000000000
+SMY-OS:   page walk: not present at PDE
+```
+
+A kernel stack overflow ends as `#DF`: the push into the guard page faults,
+the CPU cannot push the `#PF` frame onto the same stack and raises `#DF`
+on its IST stack. CR2 still holds the guard address, so the report says
+which stack overflowed (real output of `make ktest-panic-stack-overflow`):
+
+```
+SMY-OS: PANIC: unhandled CPU exception #DF (double fault), vector 8
+...
+SMY-OS:   CR2=ffffff0000000ff8 (last page-fault address)
+SMY-OS:   kernel stack overflow: guard page below the stack 0xffffff0000001000-0xffffff0000011000 was hit
+SMY-OS:   page walk: PML4E=... PDPTE=... PDE=... PTE=0000000000000000
+SMY-OS:   page walk: not present at PTE
+SMY-OS: stack trace:
+```
+
 ## Stack traces
 
 Frame pointers are kept (`-fno-omit-frame-pointer`) and tail calls are not
 turned into jumps (`-fno-optimize-sibling-calls`), so each C function has a
 frame. The walker (`core/stacktrace.c`) follows `[fp] = previous fp,
 [fp+8] = return address` only while the frame lies on a known kernel stack
-(boot stack or an IST stack), is 8-byte aligned and moves up the stack, at
+(the early boot stack, a guarded stack from `vmm_alloc_stack`, or an early
+IST stack), is 8-byte aligned and moves up the stack, at
 most 16 frames. Limits:
 
 - The function that was running is shown as `#0` (its RIP); its caller only
@@ -90,5 +119,7 @@ immediately, without touching the state that caused the first panic.
 `make ktest` (`docs/kernel/ktest.md`): `#UD`, `#BP`, `#PF` (with CR2 and
 error code), `#GP`, `#DE` caught and resumed; 1000 consecutive exceptions;
 GDT/TSS/IDT read back; and three panic runs whose report lines are matched
-by `tests/integration/ktest.sh`. Not tested yet: `#DF`, NMI and `#MC` on
-their IST stacks (no safe way to cause them before Phase 5).
+by `tests/integration/ktest.sh`. Phase 5 adds `#DF` on its IST stack
+(`make ktest-panic-stack-overflow`) and the page-walk lines of the `#PF`
+report. Not tested yet: NMI and `#MC` (no safe way to cause them in QEMU
+from the kernel).

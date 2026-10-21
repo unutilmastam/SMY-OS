@@ -47,6 +47,11 @@ void *phys_to_virt(uint64_t phys)
     return (void *)(uintptr_t)(phys + hhdm);
 }
 
+uint64_t phys_from_virt(const void *virt)
+{
+    return (uint64_t)(uintptr_t)virt - hhdm;
+}
+
 void phys_init(const struct limine_memmap_response *memmap, uint64_t hhdm_offset)
 {
     uint64_t usable_bytes = 0;
