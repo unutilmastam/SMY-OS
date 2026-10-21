@@ -26,7 +26,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends \
             clang-18 lld-18 llvm-18 clang-format-18 clang-tidy-18 \
             libclang-rt-18-dev clang lld llvm clang-format clang-tidy \
-            cppcheck make python3 curl xz-utils \
+            cppcheck make python3 curl xz-utils unzip \
             qemu-system-x86 ovmf xorriso mtools nasm \
             librsvg2-bin imagemagick fonts-dejavu-core
 
@@ -51,7 +51,10 @@ jobs:
       - name: Design assets (generators, SVG rules, manifest, contrast)
         run: make brand-check
 
-      - name: Brand exports and preview sheets (PNG 16-1024 px)
+      - name: Design system (palette, WCAG contrast, token code, font coverage)
+        run: make design-check
+
+      - name: Brand exports and preview sheets (PNG 16-1024 px, themes)
         run: make brand
 
       - name: Build hybrid ISO
@@ -101,6 +104,9 @@ jobs:
             build/SHA256SUMS
             build/brand/concepts-preview.png
             build/brand/logo-family.png
+            build/brand/themes-preview.png
+            build/generated/design/smy_tokens.h
+            build/generated/design/smy_tokens.css
             build/screens/boot-bios.png
             build/screens/boot-uefi.png
           if-no-files-found: error

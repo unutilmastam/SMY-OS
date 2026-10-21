@@ -18,3 +18,4 @@ Consequences). Accepted ADRs are changed only by a new ADR that supersedes them.
 | [0010](0010-physical-memory-bitmap.md) | Physical memory manager: bitmap allocator | Accepted |
 | [0011](0011-logo-concept-module.md) | Primary logo direction: concept A "Module" (owner decision) | Accepted |
 | [0012](0012-virtual-memory-and-heap.md) | Virtual memory: own page tables, guarded stacks, slab heap | Accepted |
+| [0013](0013-design-tokens-and-fonts.md) | Design tokens (generated code not committed); Inter and IBM Plex Mono | Accepted |

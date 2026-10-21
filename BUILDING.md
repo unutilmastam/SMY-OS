@@ -19,7 +19,7 @@ Install on Ubuntu 24.04:
 ```sh
 sudo apt-get update
 sudo apt-get install -y clang lld llvm clang-format clang-tidy cppcheck \
-    libclang-rt-18-dev make python3 git curl xz-utils \
+    libclang-rt-18-dev make python3 git curl xz-utils unzip \
     qemu-system-x86 ovmf xorriso mtools nasm gdb librsvg2-bin imagemagick \
     fonts-dejavu-core
 ```
@@ -28,7 +28,7 @@ sudo apt-get install -y clang lld llvm clang-format clang-tidy cppcheck \
 |---|---|
 | clang, lld, llvm | compile/link kernel and host tests (ADR 0003) |
 | libclang-rt-18-dev | ASan/UBSan runtime for host unit tests |
-| curl, xz-utils | download and unpack pinned Limine source (`tools/fetch-limine.sh`) |
+| curl, xz-utils, unzip | download and unpack pinned Limine source and fonts (`tools/fetch-limine.sh`, `tools/fetch-fonts.sh`) |
 | nasm | building Limine from source (ADR 0007) |
 | clang-format, clang-tidy, cppcheck | format and static analysis |
 | make | build system (ADR 0004) |
@@ -60,7 +60,8 @@ make iso                  # build/smy-os.iso + build/SHA256SUMS (hybrid, reprodu
 make boot-test            # boot the ISO in QEMU: BIOS/UEFI x CD/raw disk
 make ktest                # in-kernel self-tests + panic reports (docs/kernel/ktest.md)
 make brand-check          # design assets: generators, SVG rules, manifest, contrast
-make brand                # PNG exports + preview sheets -> build/brand/
+make brand                # PNG exports + preview sheets (logo, themes) -> build/brand/
+make design-check         # palette, WCAG contrast, token code (C/CSS), font coverage
 make boot-screen          # boot logo pixels checked via QEMU screendump (BIOS, UEFI)
 make run                  # boot the ISO in QEMU, serial on the terminal
 tools/check-reproducible.sh   # build the ISO twice, require identical SHA-256

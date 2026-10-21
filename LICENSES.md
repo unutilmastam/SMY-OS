@@ -43,6 +43,9 @@ added).
 | librsvg (`rsvg-convert`) | 2.58.0 (Ubuntu) | LGPL-2.1-or-later | tool | renders SVG design assets to PNG (previews, exports, kernel boot logo pixels) | no | Output images are our own artwork |
 | ImageMagick (`montage`, `convert`) | 6.9.12 (Ubuntu) | ImageMagick License | tool | composes preview sheets; converts the boot logo and QEMU screendumps to raw RGB/PNG | no | |
 | DejaVu fonts (`fonts-dejavu-core`) | 2.37 (Ubuntu) | Bitstream Vera licence + public domain changes | tool | label text on generated preview sheets only | no | Never part of a logo, the ISO or any committed asset |
+| Inter (font) | 4.1 | SIL OFL 1.1 | in use (Phase 6): design checks and preview sheets | UI typeface (DESIGN_SYSTEM.md §6) | not yet (ISO from Phase 20, with `LICENSE.txt`) | Release archive `Inter-4.1.zip`, SHA-256 `9883fdd4…5756b11e` pinned in `tools/fetch-fonts.sh`; not committed; no reserved font name |
+| IBM Plex Mono (font) | 2.5.0 | SIL OFL 1.1, Reserved Font Name "Plex" | in use (Phase 6): design checks | monospace typeface | not yet (ISO from Phase 20, with `LICENSE.txt`) | Release archive `ibm-plex-mono.zip` (tag `@ibm/plex-mono@2.5.0`), SHA-256 `6d23f012…bbc481c` pinned in `tools/fetch-fonts.sh`; a modified (e.g. subset) version must not be named "Plex" |
+| unzip | Ubuntu 24.04 | Info-ZIP licence | tool | unpack the pinned font archives | no | |
 | GDB | 15.1 | GPL-3.0-or-later | tool | debugging | no | |
 | Python 3 | 3.x | PSF-2.0 | tool | host scripts | no | Standard library only |
 | `actions/upload-artifact` (GitHub Action) | v7.0.2 | MIT | tool | CI uploads the test ISO | no | Pinned by commit SHA `cf430e030ddbb5b0abf93d22962f4752f3646cd9` (Phase 2) |

@@ -86,6 +86,7 @@ need "python3" python3 python3 --version
 need "curl" curl curl --version
 need "sha256sum" sha256sum sha256sum --version
 need "tar" tar tar --version
+need "unzip" unzip unzip -v
 # The kernel build renders the boot logo (tools/design/boot_logo.py).
 need "rsvg-convert" rsvg-convert rsvg-convert --version
 need "convert (ImageMagick)" convert convert -version

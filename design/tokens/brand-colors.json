@@ -28,7 +28,7 @@
     "violet": "#6558DB"
   },
   "contrast": {
-    "$comment": "Pairs used by the logo family. min: 4.5 for text (wordmark, labels), 3.0 for graphical objects (WCAG 2.x 1.4.11). The light accent is only used for the logo core (graphical); its 4.48:1 on light.background fails text contrast and is an open owner decision for Phase 6 (proposal #077479).",
+    "$comment": "Pairs used by the logo family. min: 4.5 for text (wordmark, labels), 3.0 for graphical objects (WCAG 2.x 1.4.11). The light accent #087F83 is only used for the logo core (graphical); for text and controls the light theme uses #077479 (cyan.750, DESIGN_SYSTEM.md §3.5).",
     "pairs": [
       {"fg": "smy.white", "bg": "smy.void", "min": 4.5, "use": "symbol frame, wordmark on dark"},
       {"fg": "smy.cyan", "bg": "smy.void", "min": 3.0, "use": "symbol core on dark"},

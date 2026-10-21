@@ -1,0 +1,77 @@
+{
+  "$comment": "Foundation tokens (DESIGN_SYSTEM.md 'Foundations'). All lengths are logical pixels at scale 1x; the toolkit multiplies by the display scale factor. Durations in milliseconds. Easing as cubic-bezier control points.",
+  "font": {
+    "family": {
+      "ui": "Inter",
+      "mono": "IBM Plex Mono"
+    },
+    "weight": {
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    }
+  },
+  "type": {
+    "$comment": "size / line height in px, weight token, letter spacing in 1/1000 em",
+    "caption": {"size": 12, "line": 16, "weight": "regular", "tracking": 10},
+    "body-small": {"size": 13, "line": 18, "weight": "regular", "tracking": 0},
+    "body": {"size": 14, "line": 20, "weight": "regular", "tracking": 0},
+    "body-strong": {"size": 14, "line": 20, "weight": "semibold", "tracking": 0},
+    "label": {"size": 13, "line": 16, "weight": "medium", "tracking": 10},
+    "title-small": {"size": 16, "line": 22, "weight": "semibold", "tracking": -5},
+    "title": {"size": 20, "line": 28, "weight": "semibold", "tracking": -10},
+    "title-large": {"size": 24, "line": 32, "weight": "semibold", "tracking": -15},
+    "display": {"size": 32, "line": 40, "weight": "bold", "tracking": -20},
+    "mono": {"size": 13, "line": 20, "weight": "regular", "tracking": 0}
+  },
+  "space": {
+    "$comment": "4 px base; 2 only for optical nudges",
+    "0": 0, "0.5": 2, "1": 4, "2": 8, "3": 12, "4": 16, "5": 20, "6": 24, "8": 32, "10": 40, "12": 48, "16": 64
+  },
+  "size": {
+    "control-small": 24,
+    "control": 32,
+    "control-large": 40,
+    "icon-small": 16,
+    "icon": 20,
+    "icon-large": 24,
+    "titlebar": 40,
+    "touch-target-min": 24,
+    "text-min": 12
+  },
+  "radius": {
+    "$comment": "Echoes the logo: rounded frames, a smaller radius for the inner 'core' elements",
+    "none": 0, "small": 4, "control": 8, "panel": 12, "window": 16, "full": 9999
+  },
+  "border": {
+    "hairline": 1, "strong": 2, "focus-ring": 2, "focus-offset": 2, "focus-ring-high-contrast": 3
+  },
+  "elevation": {
+    "$comment": "Software-renderer friendly: at most one shadow per level, small blur. High contrast replaces shadows with a border-strong outline.",
+    "0": {"y": 0, "blur": 0, "spread": 0, "opacity": 0.0},
+    "1": {"y": 1, "blur": 2, "spread": 0, "opacity": 0.24},
+    "2": {"y": 4, "blur": 8, "spread": 0, "opacity": 0.28},
+    "3": {"y": 8, "blur": 16, "spread": 0, "opacity": 0.32}
+  },
+  "motion": {
+    "duration": {"instant": 0, "fast": 100, "normal": 160, "slow": 240, "emphasis": 320},
+    "easing": {
+      "standard": [0.2, 0.0, 0.0, 1.0],
+      "enter": [0.0, 0.0, 0.0, 1.0],
+      "exit": [0.3, 0.0, 1.0, 1.0]
+    },
+    "reduced-motion": "all durations become 0 except opacity fades, which use 'fast'"
+  },
+  "state": {
+    "$comment": "State layers drawn over a component's fill, as opacity of text-primary (hover/pressed) or accent (selected)",
+    "hover-opacity": 0.08,
+    "pressed-opacity": 0.14,
+    "selected-opacity": 0.16,
+    "disabled-opacity": 0.40,
+    "scrim-opacity": 0.56
+  },
+  "scale": {
+    "factors": [1.0, 1.25, 1.5, 2.0]
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "$comment": "Source of the base colour ramps (DESIGN_SYSTEM.md 'Colour system'). Each hue has fixed anchor colours at given steps; tools/design/gen_palette.py fills the other steps by interpolating in OKLCH and writes color-base.json. Anchors are brand values (docs/BRAND_PROMPT.md \u00a74) or new values introduced in Phase 6 (marked in DESIGN_SYSTEM.md).",
+  "steps": [
+    0,
+    50,
+    100,
+    150,
+    200,
+    300,
+    400,
+    500,
+    600,
+    700,
+    750,
+    800,
+    850,
+    900,
+    950,
+    1000
+  ],
+  "hues": {
+    "neutral": {
+      "0": "#FFFFFF",
+      "50": "#F5F7FB",
+      "100": "#EAF0F7",
+      "150": "#DCE3ED",
+      "400": "#929BAF",
+      "600": "#5D687C",
+      "800": "#293247",
+      "850": "#171E2D",
+      "900": "#141A29",
+      "950": "#101522",
+      "1000": "#080B12"
+    },
+    "cyan": {
+      "0": "#F2FFFE",
+      "50": "#D8FFFC",
+      "300": "#54F6E8",
+      "700": "#087F83",
+      "750": "#077479",
+      "1000": "#021A1C"
+    },
+    "violet": {
+      "0": "#F6F5FF",
+      "400": "#7B72FF",
+      "600": "#6558DB",
+      "1000": "#120F33"
+    },
+    "green": {
+      "0": "#F2FDF7",
+      "300": "#5DE6A3",
+      "1000": "#05200F",
+      "700": "#0E7044"
+    },
+    "amber": {
+      "0": "#FFFAEB",
+      "200": "#FFD166",
+      "1000": "#241800",
+      "700": "#8A5000"
+    },
+    "red": {
+      "0": "#FFF4F5",
+      "400": "#FF647C",
+      "1000": "#2A0710",
+      "700": "#B8243D"
+    },
+    "blue": {
+      "0": "#F2F9FF",
+      "300": "#65BFFF",
+      "1000": "#03182B",
+      "700": "#155FA8"
+    }
+  }
+}

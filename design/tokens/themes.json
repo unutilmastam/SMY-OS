@@ -1,0 +1,112 @@
+{
+  "$comment": "Semantic colour tokens per theme (DESIGN_SYSTEM.md 'Colour system'). Values reference base ramps (color-base.json: hue.step) or brand colours (brand-colors.json: smy.*); #RRGGBB literals are not allowed here. 'pairs' lists every foreground/background combination components may use; tools/design/check_contrast.py checks each one against the theme's minimums.",
+  "themes": {
+    "dark": {
+      "label": "Dark (default)",
+      "minimums": {"text": 4.5, "large": 3.0, "ui": 3.0},
+      "colors": {
+        "bg-app": "neutral.1000",
+        "surface": "neutral.950",
+        "surface-raised": "neutral.850",
+        "surface-sunken": "neutral.1000",
+        "surface-hover": "neutral.800",
+        "border-subtle": "neutral.800",
+        "border-strong": "neutral.500",
+        "text-primary": "smy.white",
+        "text-secondary": "neutral.400",
+        "text-disabled": "neutral.600",
+        "text-on-accent": "neutral.1000",
+        "accent": "cyan.300",
+        "accent-hover": "cyan.200",
+        "accent-pressed": "cyan.400",
+        "accent-subtle": "cyan.950",
+        "focus-ring": "cyan.300",
+        "success": "green.300",
+        "success-surface": "green.950",
+        "warning": "amber.200",
+        "warning-surface": "amber.950",
+        "danger": "red.400",
+        "danger-surface": "red.950",
+        "info": "blue.300",
+        "info-surface": "blue.950"
+      }
+    },
+    "light": {
+      "label": "Light",
+      "minimums": {"text": 4.5, "large": 3.0, "ui": 3.0},
+      "colors": {
+        "bg-app": "neutral.50",
+        "surface": "neutral.0",
+        "surface-raised": "neutral.0",
+        "surface-sunken": "neutral.100",
+        "surface-hover": "neutral.100",
+        "border-subtle": "neutral.150",
+        "border-strong": "neutral.500",
+        "text-primary": "neutral.900",
+        "text-secondary": "neutral.600",
+        "text-disabled": "neutral.400",
+        "text-on-accent": "neutral.0",
+        "accent": "cyan.750",
+        "accent-hover": "cyan.800",
+        "accent-pressed": "cyan.850",
+        "accent-subtle": "cyan.50",
+        "focus-ring": "cyan.750",
+        "success": "green.700",
+        "success-surface": "green.50",
+        "warning": "amber.700",
+        "warning-surface": "amber.50",
+        "danger": "red.700",
+        "danger-surface": "red.50",
+        "info": "blue.700",
+        "info-surface": "blue.50"
+      }
+    },
+    "high-contrast": {
+      "label": "High contrast",
+      "minimums": {"text": 7.0, "large": 4.5, "ui": 4.5},
+      "colors": {
+        "bg-app": "neutral.1000",
+        "surface": "neutral.1000",
+        "surface-raised": "neutral.1000",
+        "surface-sunken": "neutral.1000",
+        "surface-hover": "neutral.850",
+        "border-subtle": "neutral.400",
+        "border-strong": "neutral.150",
+        "text-primary": "neutral.0",
+        "text-secondary": "neutral.150",
+        "text-disabled": "neutral.400",
+        "text-on-accent": "neutral.1000",
+        "accent": "cyan.300",
+        "accent-hover": "cyan.200",
+        "accent-pressed": "cyan.100",
+        "accent-subtle": "cyan.950",
+        "focus-ring": "amber.200",
+        "success": "green.300",
+        "success-surface": "green.1000",
+        "warning": "amber.200",
+        "warning-surface": "amber.1000",
+        "danger": "red.300",
+        "danger-surface": "red.1000",
+        "info": "blue.300",
+        "info-surface": "blue.1000"
+      }
+    }
+  },
+  "pairs": [
+    {"kind": "text", "fg": "text-primary", "bg": ["bg-app", "surface", "surface-raised", "surface-sunken", "surface-hover", "accent-subtle", "success-surface", "warning-surface", "danger-surface", "info-surface"]},
+    {"kind": "text", "fg": "text-secondary", "bg": ["bg-app", "surface", "surface-raised", "surface-sunken", "surface-hover"]},
+    {"kind": "text", "fg": "accent", "bg": ["bg-app", "surface", "surface-raised", "surface-sunken"]},
+    {"kind": "text", "fg": "text-on-accent", "bg": ["accent", "accent-hover", "accent-pressed"]},
+    {"kind": "text", "fg": "success", "bg": ["bg-app", "surface", "surface-raised", "success-surface"]},
+    {"kind": "text", "fg": "warning", "bg": ["bg-app", "surface", "surface-raised", "warning-surface"]},
+    {"kind": "text", "fg": "danger", "bg": ["bg-app", "surface", "surface-raised", "danger-surface"]},
+    {"kind": "text", "fg": "info", "bg": ["bg-app", "surface", "surface-raised", "info-surface"]},
+    {"kind": "ui", "fg": "border-strong", "bg": ["bg-app", "surface", "surface-raised", "surface-sunken"]},
+    {"kind": "ui", "fg": "focus-ring", "bg": ["bg-app", "surface", "surface-raised", "surface-sunken"]},
+    {"kind": "ui", "fg": "accent", "bg": ["bg-app", "surface", "surface-raised"]}
+  ],
+  "exempt": {
+    "text-disabled": {"min": 2.0, "reason": "WCAG 2.2 1.4.3 exempts inactive components; still kept readable"},
+    "border-subtle": {"min": 1.15, "reason": "decoration only (dividers); never the only boundary of a control"}
+  }
+}
