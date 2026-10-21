@@ -1,6 +1,6 @@
 # ADR 0013 — Design tokens: JSON source, generated code not committed; Inter and IBM Plex Mono
 
-- **Status:** Accepted (font choice: owner informed; colour proposals pending owner approval)
+- **Status:** Accepted (fonts, colours and the monochrome theme direction approved by the owner, 2026-10-21)
 - **Date:** 2026-10-21
 - **Phase:** 6
 
@@ -49,7 +49,7 @@ ROADMAP Phase 6 asks to choose whether generated files are committed.
 
 - Anyone can regenerate the code with `make design-check`; CI fails on any
   contrast regression, palette drift or missing glyph.
-- The light-theme accent `#077479` and the new light status colours are
-  proposals until the owner approves them (`DESIGN_SYSTEM.md` §3.5).
+- The light-theme accent `#077479` and the new light status colours were
+  approved by the owner on 2026-10-21 (`DESIGN_SYSTEM.md` §3.5).
 - Font files enter the ISO only with the desktop (Phase 20); their licence
   texts ship with them.

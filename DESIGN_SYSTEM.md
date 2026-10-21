@@ -88,7 +88,7 @@ skeuomorphic depth.
 | Surface | `#101522` deep | `#FFFFFF` | `#080B12` + 2 px `border-strong` |
 | Text | `#F4F7FF` | `#141A29` | `#FFFFFF` |
 | Primary button | `#F4F7FF` fill, void text | `#141A29` fill, white text | `#FFFFFF` fill, void text |
-| Accent (small elements) | `#54F6E8` cyan | **`#077479`** (proposal, §3.5) | `#54F6E8` |
+| Accent (small elements) | `#54F6E8` cyan | **`#077479`** (owner-approved, §3.5) | `#54F6E8` |
 | Focus ring | cyan | `#077479` | `#FFD166` amber, 3 px |
 | Minimums | text 4.5:1, large/UI 3:1 | same | text **7:1**, large/UI 4.5:1 |
 
@@ -115,11 +115,11 @@ if a token is not a base or brand colour.
   text. Proposal: the light theme's `accent` (buttons, links, focus) uses
   **`#077479`** (cyan.750: 5.18:1 on `#F5F7FB`, 5.55:1 on white). The logo
   keeps `#087F83` for its core: that core is a graphic, where 3:1 applies.
-  **Owner approval requested.**
+  **Approved by the owner (2026-10-21).**
 - **Light-theme status colours** (new, were missing): success `#0E7044`,
   warning `#8A5000`, danger `#B8243D`, info `#155FA8`. Each is ≥ 5:1 on
   `#F5F7FB` and on white. These are the step-700
-  anchors of their ramps. **Owner approval requested.**
+  anchors of their ramps. **Approved by the owner (2026-10-21).**
 - **High-contrast theme** (new): built from the same ramps; amber focus
   ring so focus never looks like selection.
 

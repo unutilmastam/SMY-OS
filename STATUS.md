@@ -1,6 +1,6 @@
 # SMY-OS Status
 
-Last updated: 2026-10-21 — Phase 6.
+Last updated: 2026-10-21 — Phase 6 verified.
 
 Status vocabulary (used exactly): **Implemented · Compiles · Unit-tested ·
 Emulator-tested · Hardware-tested · Production-ready.** A passing build is not
@@ -36,7 +36,7 @@ interface.
 | 4 — Physical memory manager | VERIFIED | CI run 39076695215 green (incl. 4 GiB test) |
 | 5B — Brand identity | VERIFIED | concept A "Module" (ADR 0011); logo family approved by the owner 2026-10-21; CI run 39575540426 green (incl. boot-screen pixel test) |
 | 5 — Virtual memory + heap | VERIFIED | CI run 39578027802 green (ktest 24/24 BIOS+UEFI, `-cpu max`, 5 panic reports, 4 GiB) |
-| 6 — D1 Design system | IN PROGRESS | tokens, generator, contrast test, fonts done; owner review of the theme sheet pending |
+| 6 — D1 Design system | VERIFIED | CI run 39580554634 green; monochrome themes, `#077479`, Inter + IBM Plex Mono approved by the owner 2026-10-21 |
 | 7 … 38, 12B | NOT STARTED | see `ROADMAP.md` |
 
 ## Components
@@ -78,7 +78,7 @@ interface.
 | Design tokens (`design/tokens/`: base ramps, 3 themes, foundations) | Implemented; 147 contrast pairs pass (CI `make design-check`) |
 | Token code generator (`gen_tokens.py` → `smy_tokens.h`, `smy_tokens.css`) | Implemented; header compiled with -Werror in CI; files not committed (ADR 0013) |
 | Fonts Inter 4.1, IBM Plex Mono 2.5.0 | Pinned by SHA-256, not committed; Uzbek Latin + Cyrillic coverage checked in CI |
-| Theme review sheet (`build/brand/themes-preview.png`) | Generated in CI; awaiting owner review |
+| Theme review sheet (`build/brand/themes-preview.png`) | Generated in CI; approved by the owner (second, monochrome version) |
 | Compatibility (C0–C8) | not started (see `COMPATIBILITY.md`) |
 
 ## Last check results (Phase 5, cloud session 2026-10-21)

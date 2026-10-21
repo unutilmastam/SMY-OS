@@ -74,7 +74,7 @@ Measured contrast (WCAG 2.x; checked by `validate_brand.py`): white on void
 light background 4.48 (passes the 3:1 rule for graphics; the core is a
 graphic, not text). Cyan is **never** used on light backgrounds (1.25:1).
 
-Phase 6 resolution (`DESIGN_SYSTEM.md` §3.5, awaiting owner approval): the
+Phase 6 resolution (`DESIGN_SYSTEM.md` §3.5, approved by the owner 2026-10-21): the
 light theme uses `#077479` for text and controls; the logo core keeps
 `#087F83`.
 
