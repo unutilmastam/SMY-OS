@@ -19,6 +19,14 @@ tmp="$out/preview-tmp"
 rm -rf "$tmp"
 mkdir -p "$tmp"
 
+# ImageMagick 6 has no usable default font for labels; name one explicitly
+# (fonts-dejavu-core, BUILDING.md). Labels only - never part of a logo.
+font=${PREVIEW_FONT:-/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf}
+if [ ! -f "$font" ]; then
+    echo "brand_preview: font $font not found (install fonts-dejavu-core)" >&2
+    exit 1
+fi
+
 rows=""
 for c in a b c; do
     rsvg-convert -w 700 "$src/concept-$c-lockup-dark.svg" -o "$tmp/$c-1.png"
@@ -32,7 +40,7 @@ for c in a b c; do
         -tile 3x1 -geometry +6+6 -background '#9AA3B5' "$tmp/$c-4.png"
     name=$(sed -n 's/.*<title>SMY-OS logo concept \(.\): \([A-Za-z]*\).*/\1 — \2/p' "$src/concept-$c-symbol.svg")
     montage -label "$name" "$tmp/$c-1.png" "$tmp/$c-2.png" "$tmp/$c-3.png" "$tmp/$c-4.png" \
-        -tile 4x1 -geometry 700x200+10+10 -pointsize 22 -background '#C9CFDA' "$tmp/row-$c.png"
+        -tile 4x1 -geometry 700x200+10+10 -font "$font" -pointsize 22 -background '#C9CFDA' "$tmp/row-$c.png"
     rows="$rows $tmp/row-$c.png"
 done
 # shellcheck disable=SC2086
