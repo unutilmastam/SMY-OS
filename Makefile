@@ -57,7 +57,7 @@ lint-cppcheck:
 	@echo "lint-cppcheck: OK"
 
 # The full sequence CI runs (CONTRIBUTING.md §5).
-check: all test format-check lint brand-check iso boot-test ktest
+check: all test format-check lint brand-check iso boot-test boot-screen ktest
 
 clean:
 	rm -rf $(BUILD)

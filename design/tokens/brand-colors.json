@@ -1,0 +1,43 @@
+{
+  "$comment": "SMY-OS brand palette: the base colour layer (docs/BRAND_PROMPT.md §4). UI themes (Phase 6) map semantic tokens onto these values. Owner-provided values; any change needs owner approval. Checked by tools/design/validate_brand.py.",
+  "brand": {
+    "smy.void": "#080B12",
+    "smy.deep": "#101522",
+    "smy.surface": "#171E2D",
+    "smy.cyan": "#54F6E8",
+    "smy.pulse": "#7B72FF",
+    "smy.ice": "#D8FFFC",
+    "smy.white": "#F4F7FF",
+    "smy.muted": "#929BAF",
+    "smy.graphite": "#293247"
+  },
+  "semantic-dark": {
+    "success": "#5DE6A3",
+    "warning": "#FFD166",
+    "error": "#FF647C",
+    "info": "#65BFFF"
+  },
+  "light": {
+    "background": "#F5F7FB",
+    "surface": "#FFFFFF",
+    "elevated": "#EAF0F7",
+    "text": "#141A29",
+    "muted": "#5D687C",
+    "border": "#DCE3ED",
+    "accent": "#087F83",
+    "violet": "#6558DB"
+  },
+  "contrast": {
+    "$comment": "Pairs used by the logo family. min: 4.5 for text (wordmark, labels), 3.0 for graphical objects (WCAG 2.x 1.4.11). The light accent is only used for the logo core (graphical); its 4.48:1 on light.background fails text contrast and is an open owner decision for Phase 6 (proposal #077479).",
+    "pairs": [
+      {"fg": "smy.white", "bg": "smy.void", "min": 4.5, "use": "symbol frame, wordmark on dark"},
+      {"fg": "smy.cyan", "bg": "smy.void", "min": 3.0, "use": "symbol core on dark"},
+      {"fg": "smy.muted", "bg": "smy.void", "min": 4.5, "use": "installer/developer label on dark"},
+      {"fg": "light.text", "bg": "light.background", "min": 4.5, "use": "symbol frame, wordmark on light"},
+      {"fg": "light.text", "bg": "light.surface", "min": 4.5, "use": "light app icon"},
+      {"fg": "light.accent", "bg": "light.background", "min": 3.0, "use": "symbol core on light"},
+      {"fg": "light.accent", "bg": "light.surface", "min": 3.0, "use": "light app icon core"},
+      {"fg": "light.muted", "bg": "light.background", "min": 4.5, "use": "installer label on light"}
+    ]
+  }
+}

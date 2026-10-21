@@ -12,6 +12,7 @@
 #define SMY_KERNEL_DRIVERS_BOOTFB_BOOTFB_H
 
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 
 struct bootfb_format {
@@ -45,5 +46,15 @@ uint32_t bootfb_rgb(const struct bootfb *fb, uint8_t r, uint8_t g, uint8_t b);
 /* Fill a rectangle; parts outside the framebuffer are clipped. */
 void bootfb_fill_rect(const struct bootfb *fb, uint32_t x, uint32_t y, uint32_t w, uint32_t h,
                       uint32_t color);
+
+/*
+ * Draw a run-length-encoded RGB image (runs of {count 1..255, r, g, b},
+ * row by row; drivers/bootfb/boot_logo.h) with its top-left corner at
+ * (x, y); parts outside the framebuffer are clipped. The data is validated
+ * first: a zero-length run, a truncated run or a pixel count other than
+ * w * h returns false and draws nothing.
+ */
+bool bootfb_blit_rle(const struct bootfb *fb, uint32_t x, uint32_t y, uint32_t w, uint32_t h,
+                     const uint8_t *rle, size_t size);
 
 #endif /* SMY_KERNEL_DRIVERS_BOOTFB_BOOTFB_H */

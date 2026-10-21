@@ -54,7 +54,8 @@ PC is **not tested** (Phase 36).
    the Limine protocol (base revision 6).
 3. `_start` (`kernel/arch/x86_64/entry.S`) aligns the stack and calls `kmain`.
 4. `kmain` (`kernel/core/main.c`): COM1 serial log → checks base revision →
-   logs bootloader and firmware type → paints the boot framebuffer → logs
+   logs bootloader and firmware type → paints the boot screen (brand boot
+   logo centred on `#080B12`, `design/brand/BRAND_GUIDELINES.md` §8) → logs
    `SMY-OS: boot OK` → halts.
 
 Serial lines (stable; the boot test matches them):

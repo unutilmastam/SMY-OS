@@ -35,7 +35,7 @@ sudo apt-get install -y clang lld llvm clang-format clang-tidy cppcheck \
 | qemu-system-x86, ovmf | run and test the OS (BIOS and UEFI) |
 | xorriso, mtools | build the hybrid ISO and FAT images *(Phase 2)* |
 | gdb | debugging through QEMU's gdbstub |
-| librsvg2-bin, imagemagick | render and compose design previews (`make brand-preview`) |
+| librsvg2-bin, imagemagick | render the boot logo into the kernel (required for `make kernel`), PNG exports and preview sheets (`make brand`) |
 
 `tools/check-env.sh` verifies them and prints versions: it fails if a
 Phase 1 tool is missing and warns about later-phase tools (`--all` makes
@@ -57,8 +57,9 @@ make V=1 ...              # show full command lines
 make iso                  # build/smy-os.iso + build/SHA256SUMS (hybrid, reproducible)
 make boot-test            # boot the ISO in QEMU: BIOS/UEFI x CD/raw disk
 make ktest                # in-kernel self-tests + panic reports (docs/kernel/ktest.md)
-make brand-check          # design assets: generator up to date, SVG rules
-make brand-preview        # logo preview sheet -> build/brand/concepts-preview.png
+make brand-check          # design assets: generators, SVG rules, manifest, contrast
+make brand                # PNG exports + preview sheets -> build/brand/
+make boot-screen          # boot logo pixels checked via QEMU screendump (BIOS, UEFI)
 make run                  # boot the ISO in QEMU, serial on the terminal
 tools/check-reproducible.sh   # build the ISO twice, require identical SHA-256
 ```

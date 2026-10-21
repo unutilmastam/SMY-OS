@@ -40,8 +40,8 @@ added).
 | xorriso | 1.5.6 | GPL-3.0-or-later | tool | ISO creation | no | Output ISO is not a derivative of xorriso |
 | mtools | 4.0.43 | GPL-3.0-or-later | tool | FAT images | no | |
 | cppcheck | 2.13.0 | GPL-3.0-or-later | tool | static analysis | no | |
-| librsvg (`rsvg-convert`) | 2.58.0 (Ubuntu) | LGPL-2.1-or-later | tool | renders SVG design assets to PNG previews | no | Output images are our own artwork |
-| ImageMagick (`montage`, `convert`) | 6.9.12 (Ubuntu) | ImageMagick License | tool | composes preview sheets | no | |
+| librsvg (`rsvg-convert`) | 2.58.0 (Ubuntu) | LGPL-2.1-or-later | tool | renders SVG design assets to PNG (previews, exports, kernel boot logo pixels) | no | Output images are our own artwork |
+| ImageMagick (`montage`, `convert`) | 6.9.12 (Ubuntu) | ImageMagick License | tool | composes preview sheets; converts the boot logo and QEMU screendumps to raw RGB/PNG | no | |
 | GDB | 15.1 | GPL-3.0-or-later | tool | debugging | no | |
 | Python 3 | 3.x | PSF-2.0 | tool | host scripts | no | Standard library only |
 | `actions/upload-artifact` (GitHub Action) | v7.0.2 | MIT | tool | CI uploads the test ISO | no | Pinned by commit SHA `cf430e030ddbb5b0abf93d22962f4752f3646cd9` (Phase 2) |

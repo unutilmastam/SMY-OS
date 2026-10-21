@@ -7,7 +7,8 @@
 
 BOOT_TEST := tests/integration/boot_test.sh
 
-.PHONY: boot-test boot-test-bios-cd boot-test-bios-disk boot-test-uefi-cd boot-test-uefi-disk run
+.PHONY: boot-test boot-test-bios-cd boot-test-bios-disk boot-test-uefi-cd boot-test-uefi-disk run \
+	boot-screen boot-screen-bios boot-screen-uefi
 
 boot-test: boot-test-bios-cd boot-test-bios-disk boot-test-uefi-cd boot-test-uefi-disk
 
@@ -22,6 +23,18 @@ boot-test-uefi-cd: $(ISO)
 
 boot-test-uefi-disk: $(ISO)
 	$(Q)$(BOOT_TEST) uefi disk $(ISO)
+
+# Boot screen (brand logo on VOID) checked pixel by pixel on both firmwares;
+# the screenshots stay in build/screens/ for review (CI uploads them).
+CHECK_SCREEN := tests/integration/check_boot_screen.py
+
+boot-screen: boot-screen-bios boot-screen-uefi
+
+boot-screen-bios boot-screen-uefi: boot-screen-%: $(ISO)
+	@mkdir -p $(BUILD)/screens
+	$(Q)BOOT_SCREENSHOT=$(BUILD)/screens/boot-$*.ppm $(BOOT_TEST) $* cd $(ISO)
+	$(Q)python3 $(CHECK_SCREEN) $(BUILD)/screens/boot-$*.ppm
+	$(Q)convert $(BUILD)/screens/boot-$*.ppm $(BUILD)/screens/boot-$*.png
 
 # Interactive run: serial on the terminal, no graphics window
 # (add QEMU_EXTRA="-s -S" to wait for GDB, see BUILDING.md).

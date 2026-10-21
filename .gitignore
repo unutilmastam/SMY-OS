@@ -16,3 +16,6 @@
 .idea/
 .DS_Store
 *.swp
+
+# Python bytecode (tools/design imports shared modules)
+__pycache__/

@@ -113,3 +113,51 @@ SMY_TEST(bootfb_fill_rect_clips_and_keeps_padding)
     bootfb_fill_rect(&fb, 0, 0, FB_W, FB_H, 0x333333);
     SMY_EXPECT_EQ_U64(count_color(0x333333), FB_W * FB_H);
 }
+
+SMY_TEST(bootfb_blit_rle_draws_runs_across_rows)
+{
+    struct bootfb fb = make_fb();
+    /* 3 x 2 image: 4 red pixels (wrapping into row 2), then 2 blue. */
+    const uint8_t rle[] = {4, 0xFF, 0x00, 0x00, 2, 0x00, 0x00, 0xFF};
+
+    SMY_EXPECT(bootfb_blit_rle(&fb, 1, 2, 3, 2, rle, sizeof rle));
+    SMY_EXPECT_EQ_U64(pixels[2 * FB_STRIDE + 1], 0xFF0000);
+    SMY_EXPECT_EQ_U64(pixels[2 * FB_STRIDE + 3], 0xFF0000);
+    SMY_EXPECT_EQ_U64(pixels[3 * FB_STRIDE + 1], 0xFF0000);
+    SMY_EXPECT_EQ_U64(pixels[3 * FB_STRIDE + 2], 0x0000FF);
+    SMY_EXPECT_EQ_U64(pixels[3 * FB_STRIDE + 3], 0x0000FF);
+    SMY_EXPECT_EQ_U64(pixels[2 * FB_STRIDE + 4], PAD);
+    SMY_EXPECT_EQ_U64(count_color(0xFF0000), 4);
+    SMY_EXPECT_EQ_U64(count_color(0x0000FF), 2);
+}
+
+SMY_TEST(bootfb_blit_rle_clips_at_the_edges)
+{
+    struct bootfb fb = make_fb();
+    const uint8_t rle[] = {255, 0x11, 0x22, 0x33, 145, 0x11, 0x22, 0x33}; /* 20 x 20 */
+
+    SMY_EXPECT(bootfb_blit_rle(&fb, FB_W - 2, FB_H - 3, 20, 20, rle, sizeof rle));
+    SMY_EXPECT_EQ_U64(count_color(0x112233), 2 * 3);
+    for (uint32_t y = 0; y < FB_H; y++) {
+        for (uint32_t x = FB_W; x < FB_STRIDE; x++) {
+            SMY_EXPECT_EQ_U64(pixels[y * FB_STRIDE + x], PAD);
+        }
+    }
+}
+
+SMY_TEST(bootfb_blit_rle_rejects_malformed_data_without_drawing)
+{
+    struct bootfb fb = make_fb();
+    const uint8_t too_few[] = {5, 1, 2, 3};              /* 5 of 6 pixels */
+    const uint8_t too_many[] = {7, 1, 2, 3};             /* 7 of 6 */
+    const uint8_t zero_run[] = {0, 1, 2, 3, 6, 1, 2, 3}; /* zero-length run */
+    const uint8_t truncated[] = {6, 1, 2};               /* not a whole run */
+
+    SMY_EXPECT(!bootfb_blit_rle(&fb, 0, 0, 3, 2, too_few, sizeof too_few));
+    SMY_EXPECT(!bootfb_blit_rle(&fb, 0, 0, 3, 2, too_many, sizeof too_many));
+    SMY_EXPECT(!bootfb_blit_rle(&fb, 0, 0, 3, 2, zero_run, sizeof zero_run));
+    SMY_EXPECT(!bootfb_blit_rle(&fb, 0, 0, 3, 2, truncated, sizeof truncated));
+    SMY_EXPECT(!bootfb_blit_rle(&fb, 0, 0, 0, 2, too_few, sizeof too_few));
+    SMY_EXPECT(!bootfb_blit_rle(&fb, 0, 0, 3, 2, NULL, 4));
+    SMY_EXPECT_EQ_U64(count_color(0x010203), 0);
+}

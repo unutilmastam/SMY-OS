@@ -6,8 +6,8 @@
 # Language: POSIX sh (ADR 0002).
 #
 # Usage: tools/check-env.sh [--all]
-#   default  fail if a tool needed for kernel build, unit tests and lint is
-#            missing; report ISO/boot-test tools (QEMU, OVMF, xorriso,
+#   default  fail if a tool needed for kernel build (including the boot
+#            logo renderer), unit tests and lint is missing; report ISO/boot-test tools (QEMU, OVMF, xorriso,
 #            mtools, nasm) as WARN.
 #   --all    also fail if an ISO/boot-test tool is missing (CI uses this).
 #
@@ -86,6 +86,9 @@ need "python3" python3 python3 --version
 need "curl" curl curl --version
 need "sha256sum" sha256sum sha256sum --version
 need "tar" tar tar --version
+# The kernel build renders the boot logo (tools/design/boot_logo.py).
+need "rsvg-convert" rsvg-convert rsvg-convert --version
+need "convert (ImageMagick)" convert convert -version
 
 if command -v clang >/dev/null 2>&1; then
     major=$(clang -dumpversion | cut -d. -f1)
@@ -110,7 +113,6 @@ later "qemu-system-x86_64" qemu-system-x86_64 qemu-system-x86_64 --version
 later "xorriso" xorriso xorriso -version
 later "mtools" mformat mformat --version
 later "nasm (Limine build)" nasm nasm -v
-later "rsvg-convert" rsvg-convert rsvg-convert --version
 later "montage (ImageMagick)" montage montage -version
 if [ -f /usr/share/OVMF/OVMF_CODE_4M.fd ]; then
     printf '  OK    %-20s %s\n' "OVMF" "/usr/share/OVMF/OVMF_CODE_4M.fd"

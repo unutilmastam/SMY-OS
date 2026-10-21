@@ -31,10 +31,10 @@ Status: — not applicable yet · ✗ not implemented · ✓ passing in CI.
 | Build system (`make check`) | — | ✓ | ✓ | — | — | — | — |
 | Kernel string library (`kernel/core/string.c`) | — | ✓ | ✓ | ✓ (linked, boots) | ✓ (linked, boots) | — | ✗ |
 | Number formatting (`kernel/core/fmt.c`) | — | ✓ | ✓ | ✓ | ✓ | — | ✗ |
-| Boot framebuffer (`kernel/drivers/bootfb`) | — | ✓ | ✓ | ✓ (screenshot checked once by hand) | ✓ | — | ✗ |
+| Boot framebuffer (`kernel/drivers/bootfb`) | — | ✓ | ✓ | ✓ (`make boot-screen`: logo pixels via QEMU screendump) | ✓ (same) | — | ✗ |
 | Boot / kernel entry, serial log, ISO (CD + raw disk) | — | — | ✓ | ✓ | ✓ | — | ✗ |
 | Reproducible ISO | — | — | — | ✓ | ✓ | — | — |
-| Design assets (`design/`: SVG rules, generated logos up to date) | — | ✓ (`make brand-check`) | — | — | — | — | — |
+| Design assets (`design/`: SVG rules, generated logos up to date, manifest, contrast, PNG exports) | — | ✓ (`make brand-check`, `make brand`) | — | — | — | — | — |
 | CPU / exceptions (GDT, TSS, IDT, `#UD #BP #PF #GP #DE`, panic report) | — | ✓ (descriptor encodings) | ✓ | ✓ (ktest) | ✓ (ktest) | — | ✗ |
 | Kernel log, formatter, command line, stack walker | — | ✓ | ✓ | ✓ (ktest) | ✓ (ktest) | — | ✗ |
 | Physical memory (`memory/pmm`, `memory/phys`) | — | ✓ (incl. 20 000-step model test) | ✓ | ✓ (ktest, 256 MiB) | ✓ (ktest, 256 MiB and 4 GiB) | — | ✗ |
@@ -62,6 +62,12 @@ Rows are added as phases add components. Update this table in every phase.
 Manual check (owner, 2026-10-18): the Phase 2 ISO (commit 91d858f) booted in
 VirtualBox on the owner's Windows 11 laptop (BIOS mode) and showed the boot
 screen. This is an additional emulator, not hardware testing.
+
+Negative checks done once in Phase 5B (not committed): a kernel that draws
+no logo → `make boot-screen-bios` FAIL ("logo stroke missing", "logo core
+missing"); a screen in the old interim background `#12151A` → FAIL on every
+corner pixel. The RLE blitter rejects truncated runs, zero-length runs and
+wrong pixel counts without drawing (host tests).
 
 Negative checks done once in Phase 4 (not committed): removing the
 double-free check → 2 host tests fail; not reserving frame 0 → 6 host tests

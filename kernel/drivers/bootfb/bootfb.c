@@ -51,6 +51,46 @@ uint32_t bootfb_rgb(const struct bootfb *fb, uint8_t r, uint8_t g, uint8_t b)
            encode_channel(b, f->blue_shift, f->blue_size);
 }
 
+static bool rle_valid(const uint8_t *rle, size_t size, uint64_t pixels)
+{
+    uint64_t total = 0;
+
+    if (rle == NULL || size % 4 != 0) {
+        return false;
+    }
+    for (size_t i = 0; i < size; i += 4) {
+        if (rle[i] == 0) {
+            return false;
+        }
+        total += rle[i];
+    }
+    return total == pixels;
+}
+
+bool bootfb_blit_rle(const struct bootfb *fb, uint32_t x, uint32_t y, uint32_t w, uint32_t h,
+                     const uint8_t *rle, size_t size)
+{
+    uint64_t pos = 0; /* pixel index inside the image */
+
+    if (fb == NULL || w == 0 || h == 0 || !rle_valid(rle, size, (uint64_t)w * h)) {
+        return false;
+    }
+    for (size_t i = 0; i < size; i += 4) {
+        const uint32_t color = bootfb_rgb(fb, rle[i + 1], rle[i + 2], rle[i + 3]);
+
+        for (unsigned n = 0; n < rle[i]; n++, pos++) {
+            /* Image coordinates fit in 32 bits: pos < w * h. */
+            const uint64_t px = (uint64_t)x + pos % w;
+            const uint64_t py = (uint64_t)y + pos / w;
+
+            if (px < fb->width && py < fb->height) {
+                fb->pixels[(size_t)py * fb->stride + (size_t)px] = color;
+            }
+        }
+    }
+    return true;
+}
+
 void bootfb_fill_rect(const struct bootfb *fb, uint32_t x, uint32_t y, uint32_t w, uint32_t h,
                       uint32_t color)
 {

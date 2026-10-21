@@ -17,6 +17,9 @@
 #        (a hang is a failure). Default timeout 60 s: QEMU runs under TCG
 #        when KVM is unavailable (cloud sessions, GitHub runners).
 #
+# Screen: with BOOT_SCREENSHOT=<file.ppm> the screen is saved (QEMU monitor
+#         "screendump") once "boot OK" appears, for check_boot_screen.py.
+#
 # Safety: only regular image files are accepted, never block devices.
 
 set -eu
@@ -25,6 +28,7 @@ firmware=${1:-}
 media=${2:-}
 iso=${3:-build/smy-os.iso}
 timeout_s=${BOOT_TIMEOUT:-60}
+screenshot=${BOOT_SCREENSHOT:-}
 ovmf_code=${OVMF_CODE:-/usr/share/OVMF/OVMF_CODE_4M.fd}
 ovmf_vars=${OVMF_VARS:-/usr/share/OVMF/OVMF_VARS_4M.fd}
 
@@ -58,7 +62,7 @@ cleanup() {
 trap cleanup EXIT INT TERM
 
 set -- -machine q35 -m 256M -smp 1 -display none -no-reboot \
-    -serial "file:$log" -monitor none
+    -serial "file:$log" -monitor "unix:$workdir/monitor,server=on,wait=off"
 
 if [ -r /dev/kvm ] && [ -w /dev/kvm ]; then
     set -- "$@" -accel kvm
@@ -108,6 +112,27 @@ while :; do
     sleep 0.5
 done
 elapsed=$(($(date +%s) - start))
+
+if [ "$result" = ok ] && [ -n "$screenshot" ]; then
+    # The kernel paints the screen before it logs "boot OK".
+    python3 - "$workdir/monitor" "$screenshot" <<'PY'
+import os, socket, sys, time
+mon, out = sys.argv[1], os.path.abspath(sys.argv[2])
+s = socket.socket(socket.AF_UNIX)
+s.connect(mon)
+s.sendall(f"screendump {out}\n".encode())
+for _ in range(100):
+    if os.path.exists(out) and os.path.getsize(out) > 0:
+        time.sleep(0.5)
+        break
+    time.sleep(0.1)
+s.close()
+PY
+    if [ ! -s "$screenshot" ]; then
+        echo "boot_test: FAIL $firmware/$media: no screenshot written"
+        exit 1
+    fi
+fi
 
 echo "----- serial log ($firmware/$media) -----"
 tr -d '\r' <"$log" 2>/dev/null | grep "SMY-OS" || true

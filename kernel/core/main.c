@@ -14,6 +14,7 @@
 #include "core/ktest.h"
 #include "core/log.h"
 #include "core/panic.h"
+#include "drivers/bootfb/boot_logo.h"
 #include "drivers/bootfb/bootfb.h"
 #include "memory/phys.h"
 
@@ -81,23 +82,29 @@ static void log_boot_environment(void)
 }
 
 /*
- * Interim boot indicator until the design system defines the brand (Phase 6):
- * a dark background with a centred square frame. Pure rectangles, so it
- * needs no font or image data.
+ * Boot screen (docs/BRAND_PROMPT.md, design/brand/logos/smy-boot-logo.svg):
+ * the VOID background with the SMY symbol centred. The logo is the largest
+ * pre-rendered size that is at most a fifth of the shorter screen side; on
+ * a screen too small for any of them only the background is drawn.
  */
 static void draw_boot_screen(const struct bootfb *fb)
 {
-    const uint32_t background = bootfb_rgb(fb, 0x12, 0x15, 0x1A);
-    const uint32_t accent = bootfb_rgb(fb, 0x4C, 0x8D, 0xF6);
     const uint32_t shorter = fb->width < fb->height ? fb->width : fb->height;
-    const uint32_t size = shorter / 6;
-    const uint32_t border = size / 6;
-    const uint32_t x = (fb->width - size) / 2;
-    const uint32_t y = (fb->height - size) / 2;
+    const struct boot_logo *logo = NULL;
 
-    bootfb_fill_rect(fb, 0, 0, fb->width, fb->height, background);
-    bootfb_fill_rect(fb, x, y, size, size, accent);
-    bootfb_fill_rect(fb, x + border, y + border, size - 2 * border, size - 2 * border, background);
+    bootfb_fill_rect(fb, 0, 0, fb->width, fb->height, bootfb_rgb(fb, 0x08, 0x0B, 0x12));
+    for (unsigned i = 0; i < boot_logo_count; i++) {
+        if (boot_logos[i].width <= shorter / 5) {
+            logo = &boot_logos[i];
+        }
+    }
+    if (logo == NULL) {
+        return;
+    }
+    if (!bootfb_blit_rle(fb, (fb->width - logo->width) / 2, (fb->height - logo->height) / 2,
+                         logo->width, logo->height, logo->rle, logo->rle_size)) {
+        klog(LOG_WARN, "framebuffer: boot logo data invalid");
+    }
 }
 
 static void init_boot_screen(void)

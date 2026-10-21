@@ -31,7 +31,7 @@ interrupts, processes, any user interface.
 | 2 — First boot | VERIFIED | 4/4 boot paths and reproducibility green in CI (runs 39068650073, 39069271282) |
 | 3 — CPU foundation | VERIFIED | ktest 10/10 on BIOS and UEFI, 3 panic reports, boot 4/4, reproducible — CI run 39075758514 |
 | 4 — Physical memory manager | VERIFIED | CI run 39076695215 green (incl. 4 GiB test) |
-| 5B — Brand identity | IN PROGRESS | owner chose concept A "Module" (ADR 0011); step 2: logo family and boot logo |
+| 5B — Brand identity | BLOCKED (owner review) | concept A "Module" (ADR 0011); logo family (22 SVGs), tokens, guidelines, manifest, PNG exports and kernel boot logo done and checked; waiting for the owner to approve the logo family sheet |
 | 5 … 38, 12B | NOT STARTED | see `ROADMAP.md` (the owner asked for 5B before 5) |
 
 ## Components
@@ -45,7 +45,8 @@ interrupts, processes, any user interface.
 | Number formatting (`core/fmt`) | Unit-tested, Emulator-tested |
 | Kernel entry, Limine requests (base revision 6), linker layout with W^X segments | Emulator-tested (BIOS + UEFI) |
 | COM1 16550 serial log (polled, loopback-probed) | Emulator-tested |
-| Boot framebuffer fill (`drivers/bootfb`) | Unit-tested, Emulator-tested (pixels checked once via QEMU screendump) |
+| Boot framebuffer fill + RLE image blit (`drivers/bootfb`) | Unit-tested, Emulator-tested (`make boot-screen`: logo pixels checked via QEMU screendump on BIOS and UEFI, in CI) |
+| Kernel boot screen: brand boot logo on `#080B12` (rendered from SVG at build time, 96–256 px) | Emulator-tested (QEMU BIOS + UEFI); not yet seen by the owner in VirtualBox |
 | GDT, TSS with IST stacks (#DF, NMI, #MC), IDT (vectors 0–31) | Unit-tested (encodings), Emulator-tested (ktest reads back GDTR/IDTR/TR) |
 | Exception handling: `#UD #BP #PF #GP #DE` caught and resumed (ktest), 1000 in a row | Emulator-tested (BIOS + UEFI) |
 | `#DF`, NMI, `#MC` on IST stacks | Implemented, **not tested** (no safe trigger before Phase 5) |
@@ -61,11 +62,27 @@ interrupts, processes, any user interface.
 | Reproducible ISO | Verified: two builds at different checkout paths give identical SHA-256 (locally and in CI) |
 | Owner check in VirtualBox (Windows 11 laptop, BIOS mode, VM type "Other/Unknown 64-bit", 512 MB, ISO as optical drive) | Emulator-tested by the owner on 2026-10-18: boot screen (dark background, blue frame) shown; reported with a photo. VirtualBox version not recorded; serial log not captured |
 | Real hardware, real USB stick | not tested (Phase 36) |
-| Logo concepts A Module, B Signal, C Prism (`design/brand/concepts/`) | Implemented (SVG, validated in CI); owner chose A (ADR 0011) — final logo family follows in step 2 |
+| Logo concepts A Module, B Signal, C Prism (`design/brand/concepts/`) | Implemented (SVG, validated in CI); owner chose A (ADR 0011) |
+| Logo family (22 SVGs, `design/brand/logos/`, manifest, guidelines) | Implemented, validated in CI (SVG rules, manifest, contrast, PNG exports 16–1024 px); awaiting owner approval |
+| Brand colour tokens (`design/tokens/brand-colors.json`) | Implemented (base layer; UI themes follow in Phase 6) |
 | Design system | not started (Phase 6) |
 | Compatibility (C0–C8) | not started (see `COMPATIBILITY.md`) |
 
-## Last check results (Phase 4, cloud session 2026-10-18)
+## Last check results (Phase 5B step 2, cloud session 2026-10-21)
+
+| Check | Command | Result |
+|---|---|---|
+| Full local check | `make check` | PASS (exit 0) |
+| Unit tests | `make test` | PASS: 45 run, 45 passed (3 new RLE blit tests) |
+| Format / lint | `make format-check`, `make lint` | PASS |
+| Design assets | `make brand-check`, `make brand` | PASS: 34 SVGs valid, 22 logos in manifest, 8 contrast pairs, 132 PNG exports |
+| Boot screen | `make boot-screen` | PASS on BIOS and UEFI (1280×800: logo pixels present and placed, rest VOID) |
+| Boot tests, ktest, panic reports, 4 GiB | `make boot-test`, `make ktest` | PASS |
+| Reproducible ISO | `tools/check-reproducible.sh` | PASS (after mapping the build-directory path of the generated logo source) |
+| Link check | `tools/check-links.py` | PASS: 0 broken links |
+| CI `ci` workflow | GitHub Actions | see the run for this commit |
+
+## Earlier check results (Phase 4, cloud session 2026-10-18)
 
 | Check | Command | Result |
 |---|---|---|
