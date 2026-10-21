@@ -11,13 +11,21 @@ a review aid for tokens, **not** a component design.
 
 ## 1. Concept: "Module"
 
-The interface language grows from the logo (ADR 0011): a calm, rounded
-**frame** that holds content, and one bright **core** that marks what
-matters. Surfaces are quiet, nearly flat layers of the brand's dark blues
-(or light greys); the cyan accent appears in few, meaningful places —
-the primary action, the current selection, keyboard focus, progress.
-Geometry is precise and soft: 8 px corners on controls, 12–16 px on panels
-and windows, like the logo's frame and core.
+The interface language grows from the logo (ADR 0011): a calm **frame**
+that holds content, and one small bright **core** that marks what matters.
+The interface is essentially **monochrome** — quiet layers of the brand's
+near-black blues (or light greys), white or near-black type, hairline
+dividers, one soft shadow. The primary button is monochrome too (white on
+dark, near-black on light). The cyan accent appears only in small, precise
+places: keyboard focus, the selection indicator, the filled part of a
+slider or switch, progress. Status colours appear as small marks (a dot, an
+icon), never as large coloured areas. Geometry is precise and restrained:
+6 px corners on controls, 10–12 px on panels and windows.
+
+Owner direction (2026-10-21, after the first theme sheet): "true
+minimalism, a real OS, modern, expensive-looking — not a cartoon". The
+first sheet used large cyan fills and tinted banners; this revision removed
+them.
 
 It deliberately avoids the signature looks of other systems: no translucent
 blurred glass, no coloured traffic-light window buttons, no tiles, no
@@ -27,7 +35,7 @@ skeuomorphic depth.
 
 | # | Principle | Do | Don't |
 |---|---|---|---|
-| 1 | **Frame and core.** Structure is quiet; one element per view carries the accent. | One accent-filled primary button per dialog; the rest are outlined. | Several cyan buttons, badges and icons competing in one view. |
+| 1 | **Frame and core.** Structure is quiet and monochrome; the accent is a small "core", never a large area. | Monochrome primary button; cyan only on focus, selection mark, slider fill. | Cyan-filled buttons, tinted panels, coloured icons competing in one view. |
 | 2 | **Colour means something.** The accent signals action, selection, focus or progress; red/amber/green/blue only signal status. | A green dot plus the text "Installed". | Colour as decoration, or colour as the *only* carrier of meaning. |
 | 3 | **Contrast is measured, not guessed.** Every text and boundary pair is in `themes.json` and tested. | Add the new pair to `pairs` before using it. | Grey-on-grey text "because it looks elegant"; text over images without a plate. |
 | 4 | **Calm motion.** Short, purposeful transitions; none when "reduce motion" is on. | 160 ms fade + 8 px slide when a panel opens. | Bounces, parallax, looping or attention-seeking animation. |
@@ -61,15 +69,16 @@ skeuomorphic depth.
 | `surface-raised` | menus, popovers, dialogs (above `surface`) |
 | `surface-sunken` | inputs, wells, sidebars |
 | `surface-hover` | hover fill of rows and quiet buttons |
+| `surface-selected` | selected row / item background (neutral; the accent mark sits on it) |
 | `border-subtle` | dividers (decoration only) |
 | `border-strong` | control boundaries (≥ 3:1) |
 | `text-primary`, `text-secondary`, `text-disabled` | text levels |
 | `text-on-accent` | text on accent fills |
-| `accent`, `accent-hover`, `accent-pressed` | primary action, links, progress |
-| `accent-subtle` | selected row / item background |
+| `action-primary` (+ `-hover`, `-pressed`), `text-on-action` | the primary button: monochrome (white on dark, near-black on light) |
+| `accent`, `accent-hover`, `accent-pressed`, `text-on-accent` | small accent elements: selection mark, slider/switch fill, progress, links |
 | `focus-ring` | keyboard focus indicator |
 | `success`, `warning`, `danger`, `info` | status text and icons |
-| `*-surface` | tinted backgrounds of status banners |
+| `*-surface` | background of status messages — **neutral** (same as `surface-raised`); the status colour is only in the mark |
 
 ### 3.3 Themes
 
@@ -78,7 +87,8 @@ skeuomorphic depth.
 | Background | `#080B12` void | `#F5F7FB` | `#080B12` void |
 | Surface | `#101522` deep | `#FFFFFF` | `#080B12` + 2 px `border-strong` |
 | Text | `#F4F7FF` | `#141A29` | `#FFFFFF` |
-| Accent | `#54F6E8` cyan | **`#077479`** (proposal, §3.5) | `#54F6E8` |
+| Primary button | `#F4F7FF` fill, void text | `#141A29` fill, white text | `#FFFFFF` fill, void text |
+| Accent (small elements) | `#54F6E8` cyan | **`#077479`** (proposal, §3.5) | `#54F6E8` |
 | Focus ring | cyan | `#077479` | `#FFD166` amber, 3 px |
 | Minimums | text 4.5:1, large/UI 3:1 | same | text **7:1**, large/UI 4.5:1 |
 
@@ -87,7 +97,7 @@ windows and controls, and outlines status banners in their status colour.
 
 ### 3.4 Contrast test
 
-`tools/design/check_contrast.py` (CI: `make design-check`) checks **147
+`tools/design/check_contrast.py` (CI: `make design-check`) checks **168
 pairs** in the three themes. Each pair is one foreground token on one
 background token, from the `pairs` list in `themes.json`, and must meet the
 theme's minimum for its kind (text / UI). Lowest measured values:
@@ -108,7 +118,7 @@ if a token is not a base or brand colour.
   **Owner approval requested.**
 - **Light-theme status colours** (new, were missing): success `#0E7044`,
   warning `#8A5000`, danger `#B8243D`, info `#155FA8`. Each is ≥ 5:1 on
-  `#F5F7FB` and ≥ 4.5:1 on its tinted banner. These are the step-700
+  `#F5F7FB` and on white. These are the step-700
   anchors of their ramps. **Owner approval requested.**
 - **High-contrast theme** (new): built from the same ramps; amber focus
   ring so focus never looks like selection.
@@ -128,7 +138,7 @@ All lengths are logical pixels at 1×. Display scale factors are 1×, 1.25×,
   for optical nudges only.
 - **Size.** Control heights are 24, 32 (default) and 40. Icons are 16, 20 and
   24. The title bar is 40. The minimum target is 24 × 24 (WCAG 2.2 2.5.8).
-- **Radius.** 0 / 4 / 8 (controls) / 12 (panels) / 16 (windows) / full.
+- **Radius.** 0 / 4 / 6 (controls) / 10 (panels) / 12 (windows) / full.
 - **Border.** Hairline 1, strong 2. The focus ring is 2 px with a 2 px offset
   (3 px in high contrast).
 - **Elevation.** Levels 0–3, each with **one** shadow and a small blur
@@ -220,6 +230,10 @@ own console font.
   and stable hue. sRGB interpolation turns muddy in the middle.
 - **Why the 750 step.** It lets the owner-provided `#087F83` (700) stay
   unchanged, while giving text a compliant neighbour.
+- **Why a monochrome primary button.** Large saturated fills read as
+  playful; premium interfaces let typography, spacing and one restrained
+  accent carry the hierarchy. A white (or near-black) button is the
+  strongest element on the screen without adding a colour.
 - **Why amber focus in high contrast.** Cyan already marks selection there.
   A different hue keeps focus and selection apart for people who rely on
   the high-contrast theme.
