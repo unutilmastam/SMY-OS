@@ -28,6 +28,7 @@ struct stack_record {
 static struct stack_record stacks[VMM_MAX_STACKS];
 static size_t stack_count;
 static struct arch_mmu_features features;
+static uint64_t direct_map_offset;
 
 static uint64_t align_down(uint64_t v)
 {
@@ -132,6 +133,7 @@ void vmm_init(const struct limine_memmap_response *memmap, uint64_t hhdm_offset,
         panic("vmm: missing memory map or kernel address");
         return; /* not reached; for cppcheck */
     }
+    direct_map_offset = hhdm_offset;
     st = arch_mmu_init();
     if (st != VM_OK) {
         panic("vmm: cannot create the kernel address space: %s", vm_status_name(st));
@@ -148,6 +150,21 @@ void vmm_init(const struct limine_memmap_response *memmap, uint64_t hhdm_offset,
          features.no_execute ? "on" : "off", features.write_protect ? "on" : "off",
          features.smep ? "on" : "off", features.smap ? "on" : "off",
          features.write_combining ? "on" : "off");
+}
+
+void *vmm_map_physical(uint64_t phys, uint64_t size, unsigned flags)
+{
+    const uint64_t start = align_down(phys);
+    const uint64_t end = align_up(phys + size);
+
+    for (uint64_t p = start; p < end; p += PAGE) {
+        struct vm_translation t;
+
+        if (arch_mmu_translate(direct_map_offset + p, &t) != VM_OK) {
+            map_or_panic(direct_map_offset + p, p, PAGE, flags, "physical range");
+        }
+    }
+    return (void *)(uintptr_t)(direct_map_offset + phys);
 }
 
 struct arch_mmu_features vmm_features(void)

@@ -19,7 +19,10 @@
 #
 # Environment: ISO (default build/smy-os.iso), KTEST_TIMEOUT (default 120 s),
 # KTEST_MEMORY (QEMU -m value, default 256M), KTEST_CPU (QEMU -cpu model,
-# default QEMU's own; "max" offers SMEP and SMAP).
+# default QEMU's own; "max" offers SMEP and SMAP), KTEST_MACHINE (QEMU
+# -machine value, default q35; e.g. "q35,hpet=off"), KTEST_SENDKEYS (QEMU key
+# names typed through the monitor once the guest logs "waiting for keyboard
+# input", e.g. "s m y up ret").
 
 set -eu
 
@@ -31,6 +34,8 @@ iso=${ISO:-build/smy-os.iso}
 timeout_s=${KTEST_TIMEOUT:-120}
 memory=${KTEST_MEMORY:-256M}
 cpu=${KTEST_CPU:-}
+machine=${KTEST_MACHINE:-q35}
+sendkeys=${KTEST_SENDKEYS:-}
 ovmf_code=${OVMF_CODE:-/usr/share/OVMF/OVMF_CODE_4M.fd}
 ovmf_vars=${OVMF_VARS:-/usr/share/OVMF/OVMF_VARS_4M.fd}
 
@@ -66,7 +71,8 @@ run_qemu() {
         set -- -cpu "$cpu" "$@"
     fi
     timeout "$timeout_s" qemu-system-x86_64 -accel "$accel" \
-        -machine q35 -m "$memory" -smp 1 -display none -no-reboot -monitor none \
+        -machine "$machine" -m "$memory" -smp 1 -display none -no-reboot \
+        -monitor "unix:$workdir/monitor,server=on,wait=off" \
         -serial "file:$log" \
         -device isa-debug-exit,iobase=0xf4,iosize=0x04 \
         -smbios "type=11,value=$config" \
@@ -74,9 +80,16 @@ run_qemu() {
         "$@" 2>"$workdir/qemu.err"
 }
 
-echo "ktest: $firmware, smy.ktest=$selection, expect $expect, memory $memory, cpu ${cpu:-default}, timeout ${timeout_s}s"
+echo "ktest: $firmware, smy.ktest=$selection, expect $expect, memory $memory, cpu ${cpu:-default}, machine $machine, timeout ${timeout_s}s"
 start=$(date +%s)
 status=0
+injector=
+if [ -n "$sendkeys" ]; then
+    # shellcheck disable=SC2086 # one argument per key name
+    python3 "$(dirname "$0")/sendkeys.py" "$workdir/monitor" "$log" \
+        "waiting for keyboard input" "$timeout_s" $sendkeys >"$workdir/sendkeys.log" 2>&1 &
+    injector=$!
+fi
 if [ "$firmware" = uefi ]; then
     # OVMF needs a private, writable copy of its variable store.
     cp "$ovmf_vars" "$workdir/vars.fd"
@@ -86,6 +99,10 @@ else
     run_qemu || status=$?
 fi
 elapsed=$(($(date +%s) - start))
+if [ -n "$injector" ]; then
+    wait "$injector" 2>/dev/null || true
+    cat "$workdir/sendkeys.log"
+fi
 
 echo "----- serial log (SMY-OS lines) -----"
 tr -d '\r' <"$log" | grep "SMY-OS" || true

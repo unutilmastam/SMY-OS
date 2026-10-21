@@ -8,23 +8,29 @@
 
 UNIT_HARNESS_SOURCES := tests/unit/harness/smytest.c
 UNIT_TEST_SOURCES    := \
+	tests/unit/kernel/acpi/test_acpi.c \
 	tests/unit/kernel/arch/test_descriptors.c \
 	tests/unit/kernel/arch/test_paging.c \
 	tests/unit/kernel/core/test_cmdline.c \
 	tests/unit/kernel/core/test_fmt.c \
 	tests/unit/kernel/core/test_stacktrace.c \
 	tests/unit/kernel/core/test_string.c \
+	tests/unit/kernel/core/test_time.c \
 	tests/unit/kernel/drivers/test_bootfb.c \
+	tests/unit/kernel/drivers/test_keyboard.c \
 	tests/unit/kernel/memory/test_heap.c \
 	tests/unit/kernel/memory/test_pmm.c
 UNIT_KERNEL_SOURCES  := \
+	kernel/acpi/acpi.c \
 	kernel/arch/x86_64/descriptors.c \
 	kernel/arch/x86_64/paging.c \
 	kernel/core/cmdline.c \
 	kernel/core/fmt.c \
 	kernel/core/stacktrace.c \
 	kernel/core/string.c \
+	kernel/core/time.c \
 	kernel/drivers/bootfb/bootfb.c \
+	kernel/drivers/input/keyboard.c \
 	kernel/memory/heap.c \
 	kernel/memory/pmm.c
 

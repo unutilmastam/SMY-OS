@@ -101,8 +101,16 @@ static void dump_registers(const struct interrupt_frame *f)
                (unsigned long long)read_cr3(), (unsigned long long)read_cr4());
 }
 
+/* arch/x86_64/platform.c */
+void irq_dispatch(uint64_t vector);
+
 void exception_dispatch(struct interrupt_frame *frame)
 {
+    if (frame->vector >= 32) {
+        irq_dispatch(frame->vector);
+        return;
+    }
+
     /* For #DF, CR2 still holds the address of a page fault that could not be
      * delivered, e.g. a push into a stack's guard page. */
     const uint64_t cr2 =

@@ -19,7 +19,7 @@ point, then continue in the next command.
 | 5 | Virtual memory + kernel heap | Kernel | VERIFIED |
 | 5B | Brand identity: 3 logo concepts (OWNER DECISION), logo family, boot logo | Brand | VERIFIED |
 | 6 | D1 — Design System specification + tokens | Design | VERIFIED |
-| 7 | Interrupt controllers, timers, keyboard input | Kernel | NOT STARTED |
+| 7 | Interrupt controllers, timers, keyboard input | Kernel | IN PROGRESS |
 | 8 | Threads, scheduler, synchronization | Kernel | NOT STARTED |
 | 9 | C0+C1 — Compatibility architecture + ELF/PE inspector | Compat | NOT STARTED |
 | 10 | User mode, syscalls, initramfs, first native program (C2) | Kernel | NOT STARTED |

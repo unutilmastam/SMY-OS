@@ -9,6 +9,7 @@
  */
 
 #include "arch/cpu.h"
+#include "arch/platform.h"
 #include "core/cmdline.h"
 #include "core/compiler.h"
 #include "core/ktest.h"
@@ -16,6 +17,7 @@
 #include "core/panic.h"
 #include "drivers/bootfb/boot_logo.h"
 #include "drivers/bootfb/bootfb.h"
+#include "drivers/ps2/i8042.h"
 #include "memory/kmalloc.h"
 #include "memory/phys.h"
 #include "memory/vmm.h"
@@ -55,6 +57,9 @@ SMY_USED SMY_SECTION(".limine_requests") static volatile struct limine_hhdm_requ
 
 SMY_USED SMY_SECTION(".limine_requests") static volatile struct limine_executable_address_request
     executable_address_request = {.id = LIMINE_EXECUTABLE_ADDRESS_REQUEST_ID, .revision = 0};
+
+SMY_USED SMY_SECTION(".limine_requests") static volatile struct limine_rsdp_request rsdp_request = {
+    .id = LIMINE_RSDP_REQUEST_ID, .revision = 0};
 
 SMY_USED SMY_SECTION(".limine_requests_end") static volatile uint64_t limine_requests_end[] =
     LIMINE_REQUESTS_END_MARKER;
@@ -165,6 +170,22 @@ static struct vmm_kernel_image kernel_image(void)
 #define KERNEL_MAIN_STACK_PAGES 16
 
 static const char *boot_cmdline = "";
+static uint64_t direct_map_offset;
+
+/* The RSDP address is physical from Limine base revision 3 on; accept a
+ * direct-map address too, in case a bootloader reports one. */
+static uint64_t rsdp_physical(void)
+{
+    const struct limine_rsdp_response *r = rsdp_request.response;
+    uint64_t addr;
+
+    if (r == NULL || r->address == NULL) {
+        panic("no ACPI RSDP from the bootloader (ACPI is required)");
+        return 0; /* not reached; for cppcheck */
+    }
+    addr = (uint64_t)(uintptr_t)r->address;
+    return addr >= direct_map_offset ? addr - direct_map_offset : addr;
+}
 
 SMY_NORETURN static void kmain_late(void)
 {
@@ -175,6 +196,10 @@ SMY_NORETURN static void kmain_late(void)
     kmalloc_init();
     klog(LOG_INFO, "cpu: exception stacks moved to guard-paged stacks; kernel heap ready");
 
+    arch_platform_init(rsdp_physical());
+    (void)ps2_keyboard_init();
+    arch_interrupts_enable();
+
     init_boot_screen();
 
     if (cmdline_find(boot_cmdline, "smy.ktest", &ktest_selection, &ktest_selection_len)) {
@@ -183,7 +208,9 @@ SMY_NORETURN static void kmain_late(void)
     }
 
     klog(LOG_INFO, "boot OK");
-    arch_halt_forever();
+    for (;;) {
+        arch_wait_for_interrupt();
+    }
 }
 
 void kmain(void)
@@ -224,5 +251,6 @@ void kmain(void)
     /* The command line string lives in bootloader-reclaimable memory, which
      * the direct map keeps mapped. */
     boot_cmdline = cmdline;
+    direct_map_offset = hhdm_request.response->offset;
     arch_switch_stack(vmm_alloc_stack(KERNEL_MAIN_STACK_PAGES), kmain_late);
 }

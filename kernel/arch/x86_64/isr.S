@@ -2,7 +2,8 @@
 /* Copyright 2026 The SMY-OS Authors */
 
 /*
- * Exception entry stubs for vectors 0-31.
+ * Interrupt entry stubs for all 256 vectors: CPU exceptions (0-31) and
+ * device/timer interrupts (32-255, which never have an error code).
  *
  * Every stub leaves the same layout on the stack (lowest address first) —
  * struct interrupt_frame in arch/x86_64/exceptions.h:
@@ -68,6 +69,15 @@ ISR_ERROR    29
 ISR_ERROR    30
 ISR_NO_ERROR 31
 
+/* Vectors 32-255: interrupts (no error code). */
+.altmacro
+.set vec, 32
+.rept 224
+    ISR_NO_ERROR %vec
+    .set vec, vec + 1
+.endr
+.noaltmacro
+
     .type isr_common, @function
 isr_common:
     push rax
@@ -107,13 +117,20 @@ isr_common:
     iretq
     .size isr_common, . - isr_common
 
-/* Table of the 32 stub addresses, read by idt.c. */
+/* Table of the 256 stub addresses, read by idt.c. */
+.macro STUB_ADDRESS vector
+    .quad isr_stub_\vector
+.endm
     .section .rodata
     .balign 8
     .global isr_stub_table
 isr_stub_table:
-    .irp v, 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31
-    .quad isr_stub_\v
-    .endr
+.altmacro
+.set vec, 0
+.rept 256
+    STUB_ADDRESS %vec
+    .set vec, vec + 1
+.endr
+.noaltmacro
 
     .section .note.GNU-stack, "", @progbits

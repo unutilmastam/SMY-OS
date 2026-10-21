@@ -62,6 +62,7 @@ malicious firmware, DMA attacks before an IOMMU driver exists.
 | T14 | Secrets committed to git | Keys only in CI secrets; never in repository | always | review; secret scanning |
 | T15 | Boot configuration replaced through SMBIOS OEM strings (Limine "config via SMBIOS", used by ktest, ADR 0009) | Only a firmware/hypervisor-level attacker can set SMBIOS tables — such a party already controls the boot. Secure Boot work must enrol a config hash that covers this path | 37 | Secure Boot tests in OVMF |
 | T16 | Self-tests triggered on a production system (`smy.ktest=`) | Needs control of the kernel command line (already full control); effect is limited to running tests, panicking or halting — no persistent change | 3 | review |
+| T17 | Malformed or hostile ACPI tables (buggy firmware, or a hypervisor feeding crafted tables) | Every table's checksum and length is validated, lengths capped at 1 MiB, MADT entries bounds-checked; parser has no writes and is fuzz-ready (host tests with corrupted tables) | 7 | host tests; fuzzing with the ELF/PE parsers (Phase 9) |
 
 ## 5. Failure modes (design rule)
 

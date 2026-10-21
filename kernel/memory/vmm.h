@@ -43,6 +43,15 @@ struct vmm_kernel_image {
 void vmm_init(const struct limine_memmap_response *memmap, uint64_t hhdm_offset,
               const struct vmm_kernel_image *image);
 
+/*
+ * Make [phys, phys+size) reachable through the direct map and return its
+ * address there. Pages already mapped (RAM, ACPI tables in reclaimable
+ * memory) keep their mapping; missing ones (firmware-reserved areas, device
+ * registers) are mapped with `flags`, e.g. VM_WRITE | VM_UNCACHED for MMIO.
+ * Panics if a page cannot be mapped.
+ */
+void *vmm_map_physical(uint64_t phys, uint64_t size, unsigned flags);
+
 /* Protection features switched on by vmm_init(). */
 struct arch_mmu_features vmm_features(void);
 

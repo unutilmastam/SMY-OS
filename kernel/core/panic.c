@@ -4,6 +4,7 @@
 #include "core/panic.h"
 
 #include "arch/cpu.h"
+#include "arch/platform.h"
 #include "core/log.h"
 #include "core/stacktrace.h"
 
@@ -22,6 +23,7 @@ void panic_set_test_mode(bool enabled)
 
 static bool vpanic_begin(const char *fmt, va_list args)
 {
+    arch_interrupts_disable();
     if (panicking) {
         log_write("\nSMY-OS: PANIC: nested panic (fault while reporting a panic)\n");
         return false;

@@ -87,6 +87,12 @@ jobs:
       - name: Kernel self-tests with SMEP and SMAP (QEMU -cpu max)
         run: make ktest-cpu-max
 
+      - name: Kernel self-tests without HPET (timer calibrated with the PIT)
+        run: make ktest-no-hpet
+
+      - name: Keyboard - keystrokes injected through the QEMU monitor (BIOS, UEFI)
+        run: make ktest-keyboard-bios ktest-keyboard-uefi
+
       - name: Panic reports (#UD, #PF, kernel panic, stack overflow, double kfree)
         run: >-
           make ktest-panic-ud ktest-panic-pf ktest-panic-kernel

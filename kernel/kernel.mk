@@ -5,6 +5,8 @@
 # ELF that Limine loads (kernel/arch/x86_64/linker.ld).
 
 KERNEL_C_SOURCES := \
+	kernel/acpi/acpi.c \
+	kernel/arch/x86_64/apic.c \
 	kernel/arch/x86_64/cpu.c \
 	kernel/arch/x86_64/descriptors.c \
 	kernel/arch/x86_64/exceptions.c \
@@ -12,8 +14,11 @@ KERNEL_C_SOURCES := \
 	kernel/arch/x86_64/idt.c \
 	kernel/arch/x86_64/ktest_cpu.c \
 	kernel/arch/x86_64/ktest_mmu.c \
+	kernel/arch/x86_64/ktest_platform.c \
 	kernel/arch/x86_64/mmu.c \
 	kernel/arch/x86_64/paging.c \
+	kernel/arch/x86_64/platform.c \
+	kernel/core/clock.c \
 	kernel/core/cmdline.c \
 	kernel/core/fmt.c \
 	kernel/core/ktest.c \
@@ -24,7 +29,10 @@ KERNEL_C_SOURCES := \
 	kernel/core/stack_protector.c \
 	kernel/core/stacktrace.c \
 	kernel/core/string.c \
+	kernel/core/time.c \
 	kernel/drivers/bootfb/bootfb.c \
+	kernel/drivers/input/keyboard.c \
+	kernel/drivers/ps2/i8042.c \
 	kernel/drivers/serial/uart16550.c \
 	kernel/memory/heap.c \
 	kernel/memory/kmalloc.c \

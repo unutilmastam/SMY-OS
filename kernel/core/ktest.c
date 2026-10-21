@@ -32,7 +32,7 @@ static bool selected(const struct ktest *t, const char *selection, size_t len)
     if (cmdline_value_is(selection, len, t->name)) {
         return true;
     }
-    return !t->expects_panic && cmdline_value_is(selection, len, "all");
+    return t->kind == KTEST_KIND_NORMAL && cmdline_value_is(selection, len, "all");
 }
 
 void ktest_run(const char *selection, size_t selection_len)
@@ -56,7 +56,7 @@ void ktest_run(const char *selection, size_t selection_len)
         log_printf("SMY-OS: ktest: RUN  %s\n", t->name);
         t->fn();
         run++;
-        if (t->expects_panic) {
+        if (t->kind == KTEST_KIND_PANIC) {
             /* Reaching this line means the expected panic did not happen. */
             log_printf("SMY-OS: ktest: FAIL %s (expected a panic)\n", t->name);
             failed++;

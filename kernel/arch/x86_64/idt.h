@@ -6,8 +6,8 @@
 
 #include "arch/x86_64/descriptors.h"
 
-/* Install gates for exception vectors 0-31 and load the IDT. Vectors 32-255
- * stay not-present until interrupt controllers exist (Phase 7). */
+/* Install interrupt gates for all 256 vectors (exceptions 0-31, interrupts
+ * 32-255, dispatched by arch/x86_64/irq.c) and load the IDT. */
 void idt_init(void);
 
 /* The gate for `vector` as installed (for tests). */

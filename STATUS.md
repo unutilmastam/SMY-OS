@@ -1,6 +1,6 @@
 # SMY-OS Status
 
-Last updated: 2026-10-21 — Phase 6 verified.
+Last updated: 2026-10-21 — Phase 7.
 
 Status vocabulary (used exactly): **Implemented · Compiles · Unit-tested ·
 Emulator-tested · Hardware-tested · Production-ready.** A passing build is not
@@ -17,8 +17,9 @@ Phase 4 it manages physical memory (page-frame allocator over the Limine
 memory map); since Phase 5 it runs on its own page tables (W^X kernel
 sections, NX, write-protect, SMEP/SMAP when available), on guard-paged
 stacks, and has a kernel heap (`kmalloc`/`kfree`). It shows the brand boot
-logo. Still missing: timers and interrupts, threads, processes, any user
-interface.
+logo. Since Phase 7 it reads ACPI tables, handles interrupts through the
+APIC, runs a 1000 Hz timer with a monotonic clock, and receives PS/2
+keyboard input. Still missing: threads, processes, any user interface.
 
 - Installation: **not supported.**
 - USB boot: **not tested on a real USB stick or PC.** The ISO boots in QEMU when attached as a raw disk (USB simulation) — Emulator-tested only.
@@ -37,7 +38,8 @@ interface.
 | 5B — Brand identity | VERIFIED | concept A "Module" (ADR 0011); logo family approved by the owner 2026-10-21; CI run 39575540426 green (incl. boot-screen pixel test) |
 | 5 — Virtual memory + heap | VERIFIED | CI run 39578027802 green (ktest 24/24 BIOS+UEFI, `-cpu max`, 5 panic reports, 4 GiB) |
 | 6 — D1 Design system | VERIFIED | CI run 39580554634 green; monochrome themes, `#077479`, Inter + IBM Plex Mono approved by the owner 2026-10-21 |
-| 7 … 38, 12B | NOT STARTED | see `ROADMAP.md` |
+| 7 — Interrupts, timers, input | IN PROGRESS | implemented and checked locally; VERIFIED once CI is green |
+| 8 … 38, 12B | NOT STARTED | see `ROADMAP.md` |
 
 ## Components
 
@@ -66,6 +68,10 @@ interface.
 | Frame-pointer stack walker | Unit-tested (fake stacks), Emulator-tested (real frames) |
 | ktest framework | Emulator-tested (16 tests; negative checks in `TESTING.md`) |
 | Physical memory manager (two-bitmap page-frame allocator, ADR 0010) | Unit-tested (incl. model-based random test), Emulator-tested: every free page allocated and returned without leak at 256 MiB (BIOS, UEFI) and 4 GiB (UEFI) |
+| ACPI table parser (RSDP, RSDT/XSDT, MADT, HPET) | Unit-tested (fake tables, bad checksums), Emulator-tested (SeaBIOS rev 0, OVMF rev 2) |
+| Interrupts: PIC masked, local APIC (xAPIC/x2APIC), I/O APIC, 256 vectors | Emulator-tested |
+| Timer 1000 Hz (LAPIC, calibrated with HPET or PIT), monotonic clock | Unit-tested (arithmetic), Emulator-tested (199 ticks / 200 ms vs HPET and PIT; `hpet=off`) |
+| PS/2 keyboard (set 1 decoder → HID key codes, event ring) | Unit-tested, Emulator-tested (keys injected via QEMU monitor, BIOS + UEFI) |
 | Stack protector | Compiles (fixed canary; no test that triggers it yet) |
 | Limine 12.9.3 (built from SHA-256-verified source) | Emulator-tested |
 | Hybrid ISO: BIOS CD, BIOS disk, UEFI CD, UEFI disk | Emulator-tested (QEMU 8.2.2, SeaBIOS, OVMF 2024.02) |
@@ -81,7 +87,22 @@ interface.
 | Theme review sheet (`build/brand/themes-preview.png`) | Generated in CI; approved by the owner (second, monochrome version) |
 | Compatibility (C0–C8) | not started (see `COMPATIBILITY.md`) |
 
-## Last check results (Phase 5, cloud session 2026-10-21)
+## Last check results (Phase 7, cloud session 2026-10-21)
+
+| Check | Command | Result |
+|---|---|---|
+| Full local check | `make check` | PASS (exit 0) |
+| Unit tests | `make test` | PASS: 75 run, 75 passed (14 new: ACPI 5, keyboard 6, time 3) |
+| Format / lint / design | `make format-check lint brand-check design-check` | PASS |
+| Boot, boot screen | `make boot-test boot-screen` | PASS |
+| ktest suite | `make ktest-bios ktest-uefi ktest-cpu-max` | PASS: 28/28 each (timer 199 ticks / 200 ms vs HPET and PIT) |
+| Without HPET | `make ktest-no-hpet` | PASS: 28/28, "calibrated with PIT" |
+| Keyboard | `make ktest-keyboard-bios ktest-keyboard-uefi` | PASS: `s m y up ret` → 10 HID events in order |
+| Panic reports, 4 GiB | `make ktest-panic-* ktest-big-memory` | PASS |
+| Reproducible ISO | `tools/check-reproducible.sh` | PASS |
+| CI `ci` workflow | GitHub Actions | see the run for this commit |
+
+## Earlier check results (Phase 5, cloud session 2026-10-21)
 
 | Check | Command | Result |
 |---|---|---|

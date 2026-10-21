@@ -47,10 +47,12 @@ run: $(ISO)
 # report lines it must produce.
 KTEST_SH := tests/integration/ktest.sh
 
-.PHONY: ktest ktest-bios ktest-uefi ktest-big-memory ktest-cpu-max ktest-panic-ud \
+.PHONY: ktest ktest-bios ktest-uefi ktest-big-memory ktest-cpu-max ktest-no-hpet \
+	ktest-keyboard-bios ktest-keyboard-uefi ktest-panic-ud \
 	ktest-panic-pf ktest-panic-kernel ktest-panic-stack-overflow ktest-panic-double-kfree
 
-ktest: ktest-bios ktest-uefi ktest-big-memory ktest-cpu-max ktest-panic-ud ktest-panic-pf \
+ktest: ktest-bios ktest-uefi ktest-big-memory ktest-cpu-max ktest-no-hpet ktest-keyboard-bios \
+	ktest-keyboard-uefi ktest-panic-ud ktest-panic-pf \
 	ktest-panic-kernel ktest-panic-stack-overflow ktest-panic-double-kfree
 
 ktest-bios: $(ISO)
@@ -70,6 +72,17 @@ ktest-big-memory: $(ISO)
 ktest-cpu-max: $(ISO)
 	$(Q)ISO=$(ISO) KTEST_CPU=max $(KTEST_SH) uefi all pass "SMY-OS: ktest: .* 0 failed" \
 		"SMY-OS: vmm: .*NX on, WP on, SMEP on, SMAP on"
+
+# Without an HPET the local APIC timer is calibrated with the PIT.
+ktest-no-hpet: $(ISO)
+	$(Q)ISO=$(ISO) KTEST_MACHINE=q35,hpet=off $(KTEST_SH) bios all pass \
+		"SMY-OS: ktest: .* 0 failed" "SMY-OS: platform: .*calibrated with PIT"
+
+# Keystrokes typed through the QEMU monitor reach the PS/2 driver as HID
+# key events (kernel/arch/x86_64/ktest_platform.c).
+ktest-keyboard-bios ktest-keyboard-uefi: ktest-keyboard-%: $(ISO)
+	$(Q)ISO=$(ISO) KTEST_SENDKEYS="s m y up ret" $(KTEST_SH) $* keyboard_receives_injected_keys pass \
+		"SMY-OS: ktest:   key 0x52 down" "SMY-OS: ktest: 1 run, 1 passed"
 
 ktest-panic-ud: $(ISO)
 	$(Q)ISO=$(ISO) $(KTEST_SH) bios panic_on_unhandled_invalid_opcode panic \

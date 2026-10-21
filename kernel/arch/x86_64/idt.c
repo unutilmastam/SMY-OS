@@ -7,7 +7,7 @@
 
 /* Implemented in cpu_asm.S and isr.S. */
 void idt_load(const struct descriptor_pointer *idtr);
-extern const uint64_t isr_stub_table[32];
+extern const uint64_t isr_stub_table[IDT_ENTRIES];
 
 SMY_ALIGNED(16) static struct idt_gate idt[IDT_ENTRIES];
 
@@ -29,7 +29,7 @@ void idt_init(void)
 {
     struct descriptor_pointer idtr;
 
-    for (unsigned v = 0; v < 32; v++) {
+    for (unsigned v = 0; v < IDT_ENTRIES; v++) {
         idt[v] = idt_make_gate(isr_stub_table[v], GDT_KERNEL_CODE, ist_for_vector(v),
                                IDT_GATE_INTERRUPT_DPL0);
     }
