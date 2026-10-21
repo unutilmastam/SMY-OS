@@ -31,8 +31,9 @@ interrupts, processes, any user interface.
 | 2 — First boot | VERIFIED | 4/4 boot paths and reproducibility green in CI (runs 39068650073, 39069271282) |
 | 3 — CPU foundation | VERIFIED | ktest 10/10 on BIOS and UEFI, 3 panic reports, boot 4/4, reproducible — CI run 39075758514 |
 | 4 — Physical memory manager | VERIFIED | CI run 39076695215 green (incl. 4 GiB test) |
-| 5B — Brand identity | BLOCKED (owner review) | concept A "Module" (ADR 0011); logo family (22 SVGs), tokens, guidelines, manifest, PNG exports and kernel boot logo done and checked; waiting for the owner to approve the logo family sheet |
-| 5 … 38, 12B | NOT STARTED | see `ROADMAP.md` (the owner asked for 5B before 5) |
+| 5B — Brand identity | VERIFIED | concept A "Module" (ADR 0011); logo family approved by the owner 2026-10-21; CI run 39575540426 green (incl. boot-screen pixel test) |
+| 5 — Virtual memory + heap | IN PROGRESS | |
+| 6 … 38, 12B | NOT STARTED | see `ROADMAP.md` |
 
 ## Components
 
@@ -63,7 +64,7 @@ interrupts, processes, any user interface.
 | Owner check in VirtualBox (Windows 11 laptop, BIOS mode, VM type "Other/Unknown 64-bit", 512 MB, ISO as optical drive) | Emulator-tested by the owner on 2026-10-18: boot screen (dark background, blue frame) shown; reported with a photo. VirtualBox version not recorded; serial log not captured |
 | Real hardware, real USB stick | not tested (Phase 36) |
 | Logo concepts A Module, B Signal, C Prism (`design/brand/concepts/`) | Implemented (SVG, validated in CI); owner chose A (ADR 0011) |
-| Logo family (22 SVGs, `design/brand/logos/`, manifest, guidelines) | Implemented, validated in CI (SVG rules, manifest, contrast, PNG exports 16–1024 px); awaiting owner approval |
+| Logo family (22 SVGs, `design/brand/logos/`, manifest, guidelines) | Implemented, validated in CI (SVG rules, manifest, contrast, PNG exports 16–1024 px); approved by the owner 2026-10-21 |
 | Brand colour tokens (`design/tokens/brand-colors.json`) | Implemented (base layer; UI themes follow in Phase 6) |
 | Design system | not started (Phase 6) |
 | Compatibility (C0–C8) | not started (see `COMPATIBILITY.md`) |
@@ -80,7 +81,7 @@ interrupts, processes, any user interface.
 | Boot tests, ktest, panic reports, 4 GiB | `make boot-test`, `make ktest` | PASS |
 | Reproducible ISO | `tools/check-reproducible.sh` | PASS (after mapping the build-directory path of the generated logo source) |
 | Link check | `tools/check-links.py` | PASS: 0 broken links |
-| CI `ci` workflow | GitHub Actions | see the run for this commit |
+| CI `ci` workflow | GitHub Actions | PASS: run 39575540426 on commit b95c93a (after two fixes for the label font on the runner) |
 
 ## Earlier check results (Phase 4, cloud session 2026-10-18)
 

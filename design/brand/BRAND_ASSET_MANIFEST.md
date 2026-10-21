@@ -11,27 +11,27 @@ Status vocabulary: `docs/BRAND_PROMPT.md` §18.
 
 | File | Variant (§5) | Background | Use | Status |
 |---|---|---|---|---|
-| `smy-symbol-on-dark.svg` | B symbol, I dark | dark (VOID family) | symbol alone ≥ 32 px | IMPLEMENTED, awaiting owner review |
-| `smy-symbol-on-light.svg` | B symbol, H light | light | symbol alone ≥ 32 px | IMPLEMENTED, awaiting owner review |
-| `smy-symbol-mono-black.svg` | G monochrome | light / print | one-colour reproduction | IMPLEMENTED, awaiting owner review |
-| `smy-symbol-mono-white.svg` | G monochrome | dark / photo | one-colour reproduction | IMPLEMENTED, awaiting owner review |
-| `smy-micro-on-dark.svg` | J micro mark | dark | 16–24 px (favicons, tray) | IMPLEMENTED, awaiting owner review |
-| `smy-micro-on-light.svg` | J micro mark | light | 16–24 px | IMPLEMENTED, awaiting owner review |
-| `smy-wordmark-on-dark.svg` | C wordmark | dark | text-only placements | IMPLEMENTED, awaiting owner review |
-| `smy-wordmark-on-light.svg` | C wordmark | light | text-only placements | IMPLEMENTED, awaiting owner review |
-| `smy-logo-horizontal-on-dark.svg` | A master | dark | primary logo | IMPLEMENTED, awaiting owner review |
-| `smy-logo-horizontal-on-light.svg` | A master, H light | light | primary logo | IMPLEMENTED, awaiting owner review |
-| `smy-logo-horizontal-mono-black.svg` | A master, G monochrome | light / print | one-colour | IMPLEMENTED, awaiting owner review |
-| `smy-logo-horizontal-mono-white.svg` | A master, G monochrome | dark | one-colour | IMPLEMENTED, awaiting owner review |
-| `smy-logo-stacked-on-dark.svg` | A compact | dark | square-ish spaces | IMPLEMENTED, awaiting owner review |
-| `smy-logo-stacked-on-light.svg` | A compact, H light | light | square-ish spaces | IMPLEMENTED, awaiting owner review |
-| `smy-app-icon.svg` | D app icon | own tile (VOID) | launcher, ≥ 32 px | IMPLEMENTED, awaiting owner review |
-| `smy-app-icon-light.svg` | D app icon, H light | own tile (white) | light launcher | IMPLEMENTED, awaiting owner review |
-| `smy-app-icon-small.svg` | D app icon + J micro | own tile (VOID) | 16–24 px | IMPLEMENTED, awaiting owner review |
-| `smy-boot-logo.svg` | E boot logo | VOID `#080B12` | kernel boot screen (rendered at build time) | IMPLEMENTED AND VERIFIED in QEMU (BIOS + UEFI screendump test); design awaiting owner review |
-| `smy-installer-logo-on-dark.svg` | F installer logo | dark | installer (Phase 33) | IMPLEMENTED, awaiting owner review |
-| `smy-installer-logo-on-light.svg` | F installer logo, H light | light | installer (Phase 33) | IMPLEMENTED, awaiting owner review |
-| `smy-developer-mark-on-dark.svg` | K developer mark | dark | developer tools, SDK | IMPLEMENTED, awaiting owner review |
-| `smy-developer-logo-on-dark.svg` | K developer lockup | dark | developer docs, SDK | IMPLEMENTED, awaiting owner review |
+| `smy-symbol-on-dark.svg` | B symbol, I dark | dark (VOID family) | symbol alone ≥ 32 px | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-symbol-on-light.svg` | B symbol, H light | light | symbol alone ≥ 32 px | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-symbol-mono-black.svg` | G monochrome | light / print | one-colour reproduction | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-symbol-mono-white.svg` | G monochrome | dark / photo | one-colour reproduction | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-micro-on-dark.svg` | J micro mark | dark | 16–24 px (favicons, tray) | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-micro-on-light.svg` | J micro mark | light | 16–24 px | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-wordmark-on-dark.svg` | C wordmark | dark | text-only placements | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-wordmark-on-light.svg` | C wordmark | light | text-only placements | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-logo-horizontal-on-dark.svg` | A master | dark | primary logo | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-logo-horizontal-on-light.svg` | A master, H light | light | primary logo | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-logo-horizontal-mono-black.svg` | A master, G monochrome | light / print | one-colour | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-logo-horizontal-mono-white.svg` | A master, G monochrome | dark | one-colour | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-logo-stacked-on-dark.svg` | A compact | dark | square-ish spaces | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-logo-stacked-on-light.svg` | A compact, H light | light | square-ish spaces | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-app-icon.svg` | D app icon | own tile (VOID) | launcher, ≥ 32 px | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-app-icon-light.svg` | D app icon, H light | own tile (white) | light launcher | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-app-icon-small.svg` | D app icon + J micro | own tile (VOID) | 16–24 px | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-boot-logo.svg` | E boot logo | VOID `#080B12` | kernel boot screen (rendered at build time) | IMPLEMENTED AND VERIFIED (owner-approved; QEMU BIOS + UEFI screendump test) |
+| `smy-installer-logo-on-dark.svg` | F installer logo | dark | installer (Phase 33) | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-installer-logo-on-light.svg` | F installer logo, H light | light | installer (Phase 33) | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-developer-mark-on-dark.svg` | K developer mark | dark | developer tools, SDK | IMPLEMENTED AND VERIFIED (owner-approved) |
+| `smy-developer-logo-on-dark.svg` | K developer lockup | dark | developer docs, SDK | IMPLEMENTED AND VERIFIED (owner-approved) |
 
 L community mark: not needed yet (§5 "only if needed") — not created.
