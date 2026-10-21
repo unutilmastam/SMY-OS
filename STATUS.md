@@ -35,7 +35,7 @@ interface.
 | 3 — CPU foundation | VERIFIED | ktest 10/10 on BIOS and UEFI, 3 panic reports, boot 4/4, reproducible — CI run 39075758514 |
 | 4 — Physical memory manager | VERIFIED | CI run 39076695215 green (incl. 4 GiB test) |
 | 5B — Brand identity | VERIFIED | concept A "Module" (ADR 0011); logo family approved by the owner 2026-10-21; CI run 39575540426 green (incl. boot-screen pixel test) |
-| 5 — Virtual memory + heap | IN PROGRESS | implemented and checked locally; VERIFIED once CI is green |
+| 5 — Virtual memory + heap | VERIFIED | CI run 39578027802 green (ktest 24/24 BIOS+UEFI, `-cpu max`, 5 panic reports, 4 GiB) |
 | 6 … 38, 12B | NOT STARTED | see `ROADMAP.md` |
 
 ## Components
@@ -91,7 +91,7 @@ interface.
 | Panic reports | `make ktest-panic-*` (5) | PASS incl. stack overflow → #DF and double `kfree` |
 | Negative checks | see `TESTING.md` §3 | 2 injected bugs, each detected |
 | Reproducible ISO | `tools/check-reproducible.sh` | PASS |
-| CI `ci` workflow | GitHub Actions | see the run for this commit |
+| CI `ci` workflow | GitHub Actions | PASS: run 39578027802 on commit af9157b |
 
 ## Earlier check results (Phase 5B step 2, cloud session 2026-10-21)
 

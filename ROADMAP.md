@@ -16,7 +16,7 @@ point, then continue in the next command.
 | 2 | First boot: Limine + minimal kernel + QEMU boot test | Kernel | VERIFIED |
 | 3 | CPU: GDT/TSS, IDT, exceptions, panic, kernel log | Kernel | VERIFIED |
 | 4 | Physical memory manager | Kernel | VERIFIED |
-| 5 | Virtual memory + kernel heap | Kernel | IN PROGRESS |
+| 5 | Virtual memory + kernel heap | Kernel | VERIFIED |
 | 5B | Brand identity: 3 logo concepts (OWNER DECISION), logo family, boot logo | Brand | VERIFIED |
 | 6 | D1 — Design System specification + tokens | Design | NOT STARTED |
 | 7 | Interrupt controllers, timers, keyboard input | Kernel | NOT STARTED |
