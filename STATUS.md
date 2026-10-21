@@ -1,6 +1,6 @@
 # SMY-OS Status
 
-Last updated: 2026-10-21 — Phase 7.
+Last updated: 2026-10-21 — Phase 7 verified.
 
 Status vocabulary (used exactly): **Implemented · Compiles · Unit-tested ·
 Emulator-tested · Hardware-tested · Production-ready.** A passing build is not
@@ -38,7 +38,7 @@ keyboard input. Still missing: threads, processes, any user interface.
 | 5B — Brand identity | VERIFIED | concept A "Module" (ADR 0011); logo family approved by the owner 2026-10-21; CI run 39575540426 green (incl. boot-screen pixel test) |
 | 5 — Virtual memory + heap | VERIFIED | CI run 39578027802 green (ktest 24/24 BIOS+UEFI, `-cpu max`, 5 panic reports, 4 GiB) |
 | 6 — D1 Design system | VERIFIED | CI run 39580554634 green; monochrome themes, `#077479`, Inter + IBM Plex Mono approved by the owner 2026-10-21 |
-| 7 — Interrupts, timers, input | IN PROGRESS | implemented and checked locally; VERIFIED once CI is green |
+| 7 — Interrupts, timers, input | VERIFIED | CI run 39587574191 green (timer vs HPET and PIT, no-HPET run, keyboard via sendkey on BIOS + UEFI) |
 | 8 … 38, 12B | NOT STARTED | see `ROADMAP.md` |
 
 ## Components
@@ -100,7 +100,7 @@ keyboard input. Still missing: threads, processes, any user interface.
 | Keyboard | `make ktest-keyboard-bios ktest-keyboard-uefi` | PASS: `s m y up ret` → 10 HID events in order |
 | Panic reports, 4 GiB | `make ktest-panic-* ktest-big-memory` | PASS |
 | Reproducible ISO | `tools/check-reproducible.sh` | PASS |
-| CI `ci` workflow | GitHub Actions | see the run for this commit |
+| CI `ci` workflow | GitHub Actions | PASS: run 39587574191 on commit cd33aba |
 
 ## Earlier check results (Phase 5, cloud session 2026-10-21)
 
